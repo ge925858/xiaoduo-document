@@ -3,6 +3,9 @@ dist/
 coverage/
 .next/
 .vite/
+playwright-report/
+test-results/
+web/AGENTS.md
 *.tsbuildinfo
 frontend/vite.config.js
 frontend/vite.config.d.ts
