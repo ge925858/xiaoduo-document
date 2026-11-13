@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { MarkdownArticle } from '@/components/markdown-article'
 import { getPublicChapterByPath } from '@/lib/public-library'
+import { countWords, markdownHeadings } from '@/lib/markdown-headings'
 
 interface ChapterPageProps {
   params: Promise<{
@@ -19,13 +20,14 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   )
 
   if (!chapter) notFound()
+  const headings = markdownHeadings(chapter.markdown)
 
   return (
     <main className="chapter">
       <p className="eyebrow">{chapter.categoryTitle}</p>
       <h1>{chapter.title}</h1>
       <p className="chapter-byline">
-        {chapter.authorName} · 更新于{' '}
+        {chapter.authorName} · {countWords(chapter.plainText)} 字 · 更新于{' '}
         <time dateTime={chapter.publishedAt}>
           {new Intl.DateTimeFormat('zh-CN', {
             dateStyle: 'long',
@@ -34,7 +36,21 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           }).format(new Date(chapter.publishedAt))}
         </time>
       </p>
-      <MarkdownArticle markdown={chapter.markdown} />
+      <div className="chapter-public-grid">
+        <MarkdownArticle markdown={chapter.markdown} />
+        {headings.length ? (
+          <aside className="chapter-toc">
+            <p className="eyebrow">On this page</p>
+            <nav aria-label="本章目录">
+              {headings.map((heading) => (
+                <a key={heading.id} href={`#${heading.id}`}>
+                  {heading.text}
+                </a>
+              ))}
+            </nav>
+          </aside>
+        ) : null}
+      </div>
     </main>
   )
 }

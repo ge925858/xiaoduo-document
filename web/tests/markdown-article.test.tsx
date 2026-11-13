@@ -16,4 +16,15 @@ describe('MarkdownArticle', () => {
     expect(screen.getByText('一段公开正文。')).toBeInTheDocument()
     expect(screen.getByRole('checkbox')).toBeChecked()
   })
+
+  it('removes executable raw HTML while keeping safe markup', () => {
+    const { container } = render(
+      <MarkdownArticle
+        markdown={'<script>alert("x")</script>\n\n<u>安全强调</u>'}
+      />,
+    )
+
+    expect(container.querySelector('script')).toBeNull()
+    expect(container.querySelector('u')).toHaveTextContent('安全强调')
+  })
 })

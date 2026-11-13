@@ -77,6 +77,27 @@ a {
   height: auto;
 }
 
+.chapter-public-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.chapter-toc {
+  position: sticky;
+  top: 2rem;
+  display: grid;
+  gap: 0.5rem;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.82rem;
+}
+
+.chapter-toc nav {
+  display: grid;
+  gap: 0.5rem;
+}
+
 .studio-shell {
   display: grid;
   min-height: 100vh;
@@ -329,6 +350,10 @@ a {
   cursor: pointer;
 }
 
+.editor-actions button + button {
+  background: var(--accent);
+}
+
 .editor-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
@@ -414,6 +439,10 @@ a {
   }
 
   .editor-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .chapter-public-grid {
     grid-template-columns: 1fr;
   }
 }

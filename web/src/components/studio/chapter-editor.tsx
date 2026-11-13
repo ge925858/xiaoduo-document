@@ -24,6 +24,7 @@ interface ArticleItem {
   contentJson: string | null
   markdown: string
   revision: number
+  publicationState: 'draft' | 'published' | 'unpublished'
 }
 
 type SaveState =
@@ -58,6 +59,9 @@ export function ChapterEditor({
   const [title, setTitle] = useState(article.title)
   const [categoryId, setCategoryId] = useState(article.categoryId)
   const [saveState, setSaveState] = useState<SaveState>('idle')
+  const [publicationState, setPublicationState] = useState(
+    article.publicationState,
+  )
   const titleRef = useRef(title)
   const categoryRef = useRef(categoryId)
   const revisionRef = useRef(article.revision)
@@ -156,6 +160,20 @@ export function ChapterEditor({
     error: '保存失败，请重试。',
   }
 
+  async function publish() {
+    setSaveState('saving')
+    const response = await fetch(`/api/studio/articles/${article.id}/publish`, {
+      method: 'POST',
+    })
+    if (!response.ok) {
+      setSaveState('error')
+      return
+    }
+    setPublicationState('published')
+    setSaveState('saved')
+    router.refresh()
+  }
+
   return (
     <section className="chapter-editor">
       <div className="editor-topbar">
@@ -200,6 +218,9 @@ export function ChapterEditor({
           <div className="editor-actions">
             <button type="button" onClick={() => void save()}>
               保存草稿
+            </button>
+            <button type="button" onClick={() => void publish()}>
+              {publicationState === 'published' ? '更新发布' : '发布章节'}
             </button>
             <span>{article.path}</span>
           </div>

@@ -8,6 +8,7 @@ export interface ArticleDraft {
   title: string
   categoryId: string
   categoryTitle: string
+  categorySlug: string
   path: string
   position: number
   contentJson: string | null
@@ -89,6 +90,7 @@ export async function listArticleDrafts(): Promise<ArticleDraft[]> {
       title: article.title,
       categoryId: article.categoryId,
       categoryTitle: category.title,
+      categorySlug: category.slug,
       path: article.path,
       position: article.position,
       contentJson: article.contentJson,
@@ -111,6 +113,7 @@ export async function getArticleDraft(id: string): Promise<ArticleDraft | null> 
       title: article.title,
       categoryId: article.categoryId,
       categoryTitle: category.title,
+      categorySlug: category.slug,
       path: article.path,
       position: article.position,
       contentJson: article.contentJson,
@@ -324,4 +327,39 @@ export async function restoreArticleVersion(
       ),
     )
   return result[0].affectedRows === 1 ? 'saved' : 'conflict'
+}
+
+export async function publishArticle(
+  articleId: string,
+  actor: VersionActor,
+): Promise<'published' | 'missing'> {
+  const current = await getArticleDraft(articleId)
+  if (!current || current.trashedAt) return 'missing'
+
+  const versionId = crypto.randomUUID()
+  await db.transaction(async (transaction) => {
+    await transaction.insert(articleVersion).values({
+      id: versionId,
+      articleId,
+      kind: 'published',
+      title: current.title,
+      categoryId: current.categoryId,
+      path: current.path,
+      label: '更新线上版本',
+      contentJson: current.contentJson,
+      markdown: current.markdown,
+      plainText: current.plainText,
+      authorId: actor.id,
+      authorName: actor.name,
+      authorRole: actor.role,
+    })
+    await transaction
+      .update(article)
+      .set({
+        publicationState: 'published',
+        updatedAt: new Date().toISOString().slice(0, 23).replace('T', ' '),
+      })
+      .where(eq(article.id, articleId))
+  })
+  return 'published'
 }
