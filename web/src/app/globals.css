@@ -817,3 +817,24 @@ a {
   color: var(--muted);
   font-size: 0.8rem;
 }
+
+.invitation-page {
+  width: min(560px, calc(100% - 40px));
+  margin: 10vh auto 0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.invitation-page h1 {
+  margin-top: 0.4rem;
+  line-height: 1.25;
+}
+
+.invitation-result {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.25rem;
+  background: #fffdf8;
+}

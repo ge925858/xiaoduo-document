@@ -13,3 +13,9 @@ export async function requireOwner() {
   if (session.user.status !== 'active') return null
   return session
 }
+
+export async function requireStudioSession() {
+  const session = await getServerSession()
+  if (!session || session.user.status !== 'active') return null
+  return session
+}

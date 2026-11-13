@@ -305,3 +305,25 @@ export const collaborationInviteArticle = mysqlTable(
     ),
   ],
 )
+
+export const articleGrant = mysqlTable(
+  'article_grant',
+  {
+    userId: varchar('user_id', { length: 36 })
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    articleId: varchar('article_id', { length: 36 })
+      .notNull()
+      .references(() => article.id, { onDelete: 'cascade' }),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [
+    uniqueIndex('article_grant_user_article_unique').on(
+      table.userId,
+      table.articleId,
+    ),
+    index('article_grant_article_idx').on(table.articleId),
+  ],
+)
