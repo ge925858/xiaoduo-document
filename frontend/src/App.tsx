@@ -14,6 +14,7 @@ import { CategoryPage } from './pages/public/CategoryPage'
 import { LibraryIndexPage } from './pages/public/LibraryIndexPage'
 import { NotFoundPage } from './pages/public/NotFoundPage'
 import { CollaborationInvitePage } from './pages/public/CollaborationInvitePage'
+import { ComponentGalleryPage } from './pages/public/ComponentGalleryPage'
 import { StudioDashboardPage } from './pages/studio/StudioDashboardPage'
 import { CategoryManagementPage } from './pages/studio/CategoryManagementPage'
 import { CollaborationManagementPage } from './pages/studio/CollaborationManagementPage'
@@ -82,6 +83,10 @@ export default function App() {
     >
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route
+          path="/visual-fixtures/components"
+          element={<ComponentGalleryPage />}
+        />
         <Route element={<LibraryLayout />}>
           <Route path="/library" element={<LibraryIndexPage />} />
           <Route

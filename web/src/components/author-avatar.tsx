@@ -1,27 +1,29 @@
 import Image from 'next/image'
+import { cn } from '@/lib/utils'
 
 export function AuthorAvatar({
   name,
   avatarUrl,
+  size = 'md',
+  className,
 }: {
   name: string
   avatarUrl?: string | null
+  size?: 'sm' | 'md' | 'lg'
+  className?: string
 }) {
+  const classes = cn('author-avatar', `is-${size}`, className)
   if (avatarUrl) {
     return (
       <Image
-        className="author-avatar"
+        className={classes}
         src={avatarUrl}
-        alt={name}
-        width={30}
-        height={30}
+        alt={`${name}的头像`}
+        width={size === 'lg' ? 76 : size === 'md' ? 40 : 32}
+        height={size === 'lg' ? 76 : size === 'md' ? 40 : 32}
         unoptimized
       />
     )
   }
-  return (
-    <span className="author-avatar" aria-label={name}>
-      {name.trim().slice(0, 2)}
-    </span>
-  )
+  return <span className={classes} aria-label={`${name}的头像`}>{name.trim().slice(0, 2)}</span>
 }

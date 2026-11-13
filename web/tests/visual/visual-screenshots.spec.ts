@@ -169,6 +169,36 @@ function masks(page: Page) {
   return visualFixture.maskSelectors.map((selector) => page.locator(selector))
 }
 
+test('shared components support dialog focus, tooltip, and keyboard select', async ({
+  page,
+}) => {
+  await page.clock.install({ time: new Date(visualFixture.fixedNow) })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto(`${visualOrigins.production}/visual-fixtures/components`)
+
+  const opener = page.getByRole('button', { name: '打开对话框' })
+  await opener.focus()
+  await page.keyboard.press('Enter')
+  const dialog = page.getByRole('dialog', { name: '组件对话框' })
+  await expect(dialog).toBeVisible()
+  await expect(page.getByRole('button', { name: '关闭' })).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+  await expect(opener).toBeFocused()
+
+  const tooltipTrigger = page.getByRole('button', { name: '查看格式提示' })
+  await tooltipTrigger.hover()
+  await expect(page.getByRole('tooltip')).toHaveText('支持 Markdown 快捷输入')
+
+  const select = page.getByRole('button', { name: '章节状态' })
+  await select.focus()
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('menuitem', { name: '草稿' })).toBeVisible()
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.press('Enter')
+  await expect(select).toHaveText(/已发布/)
+})
+
 for (const visualCase of visualCases) {
   for (const viewport of visualViewports) {
     for (const themeMode of ['light', 'dark'] as const) {

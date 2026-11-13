@@ -28,6 +28,12 @@ export const visualCases: VisualCase[] = [
     overlay: 'design-tokens',
   },
   {
+    id: 'component-gallery',
+    prototypePath: '/visual-fixtures/components',
+    productionPath: '/visual-fixtures/components',
+    productionLogin: null,
+  },
+  {
     id: 'public-preview',
     prototypePath: '/',
     productionPath: '/',

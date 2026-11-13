@@ -45,6 +45,7 @@ export default defineConfig({
         OSS_PUBLIC_BASE_URL: 'https://cdn.example.com',
         TRUST_PROXY: 'true',
         ANALYTICS_HASH_SECRET: 'playwright-analytics-secret',
+        ENABLE_VISUAL_FIXTURES: '1',
       },
     },
     {
