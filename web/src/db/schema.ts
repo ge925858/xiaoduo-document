@@ -44,6 +44,8 @@ export const article = mysqlTable(
       .notNull()
       .default('draft'),
     trashedAt: datetime('trashed_at', { mode: 'string', fsp: 3 }),
+    trashedById: varchar('trashed_by_id', { length: 36 }),
+    trashedByName: varchar('trashed_by_name', { length: 120 }),
     createdAt: datetime('created_at', { mode: 'string', fsp: 3 })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP(3)`),

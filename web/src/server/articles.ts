@@ -1,4 +1,4 @@
-import { and, asc, desc, eq } from 'drizzle-orm'
+import { and, asc, desc, eq, isNotNull, lt } from 'drizzle-orm'
 import type { JSONContent } from '@tiptap/core'
 import { db } from '@/db/client'
 import {
@@ -22,6 +22,8 @@ export interface ArticleDraft {
   revision: number
   publicationState: 'draft' | 'published' | 'unpublished'
   trashedAt: string | null
+  trashedById: string | null
+  trashedByName: string | null
   updatedAt: string
 }
 
@@ -105,6 +107,8 @@ export async function listArticleDrafts(): Promise<ArticleDraft[]> {
       revision: article.revision,
       publicationState: article.publicationState,
       trashedAt: article.trashedAt,
+      trashedById: article.trashedById,
+      trashedByName: article.trashedByName,
       updatedAt: article.updatedAt,
     })
     .from(article)
@@ -128,6 +132,8 @@ export async function getArticleDraft(id: string): Promise<ArticleDraft | null> 
       revision: article.revision,
       publicationState: article.publicationState,
       trashedAt: article.trashedAt,
+      trashedById: article.trashedById,
+      trashedByName: article.trashedByName,
       updatedAt: article.updatedAt,
     })
     .from(article)
@@ -413,4 +419,95 @@ export async function withdrawArticle(articleId: string): Promise<boolean> {
     })
     .where(eq(article.id, articleId))
   return result[0].affectedRows > 0
+}
+
+export async function trashArticle(
+  articleId: string,
+  actor: VersionActor,
+): Promise<boolean> {
+  const timestamp = new Date().toISOString().slice(0, 23).replace('T', ' ')
+  const result = await db
+    .update(article)
+    .set({
+      trashedAt: timestamp,
+      trashedById: actor.id,
+      trashedByName: actor.name,
+      publicationState: 'unpublished',
+      updatedAt: timestamp,
+    })
+    .where(eq(article.id, articleId))
+  return result[0].affectedRows > 0
+}
+
+export async function listTrash(): Promise<ArticleDraft[]> {
+  return db
+    .select({
+      id: article.id,
+      title: article.title,
+      categoryId: article.categoryId,
+      categoryTitle: category.title,
+      categorySlug: category.slug,
+      path: article.path,
+      position: article.position,
+      contentJson: article.contentJson,
+      markdown: article.markdown,
+      plainText: article.plainText,
+      revision: article.revision,
+      publicationState: article.publicationState,
+      trashedAt: article.trashedAt,
+      trashedById: article.trashedById,
+      trashedByName: article.trashedByName,
+      updatedAt: article.updatedAt,
+    })
+    .from(article)
+    .innerJoin(category, eq(article.categoryId, category.id))
+    .where(isNotNull(article.trashedAt))
+    .orderBy(desc(article.trashedAt))
+}
+
+export async function restoreTrashArticle(articleId: string): Promise<boolean> {
+  const result = await db
+    .update(article)
+    .set({
+      trashedAt: null,
+      trashedById: null,
+      trashedByName: null,
+      publicationState: 'unpublished',
+      updatedAt: new Date().toISOString().slice(0, 23).replace('T', ' '),
+    })
+    .where(eq(article.id, articleId))
+  return result[0].affectedRows > 0
+}
+
+export async function permanentlyDeleteArticle(
+  articleId: string,
+): Promise<boolean> {
+  const current = await getArticleDraft(articleId)
+  if (!current) return false
+  const path = `/library/${current.categorySlug}/${current.path}`
+  await db.transaction(async (transaction) => {
+    await transaction
+      .delete(urlRedirect)
+      .where(eq(urlRedirect.fromPath, path))
+    await transaction
+      .delete(urlRedirect)
+      .where(eq(urlRedirect.toPath, path))
+    await transaction.delete(article).where(eq(article.id, articleId))
+  })
+  return true
+}
+
+export async function purgeExpiredTrash(): Promise<number> {
+  const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 23)
+    .replace('T', ' ')
+  const expired = await db
+    .select({ id: article.id })
+    .from(article)
+    .where(and(isNotNull(article.trashedAt), lt(article.trashedAt, cutoff)))
+  for (const item of expired) {
+    await permanentlyDeleteArticle(item.id)
+  }
+  return expired.length
 }

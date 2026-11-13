@@ -14,6 +14,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:owner:create": "tsx scripts/create-owner.ts",
+    "db:purge-trash": "tsx scripts/purge-trash.ts",
     "test:db:prepare": "tsx scripts/prepare-test-db.ts"
   },
   "dependencies": {

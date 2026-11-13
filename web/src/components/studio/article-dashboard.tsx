@@ -65,6 +65,11 @@ export function ArticleDashboard({
     router.refresh()
   }
 
+  async function trash(id: string) {
+    await fetch(`/api/studio/articles/${id}/trash`, { method: 'POST' })
+    router.refresh()
+  }
+
   return (
     <div className="article-dashboard">
       <form className="studio-form create-article-form" onSubmit={create}>
@@ -112,6 +117,13 @@ export function ArticleDashboard({
                 onClick={() => move(article.id, 1)}
               >
                 下移
+              </button>
+              <button
+                type="button"
+                aria-label={`移入回收站 ${article.title}`}
+                onClick={() => void trash(article.id)}
+              >
+                移入回收站
               </button>
             </div>
           </article>
