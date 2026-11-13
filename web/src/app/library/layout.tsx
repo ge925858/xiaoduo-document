@@ -1,6 +1,4 @@
-import Link from 'next/link'
-import { PublicLibraryNav } from '@/components/public-library-nav'
-import { ThemeToggle } from '@/components/theme-toggle'
+import { PublicLibraryShell } from '@/components/public-library-shell'
 import { listPublicLibrary } from '@/lib/public-library'
 
 export default async function LibraryLayout({
@@ -8,30 +6,8 @@ export default async function LibraryLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const library = await listPublicLibrary()
   return (
-    <div className="public-library-shell">
-      <header className="public-header">
-        <Link href="/" className="public-brand">
-          知笺
-        </Link>
-        <span>笔记库</span>
-        <form action="/search" role="search" className="public-search-form">
-          <label>
-            <span className="sr-only">搜索公开章节</span>
-            <input name="q" type="search" placeholder="搜索" />
-          </label>
-        </form>
-        <Link href="/library" className="public-library-home">
-          全部内容
-        </Link>
-        <ThemeToggle />
-      </header>
-      <aside className="public-sidebar">
-        <PublicLibraryNav categories={library} />
-        <Link href="/" className="public-back-link">
-          返回预览页
-        </Link>
-      </aside>
-      <main className="public-library-content">{children}</main>
-    </div>
+    <PublicLibraryShell categories={library}>
+      {children}
+    </PublicLibraryShell>
   )
 }

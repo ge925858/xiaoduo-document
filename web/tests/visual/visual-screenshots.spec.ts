@@ -165,6 +165,17 @@ async function applyDesignTokenSample(page: Page) {
   })
 }
 
+async function applyVisualInteraction(
+  page: Page,
+  interaction: NonNullable<
+    (typeof visualCases)[number]['interaction']
+  >,
+) {
+  if (interaction !== 'open-library-sidebar') return
+  const openButton = page.getByRole('button', { name: '打开目录' })
+  if (await openButton.isVisible()) await openButton.click()
+}
+
 function masks(page: Page) {
   return visualFixture.maskSelectors.map((selector) => page.locator(selector))
 }
@@ -201,6 +212,12 @@ test('shared components support dialog focus, tooltip, and keyboard select', asy
 
 for (const visualCase of visualCases) {
   for (const viewport of visualViewports) {
+    if (
+      visualCase.viewports &&
+      !visualCase.viewports.includes(viewport.name)
+    ) {
+      continue
+    }
     for (const themeMode of ['light', 'dark'] as const) {
       test(`${visualCase.id} ${viewport.name} ${themeMode}`, async ({
         browser,
@@ -235,6 +252,12 @@ for (const visualCase of visualCases) {
         if (visualCase.overlay === 'design-tokens') {
           await applyDesignTokenSample(prototypePage)
         }
+        if (visualCase.interaction) {
+          await applyVisualInteraction(
+            prototypePage,
+            visualCase.interaction,
+          )
+        }
         await settle(prototypePage)
         const prototypePng = await prototypePage.screenshot({
           path: prototypePath,
@@ -260,6 +283,12 @@ for (const visualCase of visualCases) {
         )
         if (visualCase.overlay === 'design-tokens') {
           await applyDesignTokenSample(productionPage)
+        }
+        if (visualCase.interaction) {
+          await applyVisualInteraction(
+            productionPage,
+            visualCase.interaction,
+          )
         }
         await settle(productionPage)
         const productionPng = await productionPage.screenshot({

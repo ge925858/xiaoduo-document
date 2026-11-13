@@ -17,6 +17,8 @@ export interface VisualCase {
   productionPath: string
   productionLogin: VisualRole
   overlay?: 'design-tokens'
+  interaction?: 'open-library-sidebar'
+  viewports?: ReadonlyArray<'desktop' | 'tablet' | 'mobile'>
 }
 
 export const visualCases: VisualCase[] = [
@@ -31,6 +33,26 @@ export const visualCases: VisualCase[] = [
     id: 'component-gallery',
     prototypePath: '/visual-fixtures/components',
     productionPath: '/visual-fixtures/components',
+    productionLogin: null,
+  },
+  {
+    id: 'public-shell',
+    prototypePath: '/visual-fixtures/public-shell',
+    productionPath: '/visual-fixtures/public-shell',
+    productionLogin: null,
+  },
+  {
+    id: 'public-shell-mobile-nav',
+    prototypePath: '/visual-fixtures/public-shell',
+    productionPath: '/visual-fixtures/public-shell',
+    productionLogin: null,
+    interaction: 'open-library-sidebar',
+    viewports: ['mobile'],
+  },
+  {
+    id: 'public-not-found',
+    prototypePath: '/visual-fixtures/missing-page',
+    productionPath: '/visual-fixtures/missing-page',
     productionLogin: null,
   },
   {

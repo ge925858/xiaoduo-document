@@ -20,7 +20,13 @@ function getSnapshot(): Theme {
     : 'light'
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({
+  className = 'theme-toggle',
+  iconSize = 17,
+}: {
+  className?: string
+  iconSize?: number
+}) {
   const theme = useSyncExternalStore(
     subscribe,
     getSnapshot,
@@ -40,15 +46,15 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      className="theme-toggle"
+      className={className}
       title={label}
       aria-label={label}
       onClick={toggle}
     >
       {theme === 'light' ? (
-        <Moon aria-hidden="true" size={17} />
+        <Moon aria-hidden="true" size={iconSize} />
       ) : (
-        <Sun aria-hidden="true" size={17} />
+        <Sun aria-hidden="true" size={iconSize} />
       )}
     </button>
   )
