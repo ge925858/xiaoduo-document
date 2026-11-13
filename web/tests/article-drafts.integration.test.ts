@@ -111,4 +111,31 @@ describe('article draft service', () => {
       second!.id,
     )
   })
+
+  it('allows only one of two concurrent saves at the same revision', async () => {
+    const original = await getArticleDraft('article-1')
+    const baseInput = {
+      categoryId: 'category-1',
+      contentJson: { type: 'doc' as const, content: [] },
+      plainText: '并发保存',
+      expectedRevision: original!.revision,
+    }
+    const results = await Promise.all([
+      saveArticleDraft('article-1', {
+        ...baseInput,
+        title: '编辑者甲',
+        markdown: '编辑者甲的内容',
+      }),
+      saveArticleDraft('article-1', {
+        ...baseInput,
+        title: '编辑者乙',
+        markdown: '编辑者乙的内容',
+      }),
+    ])
+
+    expect(results.sort()).toEqual(['conflict', 'saved'])
+    const current = await getArticleDraft('article-1')
+    expect(current?.revision).toBe(original!.revision + 1)
+    expect(['编辑者甲的内容', '编辑者乙的内容']).toContain(current?.markdown)
+  })
 })

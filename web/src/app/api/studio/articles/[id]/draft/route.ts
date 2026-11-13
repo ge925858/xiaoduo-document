@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { authorizeArticleMutation } from '@/lib/studio-request'
 import { saveArticleDraft } from '@/server/articles'
+import {
+  getAccessibleArticle,
+  studioActorFromUser,
+} from '@/server/article-access'
 
 const saveSchema = z.object({
   title: z.string().trim().max(300),
@@ -30,7 +34,14 @@ export async function PUT(
     return NextResponse.json({ error: 'forbidden' }, { status: 403 })
   }
   const result = await saveArticleDraft(id, parsed.data)
+  if (result === 'conflict') {
+    const current = await getAccessibleArticle(
+      studioActorFromUser(authorization.session.user),
+      id,
+    )
+    return NextResponse.json({ result, current }, { status: 409 })
+  }
   const status =
-    result === 'saved' ? 200 : result === 'conflict' ? 409 : 404
+    result === 'saved' ? 200 : 404
   return NextResponse.json({ result }, { status })
 }

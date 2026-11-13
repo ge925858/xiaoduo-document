@@ -27,6 +27,17 @@ interface ArticleItem {
   publicationState: 'draft' | 'published' | 'unpublished'
 }
 
+interface ConflictSnapshot {
+  currentTitle: string
+  currentMarkdown: string
+  currentContentJson: string | null
+  currentCategoryId: string
+  currentRevision: number
+  localTitle: string
+  localMarkdown: string
+  localCategoryId: string
+}
+
 type SaveState =
   | 'idle'
   | 'dirty'
@@ -62,11 +73,13 @@ export function ChapterEditor({
   const [publicationState, setPublicationState] = useState(
     article.publicationState,
   )
+  const [conflict, setConflict] = useState<ConflictSnapshot | null>(null)
   const titleRef = useRef(title)
   const categoryRef = useRef(categoryId)
   const revisionRef = useRef(article.revision)
   const dirtyRef = useRef(false)
   const savingRef = useRef(false)
+  const conflictRef = useRef(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const editor = useEditor({
@@ -83,6 +96,7 @@ export function ChapterEditor({
   })
 
   function markDirty() {
+    if (conflictRef.current) return
     dirtyRef.current = true
     setSaveState('dirty')
     if (timerRef.current) clearTimeout(timerRef.current)
@@ -90,7 +104,7 @@ export function ChapterEditor({
   }
 
   async function save() {
-    if (!editor || savingRef.current) return
+    if (!editor || savingRef.current || conflictRef.current) return
     savingRef.current = true
     setSaveState('saving')
     const response = await fetch(`/api/studio/articles/${article.id}/draft`, {
@@ -105,9 +119,30 @@ export function ChapterEditor({
         expectedRevision: revisionRef.current,
       }),
     })
-    const payload = (await response.json()) as { result?: string }
+    const payload = (await response.json()) as {
+      result?: string
+      current?: {
+        title: string
+        markdown: string
+        contentJson: string | null
+        categoryId: string
+        revision: number
+      }
+    }
     savingRef.current = false
     if (response.status === 409) {
+      if (timerRef.current) clearTimeout(timerRef.current)
+      conflictRef.current = true
+      setConflict({
+        currentTitle: payload.current?.title ?? '',
+        currentMarkdown: payload.current?.markdown ?? '',
+        currentContentJson: payload.current?.contentJson ?? null,
+        currentCategoryId: payload.current?.categoryId ?? article.categoryId,
+        currentRevision: payload.current?.revision ?? revisionRef.current,
+        localTitle: titleRef.current,
+        localMarkdown: editor.getMarkdown(),
+        localCategoryId: categoryRef.current,
+      })
       setSaveState('conflict')
       return
     }
@@ -119,6 +154,33 @@ export function ChapterEditor({
     dirtyRef.current = false
     setSaveState('saved')
     router.refresh()
+  }
+
+  function adoptSavedDraft() {
+    if (!editor || !conflict) return
+    const content = conflict.currentContentJson
+      ? (JSON.parse(conflict.currentContentJson) as JSONContent)
+      : conflict.currentMarkdown
+    editor.commands.setContent(content, { emitUpdate: false })
+    titleRef.current = conflict.currentTitle
+    categoryRef.current = conflict.currentCategoryId
+    revisionRef.current = conflict.currentRevision
+    conflictRef.current = false
+    dirtyRef.current = false
+    setTitle(conflict.currentTitle)
+    setCategoryId(conflict.currentCategoryId)
+    setConflict(null)
+    setSaveState('idle')
+  }
+
+  function keepLocalDraft() {
+    if (!conflict) return
+    revisionRef.current = conflict.currentRevision
+    categoryRef.current = conflict.localCategoryId
+    conflictRef.current = false
+    setConflict(null)
+    setSaveState('dirty')
+    void save()
   }
 
   useEffect(() => {
@@ -227,6 +289,35 @@ export function ChapterEditor({
       <div className="editor-surface">
         <EditorContent editor={editor} />
       </div>
+      {conflict ? (
+        <section className="draft-conflict" aria-labelledby="conflict-title">
+          <div>
+            <p className="eyebrow">Revision conflict</p>
+            <h2 id="conflict-title">协作者冲突</h2>
+            <p>当前草稿已被其他编辑者更新。请明确选择保留哪份内容。</p>
+          </div>
+          <div className="conflict-compare">
+            <article>
+              <h3>已保存版本</h3>
+              <p>{conflict.currentTitle}</p>
+              <pre>{conflict.currentMarkdown}</pre>
+            </article>
+            <article>
+              <h3>我的未保存编辑</h3>
+              <p>{conflict.localTitle}</p>
+              <pre>{conflict.localMarkdown}</pre>
+            </article>
+          </div>
+          <div className="conflict-actions">
+            <button type="button" onClick={adoptSavedDraft}>
+              采用已保存版本
+            </button>
+            <button type="button" onClick={keepLocalDraft}>
+              保留我的编辑并覆盖
+            </button>
+          </div>
+        </section>
+      ) : null}
       <div className="editor-workspace">
         <div>
           <div className="editor-actions">
