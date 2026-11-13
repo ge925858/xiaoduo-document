@@ -1,9 +1,21 @@
-export default function StudioPage() {
+import { redirect } from 'next/navigation'
+import { ArticleDashboard } from '@/components/studio/article-dashboard'
+import { requireOwner } from '@/lib/server-session'
+import { listArticleDrafts } from '@/server/articles'
+import { listCategories } from '@/server/categories'
+
+export default async function StudioPage() {
+  const session = await requireOwner()
+  if (!session) redirect('/studio')
+
   return (
     <section>
       <p className="eyebrow">Studio</p>
       <h1>写作台</h1>
-      <p>从稳定的分类与版本记录开始，持续整理公开知识书。</p>
+      <ArticleDashboard
+        categories={await listCategories()}
+        articles={await listArticleDrafts()}
+      />
     </section>
   )
 }

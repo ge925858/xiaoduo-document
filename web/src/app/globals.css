@@ -222,6 +222,113 @@ a {
   cursor: pointer;
 }
 
+.create-article-form {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.create-article-form select {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.7rem 0.8rem;
+  background: #fffdf8;
+  font: inherit;
+}
+
+.studio-article-list {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.studio-article-list article {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--line);
+  padding: 1rem 0;
+}
+
+.studio-article-list h2 {
+  margin: 0.25rem 0;
+  font-size: 1.35rem;
+}
+
+.studio-article-list p,
+.studio-article-list span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.editor-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.editor-title,
+.editor-category {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.editor-title input,
+.editor-category select {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.8rem;
+  background: #fffdf8;
+  color: var(--ink);
+  font: inherit;
+}
+
+.editor-title input {
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: 2rem;
+}
+
+.editor-surface {
+  min-height: 420px;
+  margin-top: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.5rem;
+  background: #fffdf8;
+}
+
+.chapter-editor-content {
+  min-height: 360px;
+  outline: none;
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: 1.05rem;
+  line-height: 1.9;
+}
+
+.editor-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.editor-actions button {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.65rem 1rem;
+  background: var(--ink);
+  color: #fffdf8;
+  font: inherit;
+  cursor: pointer;
+}
+
 @media (max-width: 760px) {
   .studio-shell {
     grid-template-columns: 1fr;
@@ -238,7 +345,8 @@ a {
   }
 
   .inline-create,
-  .category-fields {
+  .category-fields,
+  .create-article-form {
     grid-template-columns: 1fr;
   }
 }
