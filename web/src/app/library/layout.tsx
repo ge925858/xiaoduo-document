@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { PublicLibraryNav } from '@/components/public-library-nav'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { listPublicLibrary } from '@/lib/public-library'
 
 export default async function LibraryLayout({
@@ -22,6 +23,7 @@ export default async function LibraryLayout({
         <Link href="/library" className="public-library-home">
           全部内容
         </Link>
+        <ThemeToggle />
       </header>
       <aside className="public-sidebar">
         <PublicLibraryNav categories={library} />

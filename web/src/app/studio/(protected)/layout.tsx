@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { SignOutButton } from '@/components/studio/sign-out-button'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { getServerSession } from '@/lib/server-session'
 
 export default async function ProtectedStudioLayout({
@@ -31,6 +32,7 @@ export default async function ProtectedStudioLayout({
         </nav>
         <div className="studio-account">
           <span>{session.user.name}</span>
+          <ThemeToggle />
           <SignOutButton />
         </div>
       </aside>

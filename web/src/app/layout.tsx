@@ -14,7 +14,15 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{const t=localStorage.getItem('zhijian-theme');if(t==='dark'){document.documentElement.dataset.theme='dark';document.documentElement.style.colorScheme='dark'}}catch{}",
+          }}
+        />
+        {children}
+      </body>
     </html>
   )
 }
