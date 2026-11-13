@@ -17,6 +17,7 @@ export default async function ProtectedStudioLayout({
         <strong>知笺写作台</strong>
         <nav>
           <Link href="/studio">文章</Link>
+          <Link href="/studio/categories">分类</Link>
           <Link href="/studio/settings">站点资料</Link>
           <Link href="/">返回公开站</Link>
         </nav>

@@ -153,6 +153,75 @@ a {
   opacity: 0.6;
 }
 
+.category-manager {
+  margin-top: 2.5rem;
+}
+
+.inline-create {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: end;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.category-list {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.category-list li {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fffdf8;
+}
+
+.category-list form {
+  display: grid;
+  gap: 1rem;
+}
+
+.category-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.category-fields label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.category-fields input {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+}
+
+.category-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.category-actions button {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  background: #fffdf8;
+  font: inherit;
+  cursor: pointer;
+}
+
 @media (max-width: 760px) {
   .studio-shell {
     grid-template-columns: 1fr;
@@ -166,5 +235,10 @@ a {
   .studio-main {
     width: min(100% - 32px, 900px);
     padding: 2.5rem 0;
+  }
+
+  .inline-create,
+  .category-fields {
+    grid-template-columns: 1fr;
   }
 }

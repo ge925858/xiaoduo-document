@@ -19,7 +19,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run test:db:prepare && npm run dev -- --hostname 127.0.0.1 --port 3100',
+    command:
+      'npm run test:db:prepare && npm run build && npm run start -- --hostname 127.0.0.1 --port 3100',
     url: 'http://127.0.0.1:3100/health',
     reuseExistingServer: false,
     timeout: 120_000,
