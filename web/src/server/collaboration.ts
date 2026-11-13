@@ -13,6 +13,7 @@ import {
   session,
   user,
 } from '@/db/schema'
+import { createNotification } from '@/server/notifications'
 
 const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000
 
@@ -87,6 +88,25 @@ function hashToken(token: string) {
   return createHash('sha256').update(token).digest('hex')
 }
 
+async function notifyInvitation(
+  invite: typeof collaborationInvite.$inferSelect,
+  status: 'pending' | 'activated' | 'expired' | 'revoked',
+) {
+  const labels = {
+    pending: '邀请已生成',
+    activated: '邀请已激活',
+    expired: '邀请已过期',
+    revoked: '邀请已撤销',
+  }
+  await createNotification({
+    eventKey: `invitation:${status}:${invite.id}`,
+    kind: 'invitation',
+    title: labels[status],
+    body: `${invite.email} 的协作邀请状态变为 ${status}`,
+    href: '/studio/collaboration',
+  })
+}
+
 async function inviteArticleIds(inviteId: string) {
   const rows = await db
     .select({ articleId: collaborationInviteArticle.articleId })
@@ -136,6 +156,17 @@ export async function submitApplication(input: {
     email,
     note: input.note.trim(),
     status: 'pending',
+  })
+  await createNotification({
+    eventKey: `application:created:${id}`,
+    kind: 'application',
+    title: '新的协作申请',
+    body: `${input.name.trim()} 申请参与《${(await db
+      .select({ title: article.title })
+      .from(article)
+      .where(eq(article.id, input.articleId))
+      .limit(1))[0]?.title ?? '章节'}》`,
+    href: '/studio/collaboration',
   })
   const application = (await listApplications()).find((item) => item.id === id)
   if (!application) throw new Error('APPLICATION_CREATE_FAILED')
@@ -195,6 +226,20 @@ async function createInvite(input: {
       })
     }
   })
+  await notifyInvitation(
+    {
+      id,
+      tokenHash: hashToken(token),
+      email: normalizeEmail(input.email),
+      displayName: input.displayName?.trim() || null,
+      source: input.source,
+      applicationId: input.applicationId ?? null,
+      status: 'pending',
+      expiresAt,
+      createdAt: new Date(),
+    },
+    'pending',
+  )
   return {
     id,
     email: normalizeEmail(input.email),
@@ -295,6 +340,7 @@ export async function getInvitationActivationPreview(
       .set({ status: 'expired' })
       .where(eq(collaborationInvite.id, invite.id))
     status = 'expired'
+    await notifyInvitation(invite, 'expired')
   }
   const articles = await db
     .select({ title: article.title })
@@ -348,6 +394,7 @@ export async function activateInvitation(input: {
           .update(collaborationInvite)
           .set({ status: 'expired' })
           .where(eq(collaborationInvite.id, invite.id))
+        await notifyInvitation(invite, 'expired')
       }
       return { status: 'expired' }
     }
@@ -412,6 +459,7 @@ export async function activateInvitation(input: {
       .update(collaborationInvite)
       .set({ status: 'activated' })
       .where(eq(collaborationInvite.id, invite.id))
+    await notifyInvitation(invite, 'activated')
 
     return {
       status: 'activated',

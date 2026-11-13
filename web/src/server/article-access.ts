@@ -7,6 +7,7 @@ import {
   user,
 } from '@/db/schema'
 import type { ArticleDraft } from '@/server/articles'
+import { createNotification } from '@/server/notifications'
 
 export interface StudioActor {
   id: string
@@ -179,17 +180,26 @@ export async function grantArticle(input: {
     .limit(1)
   if (!target) throw new Error('ARTICLE_NOT_FOUND')
 
-  await db
+  const result = await db
     .insert(articleGrant)
     .values(input)
     .onDuplicateKeyUpdate({ set: { articleId: input.articleId } })
+  if (result[0].affectedRows === 1) {
+    await createNotification({
+      eventKey: `grant:added:${input.userId}:${input.articleId}`,
+      kind: 'grant',
+      title: '文章授权已增加',
+      body: `已为协作者增加文章 ${input.articleId} 的编辑授权`,
+      href: '/studio/collaboration',
+    })
+  }
 }
 
 export async function revokeArticleGrant(input: {
   userId: string
   articleId: string
 }) {
-  await db
+  const result = await db
     .delete(articleGrant)
     .where(
       and(
@@ -197,6 +207,15 @@ export async function revokeArticleGrant(input: {
         eq(articleGrant.articleId, input.articleId),
       ),
     )
+  if (result[0].affectedRows > 0) {
+    await createNotification({
+      eventKey: `grant:removed:${input.userId}:${input.articleId}`,
+      kind: 'grant',
+      title: '文章授权已撤销',
+      body: `已撤销协作者对文章 ${input.articleId} 的编辑授权`,
+      href: '/studio/collaboration',
+    })
+  }
 }
 
 export async function listGrantableCollaborators(): Promise<

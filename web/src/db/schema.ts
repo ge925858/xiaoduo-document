@@ -356,3 +356,28 @@ export const collaborationPasswordReset = mysqlTable(
     ),
   ],
 )
+
+export const notification = mysqlTable(
+  'notification',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    eventKey: varchar('event_key', { length: 255 }).notNull(),
+    kind: mysqlEnum('kind', [
+      'application',
+      'invitation',
+      'grant',
+      'publish',
+    ]).notNull(),
+    title: varchar('title', { length: 200 }).notNull(),
+    body: mediumtext('body').notNull(),
+    href: varchar('href', { length: 1024 }),
+    readAt: datetime('read_at', { mode: 'date', fsp: 3 }),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [
+    uniqueIndex('notification_event_key_unique').on(table.eventKey),
+    index('notification_created_at_idx').on(table.createdAt),
+  ],
+)

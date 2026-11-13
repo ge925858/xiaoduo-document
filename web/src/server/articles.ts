@@ -8,6 +8,7 @@ import {
   category,
   urlRedirect,
 } from '@/db/schema'
+import { createNotification } from '@/server/notifications'
 
 export interface ArticleDraft {
   id: string
@@ -418,6 +419,15 @@ export async function publishArticle(
         .onDuplicateKeyUpdate({ set: { toPath: newPath } })
     }
   })
+  if (actor.role === 'collaborator') {
+    await createNotification({
+      eventKey: `publish:collaborator:${versionId}`,
+      kind: 'publish',
+      title: '协作者发布了章节',
+      body: `${actor.name} 发布或更新了《${current.title}》`,
+      href: `/studio/notes/${articleId}`,
+    })
+  }
   return 'published'
 }
 

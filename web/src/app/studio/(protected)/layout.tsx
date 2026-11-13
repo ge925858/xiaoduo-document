@@ -22,6 +22,7 @@ export default async function ProtectedStudioLayout({
             <>
               <Link href="/studio/categories">分类</Link>
               <Link href="/studio/collaboration">协作</Link>
+              <Link href="/studio/notifications">通知</Link>
               <Link href="/studio/settings">站点资料</Link>
             </>
           ) : null}
