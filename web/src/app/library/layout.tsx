@@ -13,6 +13,12 @@ export default async function LibraryLayout({
           知笺
         </Link>
         <span>笔记库</span>
+        <form action="/search" role="search" className="public-search-form">
+          <label>
+            <span className="sr-only">搜索公开章节</span>
+            <input name="q" type="search" placeholder="搜索" />
+          </label>
+        </form>
         <Link href="/library" className="public-library-home">
           全部内容
         </Link>

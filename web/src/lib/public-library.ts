@@ -1,5 +1,6 @@
 import { and, asc, desc, eq, isNull } from 'drizzle-orm'
-import { db } from '@/db/client'
+import type mysql from 'mysql2/promise'
+import { db, pool } from '@/db/client'
 import {
   article,
   articleVersion,
@@ -43,6 +44,15 @@ export interface PublicSiteProfile {
   roleTitle: string
   intro: string
   location: string
+}
+
+export interface PublicSearchResult {
+  articleId: string
+  title: string
+  path: string
+  categoryTitle: string
+  categorySlug: string
+  plainText: string
 }
 
 async function latestPublishedVersion(articleId: string) {
@@ -163,6 +173,48 @@ export async function resolvePublicRedirect(
     current = redirect.toPath
   }
   return current === fromPath ? null : current
+}
+
+export async function searchPublicArticles(
+  query: string,
+): Promise<PublicSearchResult[]> {
+  const normalized = query.trim()
+  if (normalized.length < 2) return []
+  const [candidateRows] = await pool.query<mysql.RowDataPacket[]>(
+    `SELECT
+      av.id AS versionId,
+      av.article_id AS articleId,
+      c.title AS categoryTitle,
+      c.slug AS categorySlug,
+      MATCH(av.title, av.markdown, av.plain_text)
+        AGAINST (? IN NATURAL LANGUAGE MODE) AS score
+    FROM article_version av
+    INNER JOIN article a ON a.id = av.article_id
+    INNER JOIN category c ON c.id = a.category_id
+    WHERE av.kind = 'published'
+      AND a.publication_state = 'published'
+      AND a.trashed_at IS NULL
+      AND MATCH(av.title, av.markdown, av.plain_text)
+        AGAINST (? IN NATURAL LANGUAGE MODE)
+    ORDER BY score DESC
+    LIMIT 30`,
+    [normalized, normalized],
+  )
+
+  const results: PublicSearchResult[] = []
+  for (const row of candidateRows) {
+    const latest = await latestPublishedVersion(row.articleId)
+    if (!latest || latest.id !== row.versionId) continue
+    results.push({
+      articleId: row.articleId,
+      title: latest.title,
+      path: latest.path,
+      categoryTitle: row.categoryTitle,
+      categorySlug: row.categorySlug,
+      plainText: latest.plainText,
+    })
+  }
+  return results
 }
 
 export async function getPublicChapterByPath(
