@@ -1,6 +1,12 @@
 import { notFound } from 'next/navigation'
 import { MarkdownArticle } from '@/components/markdown-article'
-import { getPublicChapterByPath } from '@/lib/public-library'
+import { AuthorAvatar } from '@/components/author-avatar'
+import Link from 'next/link'
+import {
+  getPublicChapterByPath,
+  getPublicChapterNavigation,
+  getPublicSiteProfile,
+} from '@/lib/public-library'
 import { countWords, markdownHeadings } from '@/lib/markdown-headings'
 
 interface ChapterPageProps {
@@ -21,13 +27,23 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
 
   if (!chapter) notFound()
   const headings = markdownHeadings(chapter.markdown)
+  const navigation = await getPublicChapterNavigation(
+    decodeURIComponent(categorySlug),
+    decodeURIComponent(chapterPath),
+  )
+  const profile = await getPublicSiteProfile()
 
   return (
-    <main className="chapter">
+    <article className="chapter">
       <p className="eyebrow">{chapter.categoryTitle}</p>
       <h1>{chapter.title}</h1>
       <p className="chapter-byline">
-        {chapter.authorName} · {countWords(chapter.plainText)} 字 · 更新于{' '}
+        <AuthorAvatar
+          name={profile?.authorName ?? chapter.authorName}
+          avatarUrl={profile?.avatarUrl}
+        />
+        <strong>{profile?.authorName ?? chapter.authorName}</strong> ·{' '}
+        {countWords(chapter.plainText)} 字 · 更新于{' '}
         <time dateTime={chapter.publishedAt}>
           {new Intl.DateTimeFormat('zh-CN', {
             dateStyle: 'long',
@@ -51,6 +67,29 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           </aside>
         ) : null}
       </div>
-    </main>
+      <nav className="chapter-pagination" aria-label="章节翻页">
+        {navigation?.previous ? (
+          <Link
+            href={`/library/${categorySlug}/${navigation.previous.path}`}
+          >
+            上一章 · {navigation.previous.title}
+          </Link>
+        ) : (
+          <span />
+        )}
+        {navigation?.next ? (
+          <Link
+            className="chapter-next"
+            href={`/library/${categorySlug}/${navigation.next.path}`}
+          >
+            下一章 · {navigation.next.title}
+          </Link>
+        ) : (
+          <Link className="chapter-next" href={`/library/${categorySlug}`}>
+            返回分类
+          </Link>
+        )}
+      </nav>
+    </article>
   )
 }

@@ -5,8 +5,12 @@ export default function HomePage() {
     <main className="landing">
       <p className="eyebrow">公开知识书</p>
       <h1>知笺</h1>
-      <p>把长期思考整理成可以持续修订和阅读的知识书。</p>
-      <Link href="/library">进入笔记库</Link>
+      <p className="landing-lead">
+        把长期思考整理成分类稳定、可追溯修订的公开知识书。
+      </p>
+      <Link className="landing-entry" href="/library">
+        进入笔记库
+      </Link>
     </main>
   )
 }

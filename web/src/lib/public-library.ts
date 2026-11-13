@@ -1,6 +1,11 @@
-import { and, desc, eq, isNull } from 'drizzle-orm'
+import { and, asc, desc, eq, isNull } from 'drizzle-orm'
 import { db } from '@/db/client'
-import { article, articleVersion, category } from '@/db/schema'
+import {
+  article,
+  articleVersion,
+  category,
+  siteProfile,
+} from '@/db/schema'
 
 export interface PublicChapter {
   id: string
@@ -15,6 +20,132 @@ export interface PublicChapter {
   authorId: string
   authorName: string
   authorRole: 'owner' | 'collaborator'
+}
+
+export interface PublicChapterSummary {
+  articleId: string
+  title: string
+  path: string
+  plainText: string
+}
+
+export interface PublicCategory {
+  id: string
+  title: string
+  slug: string
+  chapters: PublicChapterSummary[]
+}
+
+export interface PublicSiteProfile {
+  authorName: string
+  avatarUrl: string | null
+  roleTitle: string
+  intro: string
+  location: string
+}
+
+async function latestPublishedVersion(articleId: string) {
+  const [version] = await db
+    .select({
+      id: articleVersion.id,
+      title: articleVersion.title,
+      path: articleVersion.path,
+      markdown: articleVersion.markdown,
+      plainText: articleVersion.plainText,
+      publishedAt: articleVersion.createdAt,
+      categoryId: articleVersion.categoryId,
+      authorId: articleVersion.authorId,
+      authorName: articleVersion.authorName,
+      authorRole: articleVersion.authorRole,
+    })
+    .from(articleVersion)
+    .where(
+      and(
+        eq(articleVersion.articleId, articleId),
+        eq(articleVersion.kind, 'published'),
+      ),
+    )
+    .orderBy(desc(articleVersion.createdAt), desc(articleVersion.id))
+    .limit(1)
+  return version ?? null
+}
+
+export async function listPublicLibrary(): Promise<PublicCategory[]> {
+  const categories = await db
+    .select({
+      id: category.id,
+      title: category.title,
+      slug: category.slug,
+    })
+    .from(category)
+    .orderBy(asc(category.position), asc(category.id))
+
+  const library: PublicCategory[] = []
+  for (const item of categories) {
+    const currentArticles = await db
+      .select({ id: article.id })
+      .from(article)
+      .where(
+        and(
+          eq(article.categoryId, item.id),
+          eq(article.publicationState, 'published'),
+          isNull(article.trashedAt),
+        ),
+      )
+      .orderBy(asc(article.position), asc(article.id))
+
+    const chapters: PublicChapterSummary[] = []
+    for (const current of currentArticles) {
+      const version = await latestPublishedVersion(current.id)
+      if (!version || version.categoryId !== item.id) continue
+      chapters.push({
+        articleId: current.id,
+        title: version.title,
+        path: version.path,
+        plainText: version.plainText,
+      })
+    }
+    if (chapters.length) {
+      library.push({ ...item, chapters })
+    }
+  }
+  return library
+}
+
+export async function getPublicChapterNavigation(
+  categorySlug: string,
+  chapterPath: string,
+) {
+  const library = await listPublicLibrary()
+  const currentCategory = library.find((item) => item.slug === categorySlug)
+  if (!currentCategory) return null
+  const index = currentCategory.chapters.findIndex(
+    (item) => item.path === chapterPath,
+  )
+  if (index < 0) return null
+  return {
+    category: currentCategory,
+    previous: index > 0 ? currentCategory.chapters[index - 1] : null,
+    next:
+      index < currentCategory.chapters.length - 1
+        ? currentCategory.chapters[index + 1]
+        : null,
+  }
+}
+
+export async function getPublicSiteProfile(): Promise<PublicSiteProfile | null> {
+  const [profile] = await db
+    .select({
+      authorName: siteProfile.authorName,
+      avatarUrl: siteProfile.avatarUrl,
+      roleTitle: siteProfile.roleTitle,
+      intro: siteProfile.intro,
+      location: siteProfile.location,
+    })
+    .from(siteProfile)
+    .where(eq(siteProfile.id, 'primary'))
+    .limit(1)
+  return profile ?? null
 }
 
 export async function getPublicChapterByPath(
@@ -39,30 +170,12 @@ export async function getPublicChapterByPath(
     )
 
   for (const current of publishedArticles) {
-    const [version] = await db
-      .select({
-        title: articleVersion.title,
-        path: articleVersion.path,
-        markdown: articleVersion.markdown,
-        plainText: articleVersion.plainText,
-        publishedAt: articleVersion.createdAt,
-        authorId: articleVersion.authorId,
-        authorName: articleVersion.authorName,
-        authorRole: articleVersion.authorRole,
-      })
-      .from(articleVersion)
-      .where(
-        and(
-          eq(articleVersion.articleId, current.id),
-          eq(articleVersion.kind, 'published'),
-        ),
-      )
-      .orderBy(desc(articleVersion.createdAt), desc(articleVersion.id))
-      .limit(1)
+    const version = await latestPublishedVersion(current.id)
     if (version?.path !== chapterPath) continue
     return {
       ...current,
       ...version,
+      categoryId: current.categoryId,
     }
   }
 
