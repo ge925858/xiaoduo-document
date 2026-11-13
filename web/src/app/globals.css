@@ -1097,6 +1097,28 @@ a {
   cursor: pointer;
 }
 
+.collaborator-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.collaborator-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--line);
+  padding: 0.8rem 0;
+}
+
+.collaborator-list li > div:first-child {
+  display: grid;
+  gap: 0.3rem;
+}
+
 .invitation-page {
   width: min(560px, calc(100% - 40px));
   margin: 10vh auto 0;

@@ -29,7 +29,13 @@ export const auth = betterAuth({
   rateLimit: {
     enabled: true,
     window: 60,
-    max: 20,
+    max: Number(process.env.BETTER_AUTH_RATE_LIMIT_MAX ?? 20),
+    customRules: {
+      '/sign-in/email': {
+        window: 60,
+        max: Number(process.env.BETTER_AUTH_RATE_LIMIT_MAX ?? 20),
+      },
+    },
   },
   user: {
     additionalFields: {

@@ -9,6 +9,8 @@ import {
   collaborationApplication,
   collaborationInvite,
   collaborationInviteArticle,
+  collaborationPasswordReset,
+  session,
   user,
 } from '@/db/schema'
 
@@ -61,6 +63,19 @@ export interface InvitationActivationPreview {
   displayName: string | null
   articleTitles: string[]
   status: 'pending' | 'activated' | 'expired' | 'revoked'
+  expiresAt: Date
+}
+
+export interface CollaboratorRecord {
+  id: string
+  name: string
+  email: string
+  status: 'active' | 'suspended'
+}
+
+export interface PasswordResetPreview {
+  email: string
+  status: 'pending' | 'used' | 'expired'
   expiresAt: Date
 }
 
@@ -404,5 +419,151 @@ export async function activateInvitation(input: {
       email,
       displayName,
     }
+  })
+}
+
+export async function setCollaboratorStatus(
+  userId: string,
+  status: 'active' | 'suspended',
+): Promise<boolean> {
+  const result = await db
+    .update(user)
+    .set({ status, updatedAt: new Date() })
+    .where(
+      and(eq(user.id, userId), eq(user.role, 'collaborator')),
+    )
+  if (result[0].affectedRows === 0) return false
+  if (status === 'suspended') {
+    await db.delete(session).where(eq(session.userId, userId))
+  }
+  return true
+}
+
+export async function listCollaborators(): Promise<CollaboratorRecord[]> {
+  return db
+    .select({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      status: user.status,
+    })
+    .from(user)
+    .where(eq(user.role, 'collaborator'))
+    .orderBy(user.name, user.email)
+}
+
+export async function createCollaboratorPasswordReset(userId: string) {
+  const [collaborator] = await db
+    .select({ id: user.id, email: user.email })
+    .from(user)
+    .where(
+      and(eq(user.id, userId), eq(user.role, 'collaborator')),
+    )
+    .limit(1)
+  if (!collaborator) throw new Error('COLLABORATOR_NOT_FOUND')
+
+  const token = randomBytes(32).toString('hex')
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000)
+  await db.insert(collaborationPasswordReset).values({
+    id: randomUUID(),
+    userId: collaborator.id,
+    email: collaborator.email,
+    tokenHash: hashToken(token),
+    status: 'pending',
+    expiresAt,
+  })
+  return {
+    token,
+    email: collaborator.email,
+    expiresAt,
+  }
+}
+
+export async function getPasswordResetPreview(
+  token: string,
+): Promise<PasswordResetPreview | null> {
+  const [reset] = await db
+    .select()
+    .from(collaborationPasswordReset)
+    .where(
+      eq(collaborationPasswordReset.tokenHash, hashToken(token)),
+    )
+    .limit(1)
+  if (!reset) return null
+  let status = reset.status
+  if (status === 'pending' && reset.expiresAt.getTime() <= Date.now()) {
+    await db
+      .update(collaborationPasswordReset)
+      .set({ status: 'expired' })
+      .where(eq(collaborationPasswordReset.id, reset.id))
+    status = 'expired'
+  }
+  return {
+    email: reset.email,
+    status,
+    expiresAt: reset.expiresAt,
+  }
+}
+
+export async function resetCollaboratorPassword(
+  token: string,
+  password: string,
+): Promise<'reset' | 'used' | 'expired' | 'invalid'> {
+  const passwordHash = await hashPassword(password)
+  return db.transaction(async (transaction) => {
+    const [reset] = await transaction
+      .select()
+      .from(collaborationPasswordReset)
+      .where(
+        eq(collaborationPasswordReset.tokenHash, hashToken(token)),
+      )
+      .for('update')
+      .limit(1)
+    if (!reset) return 'invalid'
+    if (reset.status === 'used') return 'used'
+    if (
+      reset.status === 'expired' ||
+      reset.expiresAt.getTime() <= Date.now()
+    ) {
+      if (reset.status !== 'expired') {
+        await transaction
+          .update(collaborationPasswordReset)
+          .set({ status: 'expired' })
+          .where(eq(collaborationPasswordReset.id, reset.id))
+      }
+      return 'expired'
+    }
+
+    const [collaborator] = await transaction
+      .select({ id: user.id, email: user.email })
+      .from(user)
+      .where(eq(user.id, reset.userId))
+      .limit(1)
+    if (!collaborator || collaborator.email !== reset.email) return 'invalid'
+
+    const [credentialAccount] = await transaction
+      .select({ id: account.id })
+      .from(account)
+      .where(
+        and(
+          eq(account.userId, collaborator.id),
+          eq(account.providerId, 'credential'),
+        ),
+      )
+      .limit(1)
+    if (!credentialAccount) return 'invalid'
+
+    await transaction
+      .update(account)
+      .set({ password: passwordHash, updatedAt: new Date() })
+      .where(eq(account.id, credentialAccount.id))
+    await transaction
+      .update(collaborationPasswordReset)
+      .set({ status: 'used', usedAt: new Date() })
+      .where(eq(collaborationPasswordReset.id, reset.id))
+    await transaction
+      .delete(session)
+      .where(eq(session.userId, collaborator.id))
+    return 'reset'
   })
 }

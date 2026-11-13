@@ -327,3 +327,32 @@ export const articleGrant = mysqlTable(
     index('article_grant_article_idx').on(table.articleId),
   ],
 )
+
+export const collaborationPasswordReset = mysqlTable(
+  'collaboration_password_reset',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    userId: varchar('user_id', { length: 36 })
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    email: varchar('email', { length: 255 }).notNull(),
+    tokenHash: varchar('token_hash', { length: 64 }).notNull(),
+    status: mysqlEnum('status', ['pending', 'used', 'expired'])
+      .notNull()
+      .default('pending'),
+    expiresAt: datetime('expires_at', { mode: 'date', fsp: 3 }).notNull(),
+    usedAt: datetime('used_at', { mode: 'date', fsp: 3 }),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [
+    uniqueIndex('collaboration_password_reset_token_unique').on(
+      table.tokenHash,
+    ),
+    index('collaboration_password_reset_user_idx').on(
+      table.userId,
+      table.status,
+    ),
+  ],
+)

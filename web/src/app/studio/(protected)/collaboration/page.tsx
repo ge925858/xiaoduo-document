@@ -4,9 +4,9 @@ import { requireOwner } from '@/lib/server-session'
 import {
   listAccessibleArticles,
   listArticleGrants,
-  listGrantableCollaborators,
 } from '@/server/article-access'
 import {
+  listCollaborators,
   listApplications,
   listInvites,
 } from '@/server/collaboration'
@@ -19,7 +19,7 @@ export default async function CollaborationPage() {
       id: session.user.id,
       role: 'owner',
     }),
-    listGrantableCollaborators(),
+    listCollaborators(),
     listArticleGrants(),
   ])
   return (

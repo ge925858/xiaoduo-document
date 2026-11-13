@@ -25,6 +25,7 @@ interface Collaborator {
   id: string
   name: string
   email: string
+  status: 'active' | 'suspended'
 }
 interface ArticleGrant {
   userId: string
@@ -48,6 +49,7 @@ export function CollaborationManager({
 }) {
   const router = useRouter()
   const [inviteLink, setInviteLink] = useState('')
+  const [resetLink, setResetLink] = useState('')
   const [message, setMessage] = useState('')
 
   function showInvite(token: string) {
@@ -116,6 +118,47 @@ export function CollaborationManager({
     router.refresh()
   }
 
+  async function updateStatus(
+    userId: string,
+    status: 'active' | 'suspended',
+  ) {
+    const response = await fetch(
+      `/api/studio/collaboration/collaborators/${userId}`,
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ status }),
+      },
+    )
+    setMessage(
+      response.ok
+        ? status === 'suspended'
+          ? '账号已暂停'
+          : '账号已恢复'
+        : '账号状态更新失败',
+    )
+    router.refresh()
+  }
+
+  async function createReset(userId: string) {
+    const response = await fetch(
+      `/api/studio/collaboration/collaborators/${userId}/password-reset`,
+      { method: 'POST' },
+    )
+    const payload = (await response.json()) as {
+      reset?: { token: string }
+    }
+    if (payload.reset?.token) {
+      setResetLink(
+        `${window.location.origin}/collaborate/reset/${payload.reset.token}`,
+      )
+      setMessage('密码重置链接已生成')
+    } else {
+      setMessage('密码重置链接生成失败')
+    }
+    router.refresh()
+  }
+
   return (
     <div className="collaboration-manager">
       {message ? <p role="status">{message}</p> : null}
@@ -123,6 +166,12 @@ export function CollaborationManager({
         <label>
           邀请链接
           <input readOnly value={inviteLink} />
+        </label>
+      ) : null}
+      {resetLink ? (
+        <label>
+          密码重置链接
+          <input readOnly value={resetLink} />
         </label>
       ) : null}
       <h2>待审核申请</h2>
@@ -165,11 +214,13 @@ export function CollaborationManager({
         <label>
           授权协作者
           <select name="userId" required>
-            {collaborators.map((collaborator) => (
+            {collaborators
+              .filter((collaborator) => collaborator.status === 'active')
+              .map((collaborator) => (
               <option key={collaborator.id} value={collaborator.id}>
                 {collaborator.name} · {collaborator.email}
               </option>
-            ))}
+              ))}
           </select>
         </label>
         <label>
@@ -202,6 +253,45 @@ export function CollaborationManager({
             >
               撤销授权
             </button>
+          </li>
+        ))}
+      </ul>
+      <h2>协作者账号</h2>
+      <ul className="collaborator-list">
+        {collaborators.map((collaborator) => (
+          <li key={collaborator.id}>
+            <div>
+              <strong>{collaborator.name}</strong>
+              <span>{collaborator.email}</span>
+              <span>
+                {collaborator.status === 'active' ? '正常' : '已暂停'}
+              </span>
+            </div>
+            <div className="category-actions">
+              <button
+                type="button"
+                aria-label={`${
+                  collaborator.status === 'active' ? '暂停' : '恢复'
+                }账号 ${collaborator.name}`}
+                onClick={() =>
+                  void updateStatus(
+                    collaborator.id,
+                    collaborator.status === 'active'
+                      ? 'suspended'
+                      : 'active',
+                  )
+                }
+              >
+                {collaborator.status === 'active' ? '暂停账号' : '恢复账号'}
+              </button>
+              <button
+                type="button"
+                aria-label={`生成重置链接 ${collaborator.name}`}
+                onClick={() => void createReset(collaborator.id)}
+              >
+                生成密码重置链接
+              </button>
+            </div>
           </li>
         ))}
       </ul>

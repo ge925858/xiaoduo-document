@@ -27,6 +27,7 @@ export default defineConfig({
     env: {
       DATABASE_URL: 'mysql://root@127.0.0.1:3307/zhijian_test',
       APP_ORIGIN: 'http://127.0.0.1:3100',
+      BETTER_AUTH_RATE_LIMIT_MAX: '1000',
     },
   },
 })
