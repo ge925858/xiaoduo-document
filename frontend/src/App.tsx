@@ -22,6 +22,7 @@ import { CollaborationManagementPage } from './pages/studio/CollaborationManagem
 import { AnalyticsPage } from './pages/studio/AnalyticsPage'
 import { StudioLoginPage } from './pages/studio/StudioLoginPage'
 import { StudioSettingsPage } from './pages/studio/StudioSettingsPage'
+import { StudioShellFixturePage } from './pages/studio/StudioShellFixturePage'
 import { TrashPage } from './pages/studio/TrashPage'
 import { useSiteStore } from './store/siteStore'
 
@@ -111,6 +112,10 @@ export default function App() {
         <Route path="/studio/login" element={<StudioLoginPage />} />
         <Route element={<ProtectedStudio />}>
           <Route element={<StudioLayout />}>
+            <Route
+              path="/studio/visual-fixtures/shell"
+              element={<StudioShellFixturePage />}
+            />
             <Route path="/studio" element={<StudioDashboardPage />} />
             <Route path="/studio/notes/:noteId" element={<StudioNoteRoute />} />
             <Route path="/studio/trash" element={<TrashPage />} />

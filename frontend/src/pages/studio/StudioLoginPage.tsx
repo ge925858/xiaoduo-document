@@ -113,21 +113,23 @@ export function StudioLoginPage() {
           </div>
 
           <form onSubmit={submit} className="mt-9">
-            {mode === 'collaborator' && (
-              <label className="mb-4 block">
-                <span className="mb-2 flex items-center gap-1.5 text-xs font-medium text-[var(--ink-soft)]">
-                  <Mail size={14} />
-                  邮箱
-                </span>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="邀请时使用的邮箱"
-                  className="h-11 w-full rounded-[5px] border border-[var(--line)] bg-[var(--field)] px-3 text-sm text-[var(--ink)] outline-none"
-                />
-              </label>
-            )}
+            <label className="mb-4 block">
+              <span className="mb-2 flex items-center gap-1.5 text-xs font-medium text-[var(--ink-soft)]">
+                <Mail size={14} />
+                邮箱
+              </span>
+              <input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder={
+                  mode === 'owner'
+                    ? '输入站主邮箱'
+                    : '邀请时使用的邮箱'
+                }
+                className="h-11 w-full rounded-[5px] border border-[var(--line)] bg-[var(--field)] px-3 text-sm text-[var(--ink)] outline-none"
+              />
+            </label>
             <label className="block">
               <span className="mb-2 flex items-center gap-1.5 text-xs font-medium text-[var(--ink-soft)]">
                 <KeyRound size={14} />
@@ -157,15 +159,9 @@ export function StudioLoginPage() {
               ) : (
                 <ArrowRight size={16} />
               )}
-              {mode === 'owner' ? '以站主身份进入' : '以协作者身份进入'}
+              进入写作台
             </button>
           </form>
-          {mode === 'owner' && (
-            <p className="mt-5 text-center text-[10px] text-[var(--muted-faint)]">
-              原型密码：
-              <span className="font-medium text-[var(--muted)]">zhijian</span>
-            </p>
-          )}
         </div>
       </section>
     </main>

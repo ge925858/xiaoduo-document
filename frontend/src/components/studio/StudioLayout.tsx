@@ -1,6 +1,7 @@
 import {
   ArrowUpRight,
   BarChart3,
+  Bell,
   FileText,
   FolderTree,
   LogOut,
@@ -114,6 +115,12 @@ export function StudioLayout() {
                 >
                   资料
                 </StudioMobileNav>
+                <StudioMobileNav
+                  to="/studio/notifications"
+                  icon={<Bell size={15} />}
+                >
+                  通知
+                </StudioMobileNav>
               </>
             )}
           </nav>
@@ -190,6 +197,16 @@ export function StudioLayout() {
                 {isOwner ? '站主' : '协作者'}
               </span>
             </span>
+            {isOwner && (
+              <Link
+                to="/studio/notifications"
+                className="studio-icon-button"
+                aria-label="通知"
+                title="通知"
+              >
+                <Bell size={15} />
+              </Link>
+            )}
             <button
               type="button"
               onClick={logout}

@@ -6,11 +6,5 @@ export default async function StudioLoginPage() {
   const session = await getServerSession()
   if (session) redirect('/studio')
 
-  return (
-    <main className="studio-login">
-      <p className="eyebrow">Private studio</p>
-      <h1>进入写作台</h1>
-      <LoginForm />
-    </main>
-  )
+  return <LoginForm />
 }

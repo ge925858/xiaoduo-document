@@ -88,6 +88,18 @@ export const visualCases: VisualCase[] = [
     productionLogin: null,
   },
   {
+    id: 'studio-shell-owner',
+    prototypePath: '/studio/visual-fixtures/shell',
+    productionPath: '/studio/visual-fixtures/shell',
+    productionLogin: 'owner',
+  },
+  {
+    id: 'studio-shell-collaborator',
+    prototypePath: '/studio/visual-fixtures/shell',
+    productionPath: '/studio/visual-fixtures/shell',
+    productionLogin: 'collaborator',
+  },
+  {
     id: 'studio-dashboard-owner',
     prototypePath: '/studio',
     productionPath: '/studio',
