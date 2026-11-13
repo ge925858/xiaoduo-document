@@ -3,10 +3,12 @@ import {
   getArticleDraft,
   listArticleVersions,
   listTrash,
+  listTrashForActor,
   permanentlyDeleteArticle,
   publishArticle,
   purgeExpiredTrash,
   restoreTrashArticle,
+  restoreTrashArticleForActor,
   trashArticle,
 } from '@/server/articles'
 import { deleteCategory } from '@/server/categories'
@@ -70,5 +72,62 @@ describe('trash lifecycle', () => {
     }
     expect(await purgeExpiredTrash()).toBe(1)
     expect(await getArticleDraft('article-1')).toBeNull()
+  })
+
+  it('shows and restores trash only for its actor and retains owner visibility', async () => {
+    const connection = await createTestConnection()
+    try {
+      await connection.query(
+        `INSERT INTO article (
+          id, category_id, title, path, position, markdown, plain_text,
+          revision, publication_state, created_at, updated_at
+        ) VALUES (
+          'article-2', 'category-1', '长期维护', '长期维护', 2,
+          '正文', '正文', 1, 'draft', NOW(3), NOW(3)
+        )`,
+      )
+      await connection.query(
+        `INSERT INTO auth_user (
+          id, name, email, email_verified, role, status, created_at, updated_at
+        ) VALUES
+          ('collaborator-1', '协作者甲', 'one@example.com', true,
+           'collaborator', 'active', NOW(3), NOW(3)),
+          ('collaborator-2', '协作者乙', 'two@example.com', true,
+           'collaborator', 'active', NOW(3), NOW(3))`,
+      )
+      await connection.query(
+        `INSERT INTO article_grant (user_id, article_id, created_at) VALUES
+          ('collaborator-1', 'article-1', NOW(3)),
+          ('collaborator-2', 'article-2', NOW(3))`,
+      )
+    } finally {
+      await connection.end()
+    }
+    const first = {
+      id: 'collaborator-1',
+      name: '协作者甲',
+      role: 'collaborator' as const,
+    }
+    const second = {
+      id: 'collaborator-2',
+      name: '协作者乙',
+      role: 'collaborator' as const,
+    }
+
+    await trashArticle('article-1', first)
+    await trashArticle('article-2', second)
+    expect(
+      (await listTrashForActor(first)).map((item) => item.id),
+    ).toEqual(['article-1'])
+    expect(
+      (await listTrashForActor(second)).map((item) => item.id),
+    ).toEqual(['article-2'])
+    expect(await listTrashForActor(actor)).toHaveLength(2)
+
+    expect(await restoreTrashArticleForActor('article-1', second)).toBe(
+      false,
+    )
+    expect(await restoreTrashArticleForActor('article-1', first)).toBe(true)
+    expect(await listTrashForActor(actor)).toHaveLength(1)
   })
 })

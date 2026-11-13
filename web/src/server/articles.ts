@@ -3,6 +3,7 @@ import type { JSONContent } from '@tiptap/core'
 import { db } from '@/db/client'
 import {
   article,
+  articleGrant,
   articleVersion,
   category,
   urlRedirect,
@@ -515,6 +516,48 @@ export async function listTrash(): Promise<ArticleDraft[]> {
     .orderBy(desc(article.trashedAt))
 }
 
+export async function listTrashForActor(
+  actor: VersionActor,
+): Promise<ArticleDraft[]> {
+  if (actor.role === 'owner') return listTrash()
+  return db
+    .select({
+      id: article.id,
+      title: article.title,
+      categoryId: article.categoryId,
+      categoryTitle: category.title,
+      categorySlug: category.slug,
+      path: article.path,
+      position: article.position,
+      contentJson: article.contentJson,
+      sourceFileName: article.sourceFileName,
+      markdown: article.markdown,
+      plainText: article.plainText,
+      revision: article.revision,
+      publicationState: article.publicationState,
+      trashedAt: article.trashedAt,
+      trashedById: article.trashedById,
+      trashedByName: article.trashedByName,
+      updatedAt: article.updatedAt,
+    })
+    .from(article)
+    .innerJoin(category, eq(article.categoryId, category.id))
+    .innerJoin(
+      articleGrant,
+      and(
+        eq(articleGrant.articleId, article.id),
+        eq(articleGrant.userId, actor.id),
+      ),
+    )
+    .where(
+      and(
+        isNotNull(article.trashedAt),
+        eq(article.trashedById, actor.id),
+      ),
+    )
+    .orderBy(desc(article.trashedAt))
+}
+
 export async function restoreTrashArticle(articleId: string): Promise<boolean> {
   const result = await db
     .update(article)
@@ -527,6 +570,32 @@ export async function restoreTrashArticle(articleId: string): Promise<boolean> {
     })
     .where(eq(article.id, articleId))
   return result[0].affectedRows > 0
+}
+
+export async function restoreTrashArticleForActor(
+  articleId: string,
+  actor: VersionActor,
+): Promise<boolean> {
+  if (actor.role === 'owner') return restoreTrashArticle(articleId)
+  const [owned] = await db
+    .select({ id: article.id })
+    .from(article)
+    .innerJoin(
+      articleGrant,
+      and(
+        eq(articleGrant.articleId, article.id),
+        eq(articleGrant.userId, actor.id),
+      ),
+    )
+    .where(
+      and(
+        eq(article.id, articleId),
+        isNotNull(article.trashedAt),
+        eq(article.trashedById, actor.id),
+      ),
+    )
+    .limit(1)
+  return owned ? restoreTrashArticle(articleId) : false
 }
 
 export async function permanentlyDeleteArticle(

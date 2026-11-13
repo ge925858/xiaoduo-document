@@ -175,7 +175,17 @@ export function ArticleDashboard({
                   移入回收站
                 </button>
               </div>
-            ) : null}
+            ) : (
+              <div className="category-actions">
+                <button
+                  type="button"
+                  aria-label={`移入回收站 ${article.title}`}
+                  onClick={() => void trash(article.id)}
+                >
+                  移入回收站
+                </button>
+              </div>
+            )}
           </article>
         ))}
       </div>

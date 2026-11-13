@@ -8,9 +8,16 @@ interface TrashItem {
   title: string
   categoryTitle: string
   trashedAt: string | null
+  trashedByName: string | null
 }
 
-export function TrashManager({ initialItems }: { initialItems: TrashItem[] }) {
+export function TrashManager({
+  initialItems,
+  canDelete,
+}: {
+  initialItems: TrashItem[]
+  canDelete: boolean
+}) {
   const router = useRouter()
   const [message, setMessage] = useState('')
   const [pending, setPending] = useState(false)
@@ -39,6 +46,7 @@ export function TrashManager({ initialItems }: { initialItems: TrashItem[] }) {
             <div>
               <strong>{item.title}</strong>
               <span>{item.categoryTitle}</span>
+              <span>由 {item.trashedByName ?? '站主'} 移入</span>
               <time dateTime={item.trashedAt ?? undefined}>
                 {item.trashedAt
                   ? new Intl.DateTimeFormat('zh-CN', {
@@ -56,13 +64,15 @@ export function TrashManager({ initialItems }: { initialItems: TrashItem[] }) {
               >
                 恢复章节
               </button>
-              <button
-                type="button"
-                disabled={pending}
-                onClick={() => void action(item.id, 'delete')}
-              >
-                永久删除
-              </button>
+              {canDelete ? (
+                <button
+                  type="button"
+                  disabled={pending}
+                  onClick={() => void action(item.id, 'delete')}
+                >
+                  永久删除
+                </button>
+              ) : null}
             </div>
           </li>
         ))}

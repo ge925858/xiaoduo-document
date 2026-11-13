@@ -48,3 +48,19 @@ export async function authorizeArticleMutation(
   }
   return { session, article }
 }
+
+export async function authorizeStudioMutation(request: Request) {
+  const session = await requireStudioSession()
+  if (!session) {
+    return {
+      error: NextResponse.json({ error: 'forbidden' }, { status: 403 }),
+    }
+  }
+  const origin = request.headers.get('origin')
+  if (origin !== (process.env.APP_ORIGIN ?? 'http://127.0.0.1:3100')) {
+    return {
+      error: NextResponse.json({ error: 'invalid origin' }, { status: 403 }),
+    }
+  }
+  return { session }
+}

@@ -1,19 +1,21 @@
 import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
-import { authorizeOwnerMutation } from '@/lib/studio-request'
+import { authorizeArticleMutation } from '@/lib/studio-request'
+import { studioActorFromUser } from '@/server/article-access'
 import { trashArticle } from '@/server/articles'
 
 export async function POST(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const authorization = await authorizeOwnerMutation(request)
-  if (authorization.error) return authorization.error
   const { id } = await context.params
+  const authorization = await authorizeArticleMutation(request, id)
+  if (authorization.error) return authorization.error
+  const actor = studioActorFromUser(authorization.session.user)
   const trashed = await trashArticle(id, {
-    id: authorization.session.user.id,
+    id: actor.id,
     name: authorization.session.user.name,
-    role: 'owner',
+    role: actor.role,
   })
   if (trashed) {
     revalidatePath('/library')
