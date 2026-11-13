@@ -1,8 +1,11 @@
+import './database-isolation'
 import { hashPassword } from 'better-auth/crypto'
 import { expect, test } from '@playwright/test'
 import { createTestConnection } from '../test-db'
+import { seedTestDatabase } from '../seed-test-db'
 
-test.beforeAll(async () => {
+test.beforeEach(async () => {
+  await seedTestDatabase()
   const connection = await createTestConnection()
   try {
     await connection.query(

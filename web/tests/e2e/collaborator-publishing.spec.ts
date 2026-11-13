@@ -1,3 +1,4 @@
+import './database-isolation'
 import { hashPassword } from 'better-auth/crypto'
 import { expect, test } from '@playwright/test'
 import { createTestConnection } from '../test-db'
@@ -45,7 +46,12 @@ test('collaborator saves a shared version and publishes as a contributor', async
 
   await page.goto('/studio/notes/article-1')
   await expect(page.getByRole('heading', { name: '版本历史' })).toBeVisible()
-  await expect(page.getByText('小多 · 站主')).toBeVisible()
+  await expect(
+    page
+      .getByRole('listitem')
+      .filter({ hasText: '小多 · 站主' })
+      .first(),
+  ).toBeVisible()
   await page.getByLabel('章节标题').fill('协作者公开发布')
   await page
     .getByRole('textbox', { name: '章节正文' })

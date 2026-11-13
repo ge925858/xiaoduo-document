@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('owner creates and autosaves a shared chapter draft', async ({ page }) => {

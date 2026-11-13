@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('reader searches only public chapters', async ({ page }) => {

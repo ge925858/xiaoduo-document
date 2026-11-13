@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('owner can sign in, update site profile, and revoke the session', async ({

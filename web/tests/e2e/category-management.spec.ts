@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('owner manages categories and manual order', async ({ page }) => {
@@ -24,7 +25,7 @@ test('owner manages categories and manual order', async ({ page }) => {
   await page.getByRole('button', { name: '下移 注意力与写作' }).click()
   await expect(
     page.locator('.category-list li').first().locator('input').first(),
-  ).toHaveValue('阅读与测试')
+  ).toHaveValue('工具与方法')
 
   await page.getByRole('button', { name: '删除 阅读与测试' }).click()
   await expect(page.getByLabel('分类名称 阅读与测试')).toHaveCount(0)

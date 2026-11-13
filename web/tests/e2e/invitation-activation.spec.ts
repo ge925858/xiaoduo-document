@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('invitee activates an account, logs in, and revokes the session', async ({

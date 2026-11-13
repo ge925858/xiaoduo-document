@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('owner saves and restores a manual version', async ({ page }) => {

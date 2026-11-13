@@ -1,3 +1,4 @@
+import './database-isolation'
 import { hashPassword } from 'better-auth/crypto'
 import { expect, test } from '@playwright/test'
 import { createTestConnection } from '../test-db'

@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('owner imports Markdown as an editable draft', async ({ page }) => {

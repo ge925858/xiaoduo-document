@@ -1,6 +1,12 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
+import { seedTestDatabase } from '../seed-test-db'
 
 test.use({ viewport: { width: 390, height: 844 } })
+
+test.beforeEach(async () => {
+  await seedTestDatabase()
+})
 
 test('mobile reading, search, themes and studio controls remain usable', async ({
   page,

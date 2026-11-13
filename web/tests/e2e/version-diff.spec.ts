@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('editor navigates Markdown changes without auto-opening the list', async ({

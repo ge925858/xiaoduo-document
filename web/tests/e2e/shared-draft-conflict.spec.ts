@@ -1,4 +1,6 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
+import { createTestConnection } from '../test-db'
 
 const origin = 'http://127.0.0.1:3100'
 
@@ -11,6 +13,18 @@ test('stale editor compares both versions and adopts the saved draft', async ({
   await page.getByRole('button', { name: '进入写作台' }).click()
   await expect(page).toHaveURL(/\/studio$/)
   await page.goto('/studio/notes/article-1')
+  const connection = await createTestConnection()
+  let currentRevision = 1
+  try {
+    const [result] = await connection.query(
+      'SELECT revision FROM article WHERE id = ?',
+      ['article-1'],
+    )
+    const rows = result as Array<{ revision: number }>
+    currentRevision = rows[0].revision
+  } finally {
+    await connection.end()
+  }
 
   const savedResponse = await page.request.put(
     '/api/studio/articles/article-1/draft',
@@ -32,7 +46,7 @@ test('stale editor compares both versions and adopts the saved draft', async ({
         },
         markdown: '另一位编辑者已经保存的正文',
         plainText: '另一位编辑者已经保存的正文',
-        expectedRevision: 1,
+        expectedRevision: currentRevision,
       },
     },
   )
@@ -87,7 +101,7 @@ test('stale editor compares both versions and adopts the saved draft', async ({
         },
         markdown: '第三次服务端保存',
         plainText: '第三次服务端保存',
-        expectedRevision: 2,
+        expectedRevision: currentRevision + 1,
       },
     },
   )

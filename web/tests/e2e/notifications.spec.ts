@@ -1,3 +1,4 @@
+import './database-isolation'
 import { hashPassword } from 'better-auth/crypto'
 import { expect, test } from '@playwright/test'
 import { createTestConnection } from '../test-db'
@@ -50,15 +51,16 @@ test('owner reviews applications through notifications only', async ({
   await expect(
     page.getByRole('heading', { name: '通知中心' }),
   ).toBeVisible()
-  await expect(page.getByText('新的协作申请')).toBeVisible()
+  const notification = page
+    .getByRole('listitem')
+    .filter({ hasText: '申请通知测试' })
+  await expect(notification).toBeVisible()
   await page
     .getByRole('button', { name: '标记已读 新的协作申请' })
+    .first()
     .click()
   await expect(
-    page
-      .getByRole('listitem')
-      .filter({ hasText: '新的协作申请' })
-      .getByText('已读', { exact: true }),
+    notification.getByText('已读', { exact: true }),
   ).toBeVisible()
 
   const collaboratorContext = await browser.newContext()

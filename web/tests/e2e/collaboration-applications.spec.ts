@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('reader applies and owner approves an article-scoped invite', async ({
@@ -22,7 +23,9 @@ test('reader applies and owner approves an article-scoped invite', async ({
   await page.getByRole('button', { name: '进入写作台' }).click()
   await expect(page).toHaveURL(/\/studio$/)
   await page.goto('/studio/collaboration')
-  await expect(page.getByText('协作者甲')).toBeVisible()
+  await expect(
+    page.getByRole('article').filter({ hasText: '协作者甲' }),
+  ).toBeVisible()
   await page.getByRole('button', { name: '批准' }).click()
   await expect(page.getByLabel('邀请链接')).toHaveValue(/collaborate\/accept\//)
 })

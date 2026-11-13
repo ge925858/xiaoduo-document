@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
+  aggregateAnalyticsMetrics,
   getAnalyticsReport,
   getArticleViewCount,
   purgeAnalyticsEvents,
@@ -101,6 +102,24 @@ describe('article analytics', () => {
     expect(await purgeAnalyticsEvents()).toBe(1)
     expect(await getArticleViewCount('article-1')).toBe(1)
     expect((await getAnalyticsReport()).recentVisits).toEqual([])
+  })
+
+  it('rebuilds daily metrics from recent raw events during cron aggregation', async () => {
+    await recordArticleView(visitor)
+    const connection = await createTestConnection()
+    try {
+      await connection.query(
+        `UPDATE daily_article_metric SET views = 0, unique_visitors = 0`,
+      )
+    } finally {
+      await connection.end()
+    }
+    expect(await aggregateAnalyticsMetrics()).toMatchObject({
+      groups: 1,
+      events: 1,
+    })
+    expect(await getArticleViewCount('article-1')).toBe(1)
+    expect((await getAnalyticsReport()).uniqueVisitors).toBe(1)
   })
 
   it('uses x-real-ip only when the app explicitly trusts its proxy', () => {

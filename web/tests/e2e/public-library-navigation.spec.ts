@@ -1,4 +1,10 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
+import { seedTestDatabase } from '../seed-test-db'
+
+test.beforeEach(async () => {
+  await seedTestDatabase()
+})
 
 test('reader navigates the public library and adjacent chapters', async ({
   page,

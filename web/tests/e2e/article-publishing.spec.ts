@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('owner publishes a chapter and readers see the current public version', async ({
@@ -25,7 +26,7 @@ test('owner publishes a chapter and readers see the current public version', asy
     page.getByRole('heading', { level: 1, name: '公开测试章节' }),
   ).toBeVisible()
   await expect(page.getByText('这是读者应该看到的正文。')).toBeVisible()
-  await expect(page.getByText('小多')).toBeVisible()
+  await expect(page.locator('.chapter-byline strong')).toHaveText('小多')
   await expect(page.getByRole('heading', { level: 2, name: '公开小节' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: '本章目录' })).toBeVisible()
 })

@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('RSS, sitemap and share metadata follow published content', async ({

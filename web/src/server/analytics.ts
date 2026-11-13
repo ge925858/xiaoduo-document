@@ -316,3 +316,65 @@ export async function purgeAnalyticsEvents(): Promise<number> {
     .where(lt(articleViewEvent.visitedAt, cutoff))
   return result[0].affectedRows
 }
+
+export async function aggregateAnalyticsMetrics() {
+  const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  const events = await db
+    .select({
+      articleId: articleViewEvent.articleId,
+      visitorHash: articleViewEvent.visitorHash,
+      visitedAt: articleViewEvent.visitedAt,
+    })
+    .from(articleViewEvent)
+    .where(gt(articleViewEvent.visitedAt, cutoff))
+
+  const groups = new Map<
+    string,
+    {
+      articleId: string
+      metricDate: string
+      views: number
+      visitors: Set<string>
+      lastVisitedAt: Date
+    }
+  >()
+  for (const event of events) {
+    const metricDate = shanghaiDate(event.visitedAt)
+    const key = `${event.articleId}:${metricDate}`
+    const group = groups.get(key) ?? {
+      articleId: event.articleId,
+      metricDate,
+      views: 0,
+      visitors: new Set<string>(),
+      lastVisitedAt: event.visitedAt,
+    }
+    group.views += 1
+    group.visitors.add(event.visitorHash)
+    if (event.visitedAt > group.lastVisitedAt) {
+      group.lastVisitedAt = event.visitedAt
+    }
+    groups.set(key, group)
+  }
+
+  await db.transaction(async (transaction) => {
+    for (const group of groups.values()) {
+      await transaction
+        .insert(dailyArticleMetric)
+        .values({
+          articleId: group.articleId,
+          metricDate: group.metricDate,
+          views: group.views,
+          uniqueVisitors: group.visitors.size,
+          lastVisitedAt: group.lastVisitedAt,
+        })
+        .onDuplicateKeyUpdate({
+          set: {
+            views: group.views,
+            uniqueVisitors: group.visitors.size,
+            lastVisitedAt: group.lastVisitedAt,
+          },
+        })
+    }
+  })
+  return { groups: groups.size, events: events.length }
+}

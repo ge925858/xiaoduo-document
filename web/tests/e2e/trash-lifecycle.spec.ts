@@ -1,3 +1,4 @@
+import './database-isolation'
 import { expect, test } from '@playwright/test'
 
 test('owner restores and permanently deletes trash items', async ({ page }) => {
