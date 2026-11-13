@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import mysql from 'mysql2/promise'
 
@@ -21,15 +21,21 @@ try {
     `CREATE DATABASE IF NOT EXISTS \`${database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci`,
   )
   await connection.query(`USE \`${database}\``)
-  const migration = await readFile(
-    path.join(process.cwd(), 'drizzle', '0000_initial.sql'),
-    'utf8',
-  )
-  for (const statement of migration
-    .split('--> statement-breakpoint')
-    .map((part) => part.trim())
-    .filter(Boolean)) {
-    await connection.query(statement)
+  const migrationDirectory = path.join(process.cwd(), 'drizzle')
+  const files = (await readdir(migrationDirectory))
+    .filter((file) => file.endsWith('.sql'))
+    .sort()
+  for (const file of files) {
+    const migration = await readFile(
+      path.join(migrationDirectory, file),
+      'utf8',
+    )
+    for (const statement of migration
+      .split('--> statement-breakpoint')
+      .map((part) => part.trim())
+      .filter(Boolean)) {
+      await connection.query(statement)
+    }
   }
 } finally {
   await connection.end()

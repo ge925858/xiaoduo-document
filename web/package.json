@@ -13,10 +13,12 @@
     "test:e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
+    "db:owner:create": "tsx scripts/create-owner.ts",
     "test:db:prepare": "tsx scripts/prepare-test-db.ts"
   },
   "dependencies": {
-    "drizzle-orm": "^0.44.7",
+    "better-auth": "^1.7.22",
+    "drizzle-orm": "^0.45.4",
     "lucide-react": "^0.468.0",
     "mysql2": "^3.15.3",
     "next": "16.4.6",

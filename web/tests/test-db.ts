@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import mysql, { type Connection } from 'mysql2/promise'
 
@@ -53,15 +53,21 @@ export async function prepareTestDatabase() {
     }
     await admin.query('SET FOREIGN_KEY_CHECKS = 1')
 
-    const migration = await readFile(
-      path.join(process.cwd(), 'drizzle', '0000_initial.sql'),
-      'utf8',
-    )
-    for (const statement of migration
-      .split('--> statement-breakpoint')
-      .map((part) => part.trim())
-      .filter(Boolean)) {
-      await admin.query(statement)
+    const migrationDirectory = path.join(process.cwd(), 'drizzle')
+    const files = (await readdir(migrationDirectory))
+      .filter((file) => file.endsWith('.sql'))
+      .sort()
+    for (const file of files) {
+      const migration = await readFile(
+        path.join(migrationDirectory, file),
+        'utf8',
+      )
+      for (const statement of migration
+        .split('--> statement-breakpoint')
+        .map((part) => part.trim())
+        .filter(Boolean)) {
+        await admin.query(statement)
+      }
     }
   } finally {
     await admin.end()

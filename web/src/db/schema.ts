@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm'
 import {
+  boolean,
   datetime,
   index,
   int,
@@ -83,3 +84,122 @@ export const articleVersion = mysqlTable(
     index('article_version_article_idx').on(table.articleId, table.createdAt),
   ],
 )
+
+export const user = mysqlTable(
+  'auth_user',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    name: varchar('name', { length: 120 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
+    emailVerified: boolean('email_verified').notNull().default(false),
+    image: varchar('image', { length: 2048 }),
+    role: mysqlEnum('role', ['owner', 'collaborator'])
+      .notNull()
+      .default('collaborator'),
+    status: mysqlEnum('status', ['active', 'suspended'])
+      .notNull()
+      .default('active'),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+    updatedAt: datetime('updated_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [uniqueIndex('auth_user_email_unique').on(table.email)],
+)
+
+export const session = mysqlTable(
+  'auth_session',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    userId: varchar('user_id', { length: 36 })
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    token: varchar('token', { length: 255 }).notNull(),
+    expiresAt: datetime('expires_at', { mode: 'date', fsp: 3 }).notNull(),
+    ipAddress: varchar('ip_address', { length: 64 }),
+    userAgent: varchar('user_agent', { length: 512 }),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+    updatedAt: datetime('updated_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [
+    uniqueIndex('auth_session_token_unique').on(table.token),
+    index('auth_session_user_idx').on(table.userId),
+  ],
+)
+
+export const account = mysqlTable(
+  'auth_account',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    accountId: varchar('account_id', { length: 255 }).notNull(),
+    providerId: varchar('provider_id', { length: 64 }).notNull(),
+    userId: varchar('user_id', { length: 36 })
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    accessToken: mediumtext('access_token'),
+    refreshToken: mediumtext('refresh_token'),
+    idToken: mediumtext('id_token'),
+    accessTokenExpiresAt: datetime('access_token_expires_at', {
+      mode: 'date',
+      fsp: 3,
+    }),
+    refreshTokenExpiresAt: datetime('refresh_token_expires_at', {
+      mode: 'date',
+      fsp: 3,
+    }),
+    scope: mediumtext('scope'),
+    password: varchar('password', { length: 255 }),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+    updatedAt: datetime('updated_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [
+    index('auth_account_user_idx').on(table.userId),
+    uniqueIndex('auth_account_provider_account_unique').on(
+      table.providerId,
+      table.accountId,
+    ),
+  ],
+)
+
+export const verification = mysqlTable(
+  'auth_verification',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    identifier: varchar('identifier', { length: 255 }).notNull(),
+    value: mediumtext('value').notNull(),
+    expiresAt: datetime('expires_at', { mode: 'date', fsp: 3 }).notNull(),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+    updatedAt: datetime('updated_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [
+    index('auth_verification_identifier_idx').on(table.identifier),
+  ],
+)
+
+export const siteProfile = mysqlTable('site_profile', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  authorName: varchar('author_name', { length: 120 }).notNull(),
+  avatarUrl: varchar('avatar_url', { length: 2048 }),
+  roleTitle: varchar('role_title', { length: 120 }).notNull().default('站主'),
+  intro: mediumtext('intro').notNull().default(''),
+  nowText: mediumtext('now_text').notNull().default(''),
+  location: varchar('location', { length: 120 }).notNull().default(''),
+  email: varchar('email', { length: 255 }).notNull().default(''),
+  updatedAt: datetime('updated_at', { mode: 'date', fsp: 3 })
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP(3)`),
+})
