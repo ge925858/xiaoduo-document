@@ -329,6 +329,69 @@ a {
   cursor: pointer;
 }
 
+.editor-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 1.5rem;
+  align-items: start;
+  margin-top: 1rem;
+}
+
+.version-history {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fffdf8;
+}
+
+.version-history h2 {
+  margin-top: 0.3rem;
+  font-size: 1.2rem;
+}
+
+.version-history form,
+.version-history ol,
+.version-history li {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.version-history form {
+  margin-top: 1rem;
+}
+
+.version-history label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.version-history input,
+.version-history button {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+}
+
+.version-history ol {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.version-history li {
+  border-top: 1px solid var(--line);
+  padding-top: 0.8rem;
+}
+
+.version-history span,
+.version-history time {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
 @media (max-width: 760px) {
   .studio-shell {
     grid-template-columns: 1fr;
@@ -347,6 +410,10 @@ a {
   .inline-create,
   .category-fields,
   .create-article-form {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-workspace {
     grid-template-columns: 1fr;
   }
 }

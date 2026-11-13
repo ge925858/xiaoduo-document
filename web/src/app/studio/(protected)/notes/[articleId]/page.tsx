@@ -1,7 +1,10 @@
 import { notFound, redirect } from 'next/navigation'
 import { ChapterEditor } from '@/components/studio/chapter-editor'
 import { requireOwner } from '@/lib/server-session'
-import { getArticleDraft } from '@/server/articles'
+import {
+  getArticleDraft,
+  listArticleVersions,
+} from '@/server/articles'
 import { listCategories } from '@/server/categories'
 
 export default async function ArticleEditorPage({
@@ -19,6 +22,7 @@ export default async function ArticleEditorPage({
     <ChapterEditor
       article={article}
       categories={await listCategories()}
+      versions={await listArticleVersions(articleId)}
     />
   )
 }

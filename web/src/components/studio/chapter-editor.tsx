@@ -6,6 +6,10 @@ import StarterKit from '@tiptap/starter-kit'
 import { Markdown } from '@tiptap/markdown'
 import type { JSONContent } from '@tiptap/core'
 import { useRouter } from 'next/navigation'
+import {
+  VersionHistory,
+  type VersionItem,
+} from './version-history'
 
 interface CategoryItem {
   id: string
@@ -44,9 +48,11 @@ function initialContent(article: ArticleItem): JSONContent | string {
 export function ChapterEditor({
   article,
   categories,
+  versions,
 }: {
   article: ArticleItem
   categories: CategoryItem[]
+  versions: VersionItem[]
 }) {
   const router = useRouter()
   const [title, setTitle] = useState(article.title)
@@ -189,11 +195,16 @@ export function ChapterEditor({
       <div className="editor-surface">
         <EditorContent editor={editor} />
       </div>
-      <div className="editor-actions">
-        <button type="button" onClick={() => void save()}>
-          保存草稿
-        </button>
-        <span>{article.path}</span>
+      <div className="editor-workspace">
+        <div>
+          <div className="editor-actions">
+            <button type="button" onClick={() => void save()}>
+              保存草稿
+            </button>
+            <span>{article.path}</span>
+          </div>
+        </div>
+        <VersionHistory articleId={article.id} versions={versions} />
       </div>
     </section>
   )

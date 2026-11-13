@@ -69,7 +69,12 @@ export const articleVersion = mysqlTable(
       .references(() => article.id, { onDelete: 'cascade' }),
     kind: mysqlEnum('kind', ['manual', 'published']).notNull(),
     title: varchar('title', { length: 300 }).notNull(),
+    categoryId: varchar('category_id', { length: 36 }).references(
+      () => category.id,
+      { onDelete: 'restrict' },
+    ),
     path: varchar('path', { length: 300 }).notNull(),
+    label: varchar('label', { length: 200 }),
     markdown: mediumtext('markdown').notNull(),
     plainText: mediumtext('plain_text').notNull(),
     contentJson: mediumtext('content_json'),

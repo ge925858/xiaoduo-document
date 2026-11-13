@@ -1,7 +1,7 @@
-import { and, asc, eq } from 'drizzle-orm'
+import { and, asc, desc, eq } from 'drizzle-orm'
 import type { JSONContent } from '@tiptap/core'
 import { db } from '@/db/client'
-import { article, category } from '@/db/schema'
+import { article, articleVersion, category } from '@/db/schema'
 
 export interface ArticleDraft {
   id: string
@@ -26,6 +26,29 @@ export interface SaveArticleDraftInput {
   markdown: string
   plainText: string
   expectedRevision: number
+}
+
+export interface ArticleVersionRecord {
+  id: string
+  articleId: string
+  kind: 'manual' | 'published'
+  title: string
+  categoryId: string | null
+  path: string
+  label: string | null
+  contentJson: string | null
+  markdown: string
+  plainText: string
+  authorId: string
+  authorName: string
+  authorRole: 'owner' | 'collaborator'
+  createdAt: string
+}
+
+export interface VersionActor {
+  id: string
+  name: string
+  role: 'owner' | 'collaborator'
 }
 
 export function chapterPathFromTitle(title: string): string {
@@ -207,4 +230,98 @@ export async function moveArticleDraft(
     }
   })
   return true
+}
+
+export async function listArticleVersions(
+  articleId: string,
+): Promise<ArticleVersionRecord[]> {
+  return db
+    .select({
+      id: articleVersion.id,
+      articleId: articleVersion.articleId,
+      kind: articleVersion.kind,
+      title: articleVersion.title,
+      categoryId: articleVersion.categoryId,
+      path: articleVersion.path,
+      label: articleVersion.label,
+      contentJson: articleVersion.contentJson,
+      markdown: articleVersion.markdown,
+      plainText: articleVersion.plainText,
+      authorId: articleVersion.authorId,
+      authorName: articleVersion.authorName,
+      authorRole: articleVersion.authorRole,
+      createdAt: articleVersion.createdAt,
+    })
+    .from(articleVersion)
+    .where(eq(articleVersion.articleId, articleId))
+    .orderBy(desc(articleVersion.createdAt), desc(articleVersion.id))
+}
+
+export async function saveManualVersion(
+  articleId: string,
+  input: { label?: string; actor: VersionActor },
+): Promise<ArticleVersionRecord> {
+  const current = await getArticleDraft(articleId)
+  if (!current) throw new Error('ARTICLE_NOT_FOUND')
+  const id = crypto.randomUUID()
+  await db.insert(articleVersion).values({
+    id,
+    articleId,
+    kind: 'manual',
+    title: current.title,
+    categoryId: current.categoryId,
+    path: current.path,
+    label: input.label?.trim() || null,
+    contentJson: current.contentJson,
+    markdown: current.markdown,
+    plainText: current.plainText,
+    authorId: input.actor.id,
+    authorName: input.actor.name,
+    authorRole: input.actor.role,
+  })
+  const version = (await listArticleVersions(articleId)).find(
+    (item) => item.id === id,
+  )
+  if (!version) throw new Error('VERSION_CREATE_FAILED')
+  return version
+}
+
+export async function restoreArticleVersion(
+  articleId: string,
+  versionId: string,
+): Promise<'saved' | 'conflict' | 'missing'> {
+  const current = await getArticleDraft(articleId)
+  if (!current) return 'missing'
+  const [version] = await db
+    .select()
+    .from(articleVersion)
+    .where(
+      and(
+        eq(articleVersion.id, versionId),
+        eq(articleVersion.articleId, articleId),
+      ),
+    )
+    .limit(1)
+  if (!version) return 'missing'
+
+  const categoryId = version.categoryId ?? current.categoryId
+  const result = await db
+    .update(article)
+    .set({
+      title: version.title,
+      categoryId,
+      path: await uniquePath(categoryId, version.title, articleId),
+      contentJson: version.contentJson,
+      markdown: version.markdown,
+      plainText: version.plainText,
+      revision: current.revision + 1,
+      updatedAt: new Date().toISOString().slice(0, 23).replace('T', ' '),
+    })
+    .where(
+      and(
+        eq(article.id, articleId),
+        eq(article.revision, current.revision),
+      ),
+    )
+  return result[0].affectedRows === 1 ? 'saved' : 'conflict'
 }
