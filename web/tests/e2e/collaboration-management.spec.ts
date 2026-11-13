@@ -3,6 +3,7 @@ import { hashPassword } from 'better-auth/crypto'
 import { expect, test } from '@playwright/test'
 import { createTestConnection } from '../test-db'
 import { seedTestDatabase } from '../seed-test-db'
+import { appOrigin } from './app-origin'
 
 test.beforeEach(async () => {
   await seedTestDatabase()
@@ -123,7 +124,7 @@ test('owner suspends, restores, and resets a collaborator account', async ({
     (
       await renewedPage.request.post(
         '/api/studio/collaboration/collaborators/collaborator-19/password-reset',
-        { headers: { origin: 'http://127.0.0.1:3100' } },
+        { headers: { origin: appOrigin } },
       )
     ).status(),
   ).toBe(403)

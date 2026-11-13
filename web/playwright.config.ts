@@ -1,12 +1,16 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const appOrigin =
+  process.env.PLAYWRIGHT_APP_ORIGIN ?? 'http://127.0.0.1:3100'
+const appPort = new URL(appOrigin).port || '3100'
+
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: false,
   workers: 1,
   reporter: 'list',
   use: {
-    baseURL: 'http://127.0.0.1:3100',
+    baseURL: appOrigin,
     trace: 'retain-on-failure',
   },
   projects: [
@@ -20,13 +24,13 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      'npm run test:db:prepare && npm run build && npm run start -- --hostname 127.0.0.1 --port 3100',
-    url: 'http://127.0.0.1:3100/health',
+      `npm run test:db:prepare && npm run build && npm run start -- --hostname 127.0.0.1 --port ${appPort}`,
+    url: `${appOrigin}/health`,
     reuseExistingServer: false,
     timeout: 120_000,
     env: {
       DATABASE_URL: 'mysql://root@127.0.0.1:3307/zhijian_test',
-      APP_ORIGIN: 'http://127.0.0.1:3100',
+      APP_ORIGIN: appOrigin,
       BETTER_AUTH_RATE_LIMIT_MAX: '1000',
       OSS_BUCKET: 'test-bucket',
       OSS_REGION: 'oss-cn-hangzhou',

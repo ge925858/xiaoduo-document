@@ -1,0 +1,114 @@
+export const visualViewports = [
+  { name: 'desktop', width: 1280, height: 800 },
+  { name: 'tablet', width: 768, height: 1024 },
+  { name: 'mobile', width: 375, height: 812 },
+] as const
+
+export const visualOrigins = {
+  prototype: 'http://127.0.0.1:4273',
+  production: 'http://127.0.0.1:3200',
+} as const
+
+export type VisualRole = 'owner' | 'collaborator' | null
+
+export interface VisualCase {
+  id: string
+  prototypePath: string
+  productionPath: string
+  productionLogin: VisualRole
+}
+
+export const visualCases: VisualCase[] = [
+  {
+    id: 'public-preview',
+    prototypePath: '/',
+    productionPath: '/',
+    productionLogin: null,
+  },
+  {
+    id: 'library-index',
+    prototypePath: '/library',
+    productionPath: '/library',
+    productionLogin: null,
+  },
+  {
+    id: 'library-category',
+    prototypePath: '/library/attention-and-writing',
+    productionPath: '/library/attention-and-writing',
+    productionLogin: null,
+  },
+  {
+    id: 'library-chapter',
+    prototypePath:
+      '/library/attention-and-writing/keep-thinking-on-paper',
+    productionPath:
+      '/library/attention-and-writing/keep-thinking-on-paper',
+    productionLogin: null,
+  },
+  {
+    id: 'studio-login',
+    prototypePath: '/studio/login',
+    productionPath: '/studio/login',
+    productionLogin: null,
+  },
+  {
+    id: 'studio-dashboard-owner',
+    prototypePath: '/studio',
+    productionPath: '/studio',
+    productionLogin: 'owner',
+  },
+  {
+    id: 'studio-editor-owner',
+    prototypePath: '/studio/notes/note-keep-thinking',
+    productionPath: '/studio/notes/note-keep-thinking',
+    productionLogin: 'owner',
+  },
+  {
+    id: 'studio-categories-owner',
+    prototypePath: '/studio/categories',
+    productionPath: '/studio/categories',
+    productionLogin: 'owner',
+  },
+  {
+    id: 'studio-collaboration-owner',
+    prototypePath: '/studio/collaboration',
+    productionPath: '/studio/collaboration',
+    productionLogin: 'owner',
+  },
+  {
+    id: 'studio-analytics-owner',
+    prototypePath: '/studio/analytics',
+    productionPath: '/studio/analytics',
+    productionLogin: 'owner',
+  },
+  {
+    id: 'studio-trash-owner',
+    prototypePath: '/studio/trash',
+    productionPath: '/studio/trash',
+    productionLogin: 'owner',
+  },
+  {
+    id: 'studio-settings-owner',
+    prototypePath: '/studio/settings',
+    productionPath: '/studio/settings',
+    productionLogin: 'owner',
+  },
+  {
+    id: 'studio-dashboard-collaborator',
+    prototypePath: '/studio',
+    productionPath: '/studio',
+    productionLogin: 'collaborator',
+  },
+  {
+    id: 'studio-editor-collaborator',
+    prototypePath: '/studio/notes/note-keep-thinking',
+    productionPath: '/studio/notes/note-keep-thinking',
+    productionLogin: 'collaborator',
+  },
+  {
+    id: 'collaboration-invite',
+    prototypePath: '/collaborate/accept/visual-invite-token',
+    productionPath: '/collaborate/accept/visual-invite-token',
+    productionLogin: null,
+  },
+]

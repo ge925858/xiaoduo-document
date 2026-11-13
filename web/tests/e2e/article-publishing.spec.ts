@@ -16,9 +16,19 @@ test('owner publishes a chapter and readers see the current public version', asy
     .getByRole('textbox', { name: '章节正文' })
     .fill('## 公开小节\n\n这是读者应该看到的正文。')
   await expect(page.getByRole('status').first()).toContainText('草稿已保存')
-  await page
-    .getByRole('button', { name: /发布章节|更新发布/ })
-    .click()
+  const [publishResponse] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === 'POST' &&
+        /\/api\/studio\/articles\/article-1\/publish$/.test(
+          response.url(),
+        ),
+    ),
+    page
+      .getByRole('button', { name: /发布章节|更新发布/ })
+      .click(),
+  ])
+  expect(publishResponse.status()).toBe(200)
   await expect(page.getByRole('button', { name: '更新发布' })).toBeVisible()
 
   await page.goto('/library/attention-and-writing/公开测试章节')

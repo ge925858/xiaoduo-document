@@ -1,8 +1,9 @@
 import './database-isolation'
 import { expect, test } from '@playwright/test'
 import { createTestConnection } from '../test-db'
+import { appOrigin } from './app-origin'
 
-const origin = 'http://127.0.0.1:3100'
+const origin = appOrigin
 
 test('stale editor compares both versions and adopts the saved draft', async ({
   page,

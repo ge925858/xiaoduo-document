@@ -2,6 +2,7 @@ import './database-isolation'
 import { hashPassword } from 'better-auth/crypto'
 import { expect, test } from '@playwright/test'
 import { createTestConnection } from '../test-db'
+import { appOrigin } from './app-origin'
 
 test.beforeAll(async () => {
   const connection = await createTestConnection()
@@ -77,7 +78,7 @@ test('owner reviews applications through notifications only', async ({
   expect(
     (
       await collaboratorPage.request.get('/api/studio/notifications', {
-        headers: { origin: 'http://127.0.0.1:3100' },
+        headers: { origin: appOrigin },
       })
     ).status(),
   ).toBe(403)

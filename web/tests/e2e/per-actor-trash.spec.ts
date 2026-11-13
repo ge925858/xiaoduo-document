@@ -2,6 +2,7 @@ import './database-isolation'
 import { hashPassword } from 'better-auth/crypto'
 import { expect, test } from '@playwright/test'
 import { createTestConnection } from '../test-db'
+import { appOrigin } from './app-origin'
 
 test.beforeAll(async () => {
   const connection = await createTestConnection()
@@ -76,7 +77,7 @@ test('collaborators only see and restore their own trash actor items', async ({
     (
       await secondPage.request.post(
         '/api/studio/articles/article-1/restore',
-        { headers: { origin: 'http://127.0.0.1:3100' } },
+        { headers: { origin: appOrigin } },
       )
     ).status(),
   ).toBe(404)
@@ -84,7 +85,7 @@ test('collaborators only see and restore their own trash actor items', async ({
     (
       await secondPage.request.delete(
         '/api/studio/articles/article-2',
-        { headers: { origin: 'http://127.0.0.1:3100' } },
+        { headers: { origin: appOrigin } },
       )
     ).status(),
   ).toBe(403)

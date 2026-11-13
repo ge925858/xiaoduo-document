@@ -1,6 +1,7 @@
 import './database-isolation'
 import { expect, test } from '@playwright/test'
 import sharp from 'sharp'
+import { appOrigin } from './app-origin'
 
 const onePixelPng = await sharp({
   create: {
@@ -32,7 +33,7 @@ test('editor compresses and uploads an image without embedding OSS credentials',
       status: 200,
       body: '',
       headers: {
-        'access-control-allow-origin': 'http://127.0.0.1:3100',
+        'access-control-allow-origin': appOrigin,
         'access-control-allow-methods': 'PUT',
         'access-control-allow-headers': 'content-type',
       },
@@ -107,7 +108,7 @@ test('editor compresses and uploads an image without embedding OSS credentials',
         status: 500,
         body: 'upload failed',
         headers: {
-          'access-control-allow-origin': 'http://127.0.0.1:3100',
+          'access-control-allow-origin': appOrigin,
           'access-control-allow-methods': 'PUT',
           'access-control-allow-headers': 'content-type',
         },

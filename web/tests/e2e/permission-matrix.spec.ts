@@ -3,8 +3,9 @@ import { hashPassword } from 'better-auth/crypto'
 import { expect, test } from '@playwright/test'
 import { createTestConnection } from '../test-db'
 import { seedTestDatabase } from '../seed-test-db'
+import { appOrigin } from './app-origin'
 
-const origin = 'http://127.0.0.1:3100'
+const origin = appOrigin
 
 test.beforeEach(async () => {
   await seedTestDatabase()
