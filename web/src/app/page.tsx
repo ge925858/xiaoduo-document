@@ -1,16 +1,19 @@
-import Link from 'next/link'
+import type { Metadata } from 'next'
+import { PublicPreview } from '@/components/public-preview'
+import {
+  getPublicSiteProfile,
+  listPublicLibrary,
+} from '@/lib/public-library'
 
-export default function HomePage() {
-  return (
-    <main className="landing">
-      <p className="eyebrow">公开知识书</p>
-      <h1>知笺</h1>
-      <p className="landing-lead">
-        把长期思考整理成分类稳定、可追溯修订的公开知识书。
-      </p>
-      <Link className="landing-entry" href="/library">
-        进入笔记库
-      </Link>
-    </main>
-  )
+export const metadata: Metadata = {
+  title: '知笺 · 个人知识库',
+  description: '按分类与章节组织的个人公开知识书',
+}
+
+export default async function HomePage() {
+  const [profile, categories] = await Promise.all([
+    getPublicSiteProfile(),
+    listPublicLibrary(),
+  ])
+  return <PublicPreview profile={profile} categories={categories} />
 }

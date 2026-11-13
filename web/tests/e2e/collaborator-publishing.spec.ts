@@ -65,7 +65,17 @@ test('collaborator saves a shared version and publishes as a contributor', async
     page.getByRole('listitem').filter({ hasText: '协作者手动快照' }),
   ).toContainText('协作者乙 · 协作者')
 
-  await page.getByRole('button', { name: '更新发布' }).click()
+  const [updateResponse] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === 'POST' &&
+        /\/api\/studio\/articles\/article-1\/publish$/.test(
+          response.url(),
+        ),
+    ),
+    page.getByRole('button', { name: '更新发布' }).click(),
+  ])
+  expect(updateResponse.status()).toBe(200)
   await expect(page.getByRole('button', { name: '更新发布' })).toBeEnabled()
 
   await page.goto('/library/attention-and-writing/协作者公开发布')

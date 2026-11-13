@@ -210,6 +210,27 @@ test('shared components support dialog focus, tooltip, and keyboard select', asy
   await expect(select).toHaveText(/已发布/)
 })
 
+test('empty public preview keeps zero counts and a clear library entry', async ({
+  page,
+}) => {
+  await page.clock.install({ time: new Date(visualFixture.fixedNow) })
+  await page.goto(
+    `${visualOrigins.production}/visual-fixtures/public-preview-empty`,
+  )
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: /把零散的知识/,
+    }),
+  ).toBeVisible()
+  await expect(page.getByText('0 个分类')).toBeVisible()
+  await expect(page.getByText('0 篇公开章节')).toBeVisible()
+  await expect(page.getByText('开始整理你的知识')).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: '进入笔记库' }).first(),
+  ).toBeVisible()
+})
+
 for (const visualCase of visualCases) {
   for (const viewport of visualViewports) {
     if (
