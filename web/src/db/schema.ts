@@ -225,3 +225,83 @@ export const urlRedirect = mysqlTable(
   },
   (table) => [uniqueIndex('url_redirect_from_unique').on(table.fromPath)],
 )
+
+export const collaborationApplication = mysqlTable(
+  'collaboration_application',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    articleId: varchar('article_id', { length: 36 })
+      .notNull()
+      .references(() => article.id, { onDelete: 'cascade' }),
+    name: varchar('name', { length: 120 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
+    note: mediumtext('note').notNull().default(''),
+    status: mysqlEnum('status', ['pending', 'approved', 'rejected'])
+      .notNull()
+      .default('pending'),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+    reviewedAt: datetime('reviewed_at', { mode: 'date', fsp: 3 }),
+  },
+  (table) => [
+    index('collaboration_application_article_idx').on(
+      table.articleId,
+      table.status,
+    ),
+    uniqueIndex('collaboration_application_pending_unique').on(
+      table.articleId,
+      table.email,
+      table.status,
+    ),
+  ],
+)
+
+export const collaborationInvite = mysqlTable(
+  'collaboration_invite',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    tokenHash: varchar('token_hash', { length: 64 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
+    displayName: varchar('display_name', { length: 120 }),
+    source: mysqlEnum('source', ['application', 'direct']).notNull(),
+    applicationId: varchar('application_id', { length: 36 }).references(
+      () => collaborationApplication.id,
+      { onDelete: 'set null' },
+    ),
+    status: mysqlEnum('status', [
+      'pending',
+      'activated',
+      'expired',
+      'revoked',
+    ])
+      .notNull()
+      .default('pending'),
+    expiresAt: datetime('expires_at', { mode: 'date', fsp: 3 }).notNull(),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [
+    uniqueIndex('collaboration_invite_token_unique').on(table.tokenHash),
+    index('collaboration_invite_email_idx').on(table.email),
+  ],
+)
+
+export const collaborationInviteArticle = mysqlTable(
+  'collaboration_invite_article',
+  {
+    inviteId: varchar('invite_id', { length: 36 })
+      .notNull()
+      .references(() => collaborationInvite.id, { onDelete: 'cascade' }),
+    articleId: varchar('article_id', { length: 36 })
+      .notNull()
+      .references(() => article.id, { onDelete: 'cascade' }),
+  },
+  (table) => [
+    uniqueIndex('collaboration_invite_article_unique').on(
+      table.inviteId,
+      table.articleId,
+    ),
+  ],
+)

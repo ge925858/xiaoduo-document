@@ -19,6 +19,7 @@ export default async function ProtectedStudioLayout({
           <Link href="/studio">文章</Link>
           <Link href="/studio/categories">分类</Link>
           <Link href="/studio/trash">回收站</Link>
+          <Link href="/studio/collaboration">协作</Link>
           <Link href="/studio/settings">站点资料</Link>
           <Link href="/">返回公开站</Link>
         </nav>

@@ -244,6 +244,7 @@ export async function getPublicChapterByPath(
     return {
       ...current,
       ...version,
+      id: current.id,
       categoryId: current.categoryId,
     }
   }

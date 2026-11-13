@@ -1,6 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import { MarkdownArticle } from '@/components/markdown-article'
 import { AuthorAvatar } from '@/components/author-avatar'
+import { PublicCollaborationForm } from '@/components/public-collaboration-form'
 import Link from 'next/link'
 import {
   getPublicChapterByPath,
@@ -96,6 +97,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           </Link>
         )}
       </nav>
+      <PublicCollaborationForm articleId={chapter.id} />
     </article>
   )
 }
