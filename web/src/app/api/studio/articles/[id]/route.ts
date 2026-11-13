@@ -13,6 +13,8 @@ export async function DELETE(
   const deleted = await permanentlyDeleteArticle(id)
   if (deleted) {
     revalidatePath('/library')
+    revalidatePath('/rss.xml')
+    revalidatePath('/sitemap.xml')
     revalidatePath('/')
   }
   return deleted

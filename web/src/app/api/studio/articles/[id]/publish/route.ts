@@ -29,6 +29,8 @@ export async function POST(
 
   revalidatePath('/')
   revalidatePath('/library')
+  revalidatePath('/rss.xml')
+  revalidatePath('/sitemap.xml')
   if (previousPublished) {
     revalidatePath(
       `/library/${previousPublished.categorySlug}/${previousPublished.path}`,

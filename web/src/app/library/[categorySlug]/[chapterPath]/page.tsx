@@ -1,4 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
+import type { Metadata } from 'next'
 import { MarkdownArticle } from '@/components/markdown-article'
 import { AuthorAvatar } from '@/components/author-avatar'
 import { PublicCollaborationForm } from '@/components/public-collaboration-form'
@@ -11,6 +12,10 @@ import {
   resolvePublicRedirect,
 } from '@/lib/public-library'
 import { countWords, markdownHeadings } from '@/lib/markdown-headings'
+import {
+  buildChapterOpenGraph,
+  toReaderDiscoveryEntry,
+} from '@/server/reader-discovery'
 
 interface ChapterPageProps {
   params: Promise<{
@@ -20,6 +25,46 @@ interface ChapterPageProps {
 }
 
 export const revalidate = 60
+
+export async function generateMetadata({
+  params,
+}: ChapterPageProps): Promise<Metadata> {
+  const { categorySlug, chapterPath } = await params
+  const chapter = await getPublicChapterByPath(
+    decodeURIComponent(categorySlug),
+    decodeURIComponent(chapterPath),
+  )
+  if (!chapter) return {}
+  const profile = await getPublicSiteProfile()
+  const siteUrl = process.env.APP_ORIGIN ?? 'http://127.0.0.1:3100'
+  const entry = toReaderDiscoveryEntry(chapter)
+  const openGraph = buildChapterOpenGraph(entry, profile, siteUrl)
+  const image =
+    openGraph.image ??
+    `/library/${chapter.categorySlug}/${chapter.path}/opengraph-image`
+  return {
+    title: openGraph.title,
+    description: openGraph.description,
+    authors: [{ name: openGraph.author }],
+    alternates: { canonical: openGraph.url },
+    openGraph: {
+      type: 'article',
+      title: openGraph.title,
+      description: openGraph.description,
+      url: openGraph.url,
+      siteName: '知笺',
+      publishedTime: chapter.publishedAt,
+      authors: [openGraph.author, ...openGraph.contributors],
+      images: [{ url: image, alt: openGraph.title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: openGraph.title,
+      description: openGraph.description,
+      images: [image],
+    },
+  }
+}
 
 export default async function ChapterPage({ params }: ChapterPageProps) {
   const { categorySlug, chapterPath } = await params
