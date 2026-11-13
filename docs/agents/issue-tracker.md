@@ -9,6 +9,7 @@ Issues and specs for this repo live as Markdown files in `.scratch/`.
 - Existing authoritative specs may remain at their current path; reference that path instead of copying them
 - Implementation issues are one file per ticket at `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`, never a single combined tickets file
 - Workflow state is recorded as a `Status:` line near the top of each issue file
+- Ticket lifecycle: `ready-for-agent` → `in-progress` → `done`
 - Tracker labels are not part of this repo's workflow
 - Comments and conversation history append to the bottom of the file under a `## Comments` heading
 

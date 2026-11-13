@@ -245,4 +245,4 @@ These seams should be confirmed with the user before implementation because they
 - The Next.js implementation must begin with data migration and permission tests before recreating all studio screens.
 - Public article rendering, editor content, version snapshots and export all use canonical Markdown as the shared compatibility boundary.
 - The no-backup decision is an explicit accepted risk. The implementation should document the lack of recovery when database/disk corruption or accidental destructive SQL occurs.
-- The project issue tracker and `ready-for-agent` label are not configured in this repository. Publishing this spec requires running `/setup-matt-pocock-skills`; until then this file is the authoritative local spec.
+- Issue tracking is configured as a local Markdown tracker under `.scratch/zhijian-production/issues/`. This file remains the authoritative local spec.
