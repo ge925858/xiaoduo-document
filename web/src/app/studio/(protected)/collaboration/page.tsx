@@ -1,7 +1,11 @@
 import { redirect } from 'next/navigation'
 import { CollaborationManager } from '@/components/studio/collaboration-manager'
 import { requireOwner } from '@/lib/server-session'
-import { listArticleDrafts } from '@/server/articles'
+import {
+  listAccessibleArticles,
+  listArticleGrants,
+  listGrantableCollaborators,
+} from '@/server/article-access'
 import {
   listApplications,
   listInvites,
@@ -10,6 +14,14 @@ import {
 export default async function CollaborationPage() {
   const session = await requireOwner()
   if (!session) redirect('/studio')
+  const [articles, collaborators, grants] = await Promise.all([
+    listAccessibleArticles({
+      id: session.user.id,
+      role: 'owner',
+    }),
+    listGrantableCollaborators(),
+    listArticleGrants(),
+  ])
   return (
     <section>
       <p className="eyebrow">Collaboration</p>
@@ -17,7 +29,9 @@ export default async function CollaborationPage() {
       <CollaborationManager
         applications={await listApplications()}
         invites={await listInvites()}
-        articles={await listArticleDrafts()}
+        articles={articles}
+        collaborators={collaborators}
+        grants={grants}
       />
     </section>
   )

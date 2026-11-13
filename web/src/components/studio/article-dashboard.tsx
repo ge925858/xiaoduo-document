@@ -22,9 +22,11 @@ interface ArticleItem {
 export function ArticleDashboard({
   categories,
   articles,
+  canManage,
 }: {
   categories: CategoryItem[]
   articles: ArticleItem[]
+  canManage: boolean
 }) {
   const router = useRouter()
   const [message, setMessage] = useState('')
@@ -95,40 +97,44 @@ export function ArticleDashboard({
 
   return (
     <div className="article-dashboard">
-      <form className="studio-form create-article-form" onSubmit={create}>
-        <label>
-          所属分类
-          <select name="categoryId" required>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.title}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="submit" disabled={!categories.length}>
-          新建章节
-        </button>
-      </form>
-      <form className="studio-form import-form" onSubmit={importFile}>
-        <label>
-          导入分类
-          <select name="categoryId" required>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.title}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Markdown 文件
-          <input name="file" type="file" accept=".md,.markdown" required />
-        </label>
-        <button type="submit" disabled={!categories.length}>
-          导入为草稿
-        </button>
-      </form>
+      {canManage ? (
+        <>
+          <form className="studio-form create-article-form" onSubmit={create}>
+            <label>
+              所属分类
+              <select name="categoryId" required>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button type="submit" disabled={!categories.length}>
+              新建章节
+            </button>
+          </form>
+          <form className="studio-form import-form" onSubmit={importFile}>
+            <label>
+              导入分类
+              <select name="categoryId" required>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Markdown 文件
+              <input name="file" type="file" accept=".md,.markdown" required />
+            </label>
+            <button type="submit" disabled={!categories.length}>
+              导入为草稿
+            </button>
+          </form>
+        </>
+      ) : null}
       {message ? <p role="alert">{message}</p> : null}
 
       <div className="studio-article-list">
@@ -145,29 +151,31 @@ export function ArticleDashboard({
               </h2>
               <span>修订 {article.revision}</span>
             </div>
-            <div className="category-actions">
-              <button
-                type="button"
-                aria-label={`上移 ${article.title}`}
-                onClick={() => move(article.id, -1)}
-              >
-                上移
-              </button>
-              <button
-                type="button"
-                aria-label={`下移 ${article.title}`}
-                onClick={() => move(article.id, 1)}
-              >
-                下移
-              </button>
-              <button
-                type="button"
-                aria-label={`移入回收站 ${article.title}`}
-                onClick={() => void trash(article.id)}
-              >
-                移入回收站
-              </button>
-            </div>
+            {canManage ? (
+              <div className="category-actions">
+                <button
+                  type="button"
+                  aria-label={`上移 ${article.title}`}
+                  onClick={() => move(article.id, -1)}
+                >
+                  上移
+                </button>
+                <button
+                  type="button"
+                  aria-label={`下移 ${article.title}`}
+                  onClick={() => move(article.id, 1)}
+                >
+                  下移
+                </button>
+                <button
+                  type="button"
+                  aria-label={`移入回收站 ${article.title}`}
+                  onClick={() => void trash(article.id)}
+                >
+                  移入回收站
+                </button>
+              </div>
+            ) : null}
           </article>
         ))}
       </div>

@@ -662,7 +662,8 @@ a {
   .inline-create,
   .category-fields,
   .create-article-form,
-  .import-form {
+  .import-form,
+  .grant-form {
     grid-template-columns: 1fr;
   }
 
@@ -816,6 +817,37 @@ a {
 .collaboration-manager span {
   color: var(--muted);
   font-size: 0.8rem;
+}
+
+.grant-form {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.grant-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grant-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--line);
+  padding: 0.7rem 0;
+}
+
+.grant-list button {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.45rem 0.65rem;
+  background: #fffdf8;
+  font: inherit;
+  cursor: pointer;
 }
 
 .invitation-page {

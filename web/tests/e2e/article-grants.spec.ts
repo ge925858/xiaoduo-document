@@ -1,0 +1,201 @@
+import { hashPassword } from 'better-auth/crypto'
+import { expect, test } from '@playwright/test'
+import { createTestConnection } from '../test-db'
+
+const origin = 'http://127.0.0.1:3100'
+
+test.beforeAll(async () => {
+  const connection = await createTestConnection()
+  try {
+    await connection.query(
+      `INSERT INTO auth_user (
+        id, name, email, email_verified, role, status, created_at, updated_at
+      ) VALUES (
+        'collaborator-14', '协作者甲', 'granted@example.com', true,
+        'collaborator', 'active', NOW(3), NOW(3)
+      )`,
+    )
+    await connection.query(
+      `INSERT INTO auth_account (
+        id, account_id, provider_id, user_id, password, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, NOW(3), NOW(3))`,
+      [
+        'account-collaborator-14',
+        'collaborator-14',
+        'credential',
+        'collaborator-14',
+        await hashPassword('collaborator-password'),
+      ],
+    )
+  } finally {
+    await connection.end()
+  }
+})
+
+test('owner grants one article and collaborator cannot access the rest', async ({
+  page,
+  browser,
+}) => {
+  await page.goto('/studio/login')
+  await page.getByLabel('邮箱').fill('owner@example.com')
+  await page.getByLabel('密码').fill('owner-test-password')
+  await page.getByRole('button', { name: '进入写作台' }).click()
+  await expect(page).toHaveURL(/\/studio$/)
+
+  const createdResponse = await page.request.post('/api/studio/articles', {
+    headers: { origin },
+    data: {
+      categoryId: 'category-2',
+      title: '工具边界',
+    },
+  })
+  expect(createdResponse.status()).toBe(201)
+  const created = (await createdResponse.json()) as {
+    article: { id: string }
+  }
+
+  await page.goto('/studio/collaboration')
+  await page.getByLabel('授权协作者').selectOption('collaborator-14')
+  await page.getByLabel('授权章节').selectOption('article-1')
+  await page.getByRole('button', { name: '增加文章授权' }).click()
+  await expect(page.getByText('文章授权已保存')).toBeVisible()
+
+  const collaboratorContext = await browser.newContext()
+  const collaboratorPage = await collaboratorContext.newPage()
+  await collaboratorPage.goto('/studio/login')
+  await collaboratorPage.getByLabel('邮箱').fill('granted@example.com')
+  await collaboratorPage.getByLabel('密码').fill('collaborator-password')
+  const [loginResponse] = await Promise.all([
+    collaboratorPage.waitForResponse((response) =>
+      response.url().endsWith('/api/auth/sign-in/email'),
+    ),
+    collaboratorPage.getByRole('button', { name: '进入写作台' }).click(),
+  ])
+  expect(loginResponse.status()).toBe(200)
+  await expect(
+    collaboratorPage.getByRole('heading', { name: '协作文章' }),
+  ).toBeVisible()
+  await expect(
+    collaboratorPage.getByRole('link', { name: '写作不是归档' }),
+  ).toBeVisible()
+  await expect(collaboratorPage.getByText('工具边界')).toHaveCount(0)
+  await expect(collaboratorPage.getByText('工具与方法')).toHaveCount(0)
+  await expect(
+    collaboratorPage
+      .locator('.studio-sidebar')
+      .getByRole('link', { name: '分类' }),
+  ).toHaveCount(0)
+  await expect(
+    collaboratorPage
+      .locator('.studio-sidebar')
+      .getByRole('link', { name: '协作' }),
+  ).toHaveCount(0)
+
+  await collaboratorPage.goto(`/studio/notes/${created.article.id}`)
+  await expect(
+    collaboratorPage.getByRole('heading', { name: '无权访问此章节' }),
+  ).toBeVisible()
+
+  expect(
+    (
+      await collaboratorPage.request.put(
+        '/api/studio/articles/article-1/draft',
+        {
+          headers: { origin },
+          data: {
+            title: '写作不是归档',
+            categoryId: 'category-1',
+            contentJson: { type: 'doc', content: [] },
+            markdown: '协作者修订',
+            plainText: '协作者修订',
+            expectedRevision: 1,
+          },
+        },
+      )
+    ).status(),
+  ).toBe(200)
+  expect(
+    (
+      await collaboratorPage.request.put(
+        '/api/studio/articles/article-1/draft',
+        {
+          headers: { origin },
+          data: {
+            title: '写作不是归档',
+            categoryId: 'category-2',
+            contentJson: { type: 'doc', content: [] },
+            markdown: '越权换分类',
+            plainText: '越权换分类',
+            expectedRevision: 2,
+          },
+        },
+      )
+    ).status(),
+  ).toBe(403)
+
+  const forbiddenSave = await collaboratorPage.request.put(
+    `/api/studio/articles/${created.article.id}/draft`,
+    {
+      headers: { origin },
+      data: {
+        title: '越权修改',
+        categoryId: 'category-2',
+        contentJson: { type: 'doc', content: [] },
+        markdown: '',
+        plainText: '',
+        expectedRevision: 1,
+      },
+    },
+  )
+  expect(forbiddenSave.status()).toBe(403)
+  expect(
+    (
+      await collaboratorPage.request.post('/api/studio/categories', {
+        headers: { origin },
+        data: { title: '越权分类', slug: 'forbidden-category' },
+      })
+    ).status(),
+  ).toBe(403)
+  expect(
+    (
+      await collaboratorPage.request.post(
+        '/api/studio/collaboration/invites',
+        {
+        headers: { origin },
+        data: {
+          email: 'forbidden@example.com',
+          articleIds: ['article-1'],
+        },
+        },
+      )
+    ).status(),
+  ).toBe(403)
+  expect(
+    (
+      await collaboratorPage.request.delete(
+        '/api/studio/articles/article-1',
+        {
+        headers: { origin },
+        },
+      )
+    ).status(),
+  ).toBe(403)
+
+  await collaboratorPage.goto('/studio/collaboration')
+  await expect(collaboratorPage).toHaveURL(/\/studio$/)
+  await expect(
+    collaboratorPage.getByRole('heading', { name: '协作文章' }),
+  ).toBeVisible()
+
+  await page
+    .getByRole('button', {
+      name: '撤销 协作者甲 对 写作不是归档 的授权',
+    })
+    .click()
+  await expect(page.getByText('文章授权已撤销')).toBeVisible()
+  await collaboratorPage.goto('/studio')
+  await expect(
+    collaboratorPage.getByRole('link', { name: '写作不是归档' }),
+  ).toHaveCount(0)
+  await collaboratorContext.close()
+})

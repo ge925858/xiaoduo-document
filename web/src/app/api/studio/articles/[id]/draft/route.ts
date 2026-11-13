@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { authorizeOwnerMutation } from '@/lib/studio-request'
+import { authorizeArticleMutation } from '@/lib/studio-request'
 import { saveArticleDraft } from '@/server/articles'
 
 const saveSchema = z.object({
@@ -16,13 +16,19 @@ export async function PUT(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const authorization = await authorizeOwnerMutation(request)
+  const { id } = await context.params
+  const authorization = await authorizeArticleMutation(request, id)
   if (authorization.error) return authorization.error
   const parsed = saveSchema.safeParse(await request.json())
   if (!parsed.success) {
     return NextResponse.json({ error: 'INVALID_DRAFT' }, { status: 400 })
   }
-  const { id } = await context.params
+  if (
+    authorization.session.user.role === 'collaborator' &&
+    parsed.data.categoryId !== authorization.article.categoryId
+  ) {
+    return NextResponse.json({ error: 'forbidden' }, { status: 403 })
+  }
   const result = await saveArticleDraft(id, parsed.data)
   const status =
     result === 'saved' ? 200 : result === 'conflict' ? 409 : 404
