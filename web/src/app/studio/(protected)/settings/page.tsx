@@ -32,6 +32,13 @@ export default async function StudioSettingsPage() {
           email: profile.email,
         }}
       />
+      <section className="export-panel">
+        <h2>整站导出</h2>
+        <p>下载分类顺序、Markdown 正文、状态、版本和协作元数据。</p>
+        <a href="/api/studio/export" download>
+          下载整站导出 ZIP
+        </a>
+      </section>
     </section>
   )
 }

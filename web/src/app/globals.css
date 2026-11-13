@@ -1284,6 +1284,29 @@ a {
   min-width: 760px;
 }
 
+.export-panel {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 3rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.5rem;
+}
+
+.export-panel h2,
+.export-panel p {
+  margin: 0;
+}
+
+.export-panel a {
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  background: var(--ink);
+  color: #fffdf8;
+  text-decoration: none;
+}
+
 .invitation-page {
   width: min(560px, calc(100% - 40px));
   margin: 10vh auto 0;
