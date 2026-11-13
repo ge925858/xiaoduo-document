@@ -35,6 +35,7 @@ export const article = mysqlTable(
     markdown: mediumtext('markdown').notNull().default(''),
     plainText: mediumtext('plain_text').notNull().default(''),
     contentJson: mediumtext('content_json'),
+    sourceFileName: varchar('source_file_name', { length: 255 }),
     revision: int('revision').notNull().default(1),
     publicationState: mysqlEnum('publication_state', [
       'draft',

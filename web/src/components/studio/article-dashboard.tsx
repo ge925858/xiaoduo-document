@@ -56,6 +56,29 @@ export function ArticleDashboard({
     router.push(`/studio/notes/${payload.article.id}`)
   }
 
+  async function importFile(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setMessage('')
+    const response = await fetch('/api/studio/articles/import', {
+      method: 'POST',
+      body: new FormData(event.currentTarget),
+    })
+    const payload = (await response.json()) as {
+      article?: { id: string }
+      error?: string
+    }
+    if (!response.ok || !payload.article) {
+      const errors: Record<string, string> = {
+        EMPTY_MARKDOWN: 'Markdown 文件内容为空。',
+        UNSUPPORTED_FILE: '请选择 .md 或 .markdown 文件。',
+        MARKDOWN_TOO_LARGE: 'Markdown 文件超过 2 MB。',
+      }
+      setMessage(errors[payload.error ?? ''] ?? '导入失败，请重试。')
+      return
+    }
+    router.push(`/studio/notes/${payload.article.id}`)
+  }
+
   async function move(id: string, direction: -1 | 1) {
     await fetch(`/api/studio/articles/${id}/move`, {
       method: 'POST',
@@ -85,6 +108,25 @@ export function ArticleDashboard({
         </label>
         <button type="submit" disabled={!categories.length}>
           新建章节
+        </button>
+      </form>
+      <form className="studio-form import-form" onSubmit={importFile}>
+        <label>
+          导入分类
+          <select name="categoryId" required>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.title}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Markdown 文件
+          <input name="file" type="file" accept=".md,.markdown" required />
+        </label>
+        <button type="submit" disabled={!categories.length}>
+          导入为草稿
         </button>
       </form>
       {message ? <p role="alert">{message}</p> : null}

@@ -17,6 +17,7 @@ export interface ArticleDraft {
   path: string
   position: number
   contentJson: string | null
+  sourceFileName: string | null
   markdown: string
   plainText: string
   revision: number
@@ -102,6 +103,7 @@ export async function listArticleDrafts(): Promise<ArticleDraft[]> {
       path: article.path,
       position: article.position,
       contentJson: article.contentJson,
+      sourceFileName: article.sourceFileName,
       markdown: article.markdown,
       plainText: article.plainText,
       revision: article.revision,
@@ -127,6 +129,7 @@ export async function getArticleDraft(id: string): Promise<ArticleDraft | null> 
       path: article.path,
       position: article.position,
       contentJson: article.contentJson,
+      sourceFileName: article.sourceFileName,
       markdown: article.markdown,
       plainText: article.plainText,
       revision: article.revision,
@@ -450,6 +453,7 @@ export async function listTrash(): Promise<ArticleDraft[]> {
       path: article.path,
       position: article.position,
       contentJson: article.contentJson,
+      sourceFileName: article.sourceFileName,
       markdown: article.markdown,
       plainText: article.plainText,
       revision: article.revision,

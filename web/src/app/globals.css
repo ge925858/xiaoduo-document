@@ -432,6 +432,23 @@ a {
   font: inherit;
 }
 
+.import-form {
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr) auto;
+  align-items: end;
+  border-top: 1px solid var(--line);
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+}
+
+.import-form select,
+.import-form input {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+  background: #fffdf8;
+  font: inherit;
+}
+
 .studio-article-list {
   display: grid;
   gap: 0.8rem;
@@ -644,7 +661,8 @@ a {
 
   .inline-create,
   .category-fields,
-  .create-article-form {
+  .create-article-form,
+  .import-form {
     grid-template-columns: 1fr;
   }
 
