@@ -58,6 +58,16 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             timeZone: 'Asia/Shanghai',
           }).format(new Date(chapter.publishedAt))}
         </time>
+        {chapter.contributors.length ? (
+          <span className="chapter-contributors">
+            {chapter.contributors.map((contributor) => (
+              <span key={contributor.id}>
+                <AuthorAvatar name={contributor.name} />
+                {contributor.name}
+              </span>
+            ))}
+          </span>
+        ) : null}
       </p>
       <div className="chapter-public-grid">
         <MarkdownArticle markdown={chapter.markdown} />

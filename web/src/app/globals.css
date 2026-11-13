@@ -191,7 +191,20 @@ a {
 .chapter-byline {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.chapter-contributors {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chapter-contributors > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .author-avatar {

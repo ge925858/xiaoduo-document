@@ -61,6 +61,11 @@ export interface VersionActor {
   role: 'owner' | 'collaborator'
 }
 
+export interface PublishedLocation {
+  categorySlug: string
+  path: string
+}
+
 export function chapterPathFromTitle(title: string): string {
   return title
     .normalize('NFC')
@@ -369,9 +374,11 @@ export async function publishArticle(
     .orderBy(desc(articleVersion.createdAt), desc(articleVersion.id))
     .limit(1)
 
-  const oldPath = previous?.categorySlug
-    ? `/library/${previous.categorySlug}/${previous.path}`
-    : null
+  const previousCategorySlug = await resolveVersionCategorySlug(previous)
+  const oldPath =
+    previous && previousCategorySlug
+      ? `/library/${previousCategorySlug}/${previous.path}`
+      : null
   const newPath = `/library/${current.categorySlug}/${current.path}`
 
   const versionId = crypto.randomUUID()
@@ -411,6 +418,45 @@ export async function publishArticle(
     }
   })
   return 'published'
+}
+
+async function resolveVersionCategorySlug(version?: {
+  categoryId: string | null
+  categorySlug: string | null
+}) {
+  if (!version) return null
+  if (version.categorySlug) return version.categorySlug
+  if (!version.categoryId) return null
+  const [record] = await db
+    .select({ slug: category.slug })
+    .from(category)
+    .where(eq(category.id, version.categoryId))
+    .limit(1)
+  return record?.slug ?? null
+}
+
+export async function getLatestPublishedLocation(
+  articleId: string,
+): Promise<PublishedLocation | null> {
+  const [previous] = await db
+    .select({
+      path: articleVersion.path,
+      categoryId: articleVersion.categoryId,
+      categorySlug: articleVersion.categorySlug,
+    })
+    .from(articleVersion)
+    .where(
+      and(
+        eq(articleVersion.articleId, articleId),
+        eq(articleVersion.kind, 'published'),
+      ),
+    )
+    .orderBy(desc(articleVersion.createdAt), desc(articleVersion.id))
+    .limit(1)
+  const categorySlug = await resolveVersionCategorySlug(previous)
+  return previous && categorySlug
+    ? { categorySlug, path: previous.path }
+    : null
 }
 
 export async function withdrawArticle(articleId: string): Promise<boolean> {

@@ -150,6 +150,25 @@ test('owner grants one article and collaborator cannot access the rest', async (
   expect(forbiddenSave.status()).toBe(403)
   expect(
     (
+      await collaboratorPage.request.post(
+        `/api/studio/articles/${created.article.id}/publish`,
+        { headers: { origin } },
+      )
+    ).status(),
+  ).toBe(403)
+  expect(
+    (
+      await collaboratorPage.request.post(
+        `/api/studio/articles/${created.article.id}/versions`,
+        {
+          headers: { origin },
+          data: { label: '越权版本' },
+        },
+      )
+    ).status(),
+  ).toBe(403)
+  expect(
+    (
       await collaboratorPage.request.post('/api/studio/categories', {
         headers: { origin },
         data: { title: '越权分类', slug: 'forbidden-category' },

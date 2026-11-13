@@ -45,6 +45,42 @@ describe('public chapter service', () => {
           'owner',
         ],
       )
+      await connection.query(
+        `INSERT INTO article_version (
+          id, article_id, kind, title, path, markdown, plain_text,
+          author_id, author_name, author_role, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(3))`,
+        [
+          'version-2',
+          'article-1',
+          'manual',
+          '写作不是归档',
+          '写作不是归档',
+          '# 写作不是归档\n\n协作者保存过的版本。\n',
+          '写作不是归档 协作者保存过的版本。',
+          'collaborator-1',
+          '协作者甲',
+          'collaborator',
+        ],
+      )
+      await connection.query(
+        `INSERT INTO article_version (
+          id, article_id, kind, title, path, markdown, plain_text,
+          author_id, author_name, author_role, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(3))`,
+        [
+          'version-3',
+          'article-1',
+          'manual',
+          '写作不是归档',
+          '写作不是归档',
+          '# 写作不是归档\n\n同一协作者再次保存。\n',
+          '写作不是归档 同一协作者再次保存。',
+          'collaborator-1',
+          '协作者新昵称',
+          'collaborator',
+        ],
+      )
     } finally {
       await connection.end()
     }
@@ -62,5 +98,12 @@ describe('public chapter service', () => {
       path: '写作不是归档',
     })
     expect(chapter?.markdown).toContain('这是来自 MySQL 的公开章节')
+    expect(chapter?.contributors).toEqual([
+      {
+        id: 'collaborator-1',
+        name: '协作者新昵称',
+        role: 'collaborator',
+      },
+    ])
   })
 })

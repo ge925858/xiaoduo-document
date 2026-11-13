@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { authorizeOwnerMutation } from '@/lib/studio-request'
+import { authorizeArticleMutation } from '@/lib/studio-request'
+import { studioActorFromUser } from '@/server/article-access'
 import { saveManualVersion } from '@/server/articles'
 
 const versionSchema = z.object({
@@ -11,20 +12,21 @@ export async function POST(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const authorization = await authorizeOwnerMutation(request)
+  const { id } = await context.params
+  const authorization = await authorizeArticleMutation(request, id)
   if (authorization.error) return authorization.error
   const parsed = versionSchema.safeParse(await request.json())
   if (!parsed.success) {
     return NextResponse.json({ error: 'INVALID_VERSION' }, { status: 400 })
   }
-  const { id } = await context.params
+  const actor = studioActorFromUser(authorization.session.user)
   try {
     const version = await saveManualVersion(id, {
       label: parsed.data.label,
       actor: {
-        id: authorization.session.user.id,
+        id: actor.id,
         name: authorization.session.user.name,
-        role: 'owner',
+        role: actor.role,
       },
     })
     return NextResponse.json({ version }, { status: 201 })

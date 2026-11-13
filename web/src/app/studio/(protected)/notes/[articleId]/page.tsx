@@ -34,11 +34,7 @@ export default async function ArticleEditorPage({
     <ChapterEditor
       article={article}
       categories={await listAccessibleCategories(actor)}
-      versions={
-        session.user.role === 'owner'
-          ? await listArticleVersions(articleId)
-          : []
-      }
+      versions={await listArticleVersions(articleId)}
     />
   )
 }

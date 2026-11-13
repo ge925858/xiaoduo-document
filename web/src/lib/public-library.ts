@@ -22,6 +22,13 @@ export interface PublicChapter {
   authorId: string
   authorName: string
   authorRole: 'owner' | 'collaborator'
+  contributors: PublicContributor[]
+}
+
+export interface PublicContributor {
+  id: string
+  name: string
+  role: 'collaborator'
 }
 
 export interface PublicChapterSummary {
@@ -79,6 +86,34 @@ async function latestPublishedVersion(articleId: string) {
     .orderBy(desc(articleVersion.createdAt), desc(articleVersion.id))
     .limit(1)
   return version ?? null
+}
+
+async function listPublicContributors(
+  articleId: string,
+): Promise<PublicContributor[]> {
+  const versions = await db
+    .select({
+      authorId: articleVersion.authorId,
+      authorName: articleVersion.authorName,
+    })
+    .from(articleVersion)
+    .where(
+      and(
+        eq(articleVersion.articleId, articleId),
+        eq(articleVersion.authorRole, 'collaborator'),
+      ),
+    )
+    .orderBy(desc(articleVersion.createdAt), desc(articleVersion.id))
+  const contributors = new Map<string, PublicContributor>()
+  for (const version of versions) {
+    if (contributors.has(version.authorId)) continue
+    contributors.set(version.authorId, {
+      id: version.authorId,
+      name: version.authorName,
+      role: 'collaborator',
+    })
+  }
+  return [...contributors.values()]
 }
 
 export async function listPublicLibrary(): Promise<PublicCategory[]> {
@@ -246,6 +281,7 @@ export async function getPublicChapterByPath(
       ...version,
       id: current.id,
       categoryId: current.categoryId,
+      contributors: await listPublicContributors(current.id),
     }
   }
 
