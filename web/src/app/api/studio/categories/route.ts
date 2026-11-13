@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { authorizeOwnerMutation } from '@/lib/studio-request'
 import { requireOwner } from '@/lib/server-session'
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'INVALID_CATEGORY' }, { status: 400 })
   }
   try {
+    revalidatePath('/library')
     return NextResponse.json(
       { category: await createCategory(parsed.data) },
       { status: 201 },

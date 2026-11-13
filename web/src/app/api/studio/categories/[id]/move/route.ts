@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { authorizeOwnerMutation } from '@/lib/studio-request'
 import { moveCategory } from '@/server/categories'
@@ -16,7 +17,12 @@ export async function POST(
     return NextResponse.json({ error: 'INVALID_DIRECTION' }, { status: 400 })
   }
   const { id } = await context.params
-  return (await moveCategory(id, parsed.data.direction))
+  const moved = await moveCategory(id, parsed.data.direction)
+  if (moved) {
+    revalidatePath('/library')
+    revalidatePath('/')
+  }
+  return moved
     ? NextResponse.json({ moved: true })
     : NextResponse.json({ error: 'CANNOT_MOVE' }, { status: 409 })
 }

@@ -174,6 +174,20 @@ export function ChapterEditor({
     router.refresh()
   }
 
+  async function withdraw() {
+    setSaveState('saving')
+    const response = await fetch(`/api/studio/articles/${article.id}/withdraw`, {
+      method: 'POST',
+    })
+    if (!response.ok) {
+      setSaveState('error')
+      return
+    }
+    setPublicationState('unpublished')
+    setSaveState('saved')
+    router.refresh()
+  }
+
   return (
     <section className="chapter-editor">
       <div className="editor-topbar">
@@ -222,6 +236,11 @@ export function ChapterEditor({
             <button type="button" onClick={() => void publish()}>
               {publicationState === 'published' ? '更新发布' : '发布章节'}
             </button>
+            {publicationState === 'published' ? (
+              <button type="button" onClick={() => void withdraw()}>
+                撤回发布
+              </button>
+            ) : null}
             <span>{article.path}</span>
           </div>
         </div>

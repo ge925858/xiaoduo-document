@@ -73,6 +73,7 @@ export const articleVersion = mysqlTable(
       () => category.id,
       { onDelete: 'restrict' },
     ),
+    categorySlug: varchar('category_slug', { length: 120 }),
     path: varchar('path', { length: 300 }).notNull(),
     label: varchar('label', { length: 200 }),
     markdown: mediumtext('markdown').notNull(),
@@ -208,3 +209,16 @@ export const siteProfile = mysqlTable('site_profile', {
     .notNull()
     .default(sql`CURRENT_TIMESTAMP(3)`),
 })
+
+export const urlRedirect = mysqlTable(
+  'url_redirect',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    fromPath: varchar('from_path', { length: 512 }).notNull(),
+    toPath: varchar('to_path', { length: 1024 }).notNull(),
+    createdAt: datetime('created_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [uniqueIndex('url_redirect_from_unique').on(table.fromPath)],
+)

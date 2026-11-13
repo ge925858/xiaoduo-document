@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { MarkdownArticle } from '@/components/markdown-article'
 import { AuthorAvatar } from '@/components/author-avatar'
 import Link from 'next/link'
@@ -6,6 +6,7 @@ import {
   getPublicChapterByPath,
   getPublicChapterNavigation,
   getPublicSiteProfile,
+  resolvePublicRedirect,
 } from '@/lib/public-library'
 import { countWords, markdownHeadings } from '@/lib/markdown-headings'
 
@@ -20,16 +21,21 @@ export const revalidate = 60
 
 export default async function ChapterPage({ params }: ChapterPageProps) {
   const { categorySlug, chapterPath } = await params
+  const decodedCategorySlug = decodeURIComponent(categorySlug)
+  const decodedChapterPath = decodeURIComponent(chapterPath)
+  const requestPath = `/library/${decodedCategorySlug}/${decodedChapterPath}`
+  const redirectTo = await resolvePublicRedirect(requestPath)
+  if (redirectTo) redirect(encodeURI(redirectTo))
   const chapter = await getPublicChapterByPath(
-    decodeURIComponent(categorySlug),
-    decodeURIComponent(chapterPath),
+    decodedCategorySlug,
+    decodedChapterPath,
   )
 
   if (!chapter) notFound()
   const headings = markdownHeadings(chapter.markdown)
   const navigation = await getPublicChapterNavigation(
-    decodeURIComponent(categorySlug),
-    decodeURIComponent(chapterPath),
+    decodedCategorySlug,
+    decodedChapterPath,
   )
   const profile = await getPublicSiteProfile()
 

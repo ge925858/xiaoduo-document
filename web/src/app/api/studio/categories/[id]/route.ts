@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { authorizeOwnerMutation } from '@/lib/studio-request'
 import { deleteCategory, updateCategory } from '@/server/categories'
@@ -25,6 +26,10 @@ export async function PATCH(
   try {
     const { id } = await context.params
     const updated = await updateCategory(id, parsed.data)
+    if (updated) {
+      revalidatePath('/library')
+      revalidatePath(`/library/${updated.slug}`)
+    }
     return updated
       ? NextResponse.json({ category: updated })
       : NextResponse.json({ error: 'NOT_FOUND' }, { status: 404 })
@@ -42,6 +47,7 @@ export async function DELETE(
   if (authorization.error) return authorization.error
   const { id } = await context.params
   const deleted = await deleteCategory(id)
+  if (deleted) revalidatePath('/library')
   return deleted
     ? NextResponse.json({ deleted: true })
     : NextResponse.json({ error: 'CATEGORY_NOT_EMPTY' }, { status: 409 })

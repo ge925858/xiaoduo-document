@@ -1,7 +1,12 @@
 import { and, asc, desc, eq } from 'drizzle-orm'
 import type { JSONContent } from '@tiptap/core'
 import { db } from '@/db/client'
-import { article, articleVersion, category } from '@/db/schema'
+import {
+  article,
+  articleVersion,
+  category,
+  urlRedirect,
+} from '@/db/schema'
 
 export interface ArticleDraft {
   id: string
@@ -35,6 +40,7 @@ export interface ArticleVersionRecord {
   kind: 'manual' | 'published'
   title: string
   categoryId: string | null
+  categorySlug: string | null
   path: string
   label: string | null
   contentJson: string | null
@@ -245,6 +251,7 @@ export async function listArticleVersions(
       kind: articleVersion.kind,
       title: articleVersion.title,
       categoryId: articleVersion.categoryId,
+      categorySlug: articleVersion.categorySlug,
       path: articleVersion.path,
       label: articleVersion.label,
       contentJson: articleVersion.contentJson,
@@ -273,6 +280,7 @@ export async function saveManualVersion(
     kind: 'manual',
     title: current.title,
     categoryId: current.categoryId,
+    categorySlug: current.categorySlug,
     path: current.path,
     label: input.label?.trim() || null,
     contentJson: current.contentJson,
@@ -336,6 +344,27 @@ export async function publishArticle(
   const current = await getArticleDraft(articleId)
   if (!current || current.trashedAt) return 'missing'
 
+  const [previous] = await db
+    .select({
+      path: articleVersion.path,
+      categoryId: articleVersion.categoryId,
+      categorySlug: articleVersion.categorySlug,
+    })
+    .from(articleVersion)
+    .where(
+      and(
+        eq(articleVersion.articleId, articleId),
+        eq(articleVersion.kind, 'published'),
+      ),
+    )
+    .orderBy(desc(articleVersion.createdAt), desc(articleVersion.id))
+    .limit(1)
+
+  const oldPath = previous?.categorySlug
+    ? `/library/${previous.categorySlug}/${previous.path}`
+    : null
+  const newPath = `/library/${current.categorySlug}/${current.path}`
+
   const versionId = crypto.randomUUID()
   await db.transaction(async (transaction) => {
     await transaction.insert(articleVersion).values({
@@ -344,6 +373,7 @@ export async function publishArticle(
       kind: 'published',
       title: current.title,
       categoryId: current.categoryId,
+      categorySlug: current.categorySlug,
       path: current.path,
       label: '更新线上版本',
       contentJson: current.contentJson,
@@ -360,6 +390,27 @@ export async function publishArticle(
         updatedAt: new Date().toISOString().slice(0, 23).replace('T', ' '),
       })
       .where(eq(article.id, articleId))
+    if (oldPath && oldPath !== newPath) {
+      await transaction
+        .insert(urlRedirect)
+        .values({
+          id: crypto.randomUUID(),
+          fromPath: oldPath,
+          toPath: newPath,
+        })
+        .onDuplicateKeyUpdate({ set: { toPath: newPath } })
+    }
   })
   return 'published'
+}
+
+export async function withdrawArticle(articleId: string): Promise<boolean> {
+  const result = await db
+    .update(article)
+    .set({
+      publicationState: 'unpublished',
+      updatedAt: new Date().toISOString().slice(0, 23).replace('T', ' '),
+    })
+    .where(eq(article.id, articleId))
+  return result[0].affectedRows > 0
 }

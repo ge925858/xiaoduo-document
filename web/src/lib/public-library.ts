@@ -5,6 +5,7 @@ import {
   articleVersion,
   category,
   siteProfile,
+  urlRedirect,
 } from '@/db/schema'
 
 export interface PublicChapter {
@@ -146,6 +147,22 @@ export async function getPublicSiteProfile(): Promise<PublicSiteProfile | null> 
     .where(eq(siteProfile.id, 'primary'))
     .limit(1)
   return profile ?? null
+}
+
+export async function resolvePublicRedirect(
+  fromPath: string,
+): Promise<string | null> {
+  let current = fromPath
+  for (let hop = 0; hop < 5; hop += 1) {
+    const [redirect] = await db
+      .select({ toPath: urlRedirect.toPath })
+      .from(urlRedirect)
+      .where(eq(urlRedirect.fromPath, current))
+      .limit(1)
+    if (!redirect) return current === fromPath ? null : current
+    current = redirect.toPath
+  }
+  return current === fromPath ? null : current
 }
 
 export async function getPublicChapterByPath(
