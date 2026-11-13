@@ -11,14 +11,17 @@ export interface VersionItem {
   authorName: string
   authorRole: 'owner' | 'collaborator'
   createdAt: string
+  markdown: string
 }
 
 export function VersionHistory({
   articleId,
   versions,
+  onCompare,
 }: {
   articleId: string
   versions: VersionItem[]
+  onCompare?: (version: VersionItem, previous: VersionItem) => void
 }) {
   const router = useRouter()
   const [label, setLabel] = useState('')
@@ -81,7 +84,9 @@ export function VersionHistory({
       </form>
       {message ? <p role="status">{message}</p> : null}
       <ol>
-        {versions.map((version) => (
+        {versions.map((version, index) => {
+          const previous = versions[index + 1]
+          return (
           <li key={version.id}>
             <strong>{version.label || version.title}</strong>
             <span>
@@ -94,6 +99,15 @@ export function VersionHistory({
                 timeStyle: 'short',
               }).format(new Date(version.createdAt))}
             </time>
+            {previous && onCompare ? (
+              <button
+                type="button"
+                aria-label={`与 ${version.label || version.title} 对比上一版本`}
+                onClick={() => onCompare(version, previous)}
+              >
+                与上一版本对照
+              </button>
+            ) : null}
             <button
               type="button"
               disabled={pending}
@@ -102,7 +116,8 @@ export function VersionHistory({
               恢复为当前草稿
             </button>
           </li>
-        ))}
+          )
+        })}
       </ol>
     </aside>
   )

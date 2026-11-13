@@ -10,6 +10,8 @@ import {
   VersionHistory,
   type VersionItem,
 } from './version-history'
+import { MarkdownDiffView } from './markdown-diff-view'
+import type { MarkdownDiffChange } from '@/lib/markdown-diff'
 
 interface CategoryItem {
   id: string
@@ -36,6 +38,13 @@ interface ConflictSnapshot {
   localTitle: string
   localMarkdown: string
   localCategoryId: string
+}
+
+interface Comparison {
+  title: string
+  oldMarkdown: string
+  newMarkdown: string
+  mode: 'version' | 'draft'
 }
 
 type SaveState =
@@ -74,6 +83,8 @@ export function ChapterEditor({
     article.publicationState,
   )
   const [conflict, setConflict] = useState<ConflictSnapshot | null>(null)
+  const [comparison, setComparison] = useState<Comparison | null>(null)
+  const [focusMessage, setFocusMessage] = useState('')
   const titleRef = useRef(title)
   const categoryRef = useRef(categoryId)
   const revisionRef = useRef(article.revision)
@@ -183,6 +194,57 @@ export function ChapterEditor({
     void save()
   }
 
+  function compareVersions(version: VersionItem, previous: VersionItem) {
+    setComparison({
+      title: `${version.label || version.title} 对比上一版本`,
+      oldMarkdown: previous.markdown,
+      newMarkdown: version.markdown,
+      mode: 'version',
+    })
+  }
+
+  function compareCurrentDraft() {
+    if (!editor || !versions[0]) return
+    setComparison({
+      title: `${versions[0].label || versions[0].title} 对比当前草稿`,
+      oldMarkdown: versions[0].markdown,
+      newMarkdown: editor.getMarkdown(),
+      mode: 'draft',
+    })
+    setFocusMessage('')
+  }
+
+  function focusDraft(change: MarkdownDiffChange) {
+    if (!editor) return
+    if (!change.after) {
+      setFocusMessage('删除内容在当前草稿中无对应位置')
+      return
+    }
+    const target = change.after.text.slice(0, 24)
+    if (!target) {
+      setFocusMessage('当前草稿中未找到对应位置')
+      return
+    }
+    let found = false
+    editor.state.doc.descendants((node, position) => {
+      if (found || !node.isTextblock) return
+      const offset = node.textContent.indexOf(target)
+      if (offset < 0) return
+      const from = position + 1 + offset
+      editor
+        .chain()
+        .focus()
+        .setTextSelection({ from, to: from + target.length })
+        .scrollIntoView()
+        .run()
+      found = true
+      return false
+    })
+    setFocusMessage(
+      found ? '已定位到当前草稿' : '当前草稿中未找到对应位置',
+    )
+  }
+
   useEffect(() => {
     if (!editor) return
     const onUpdate = () => markDirty()
@@ -289,6 +351,7 @@ export function ChapterEditor({
       <div className="editor-surface">
         <EditorContent editor={editor} />
       </div>
+      {focusMessage ? <p role="status">{focusMessage}</p> : null}
       {conflict ? (
         <section className="draft-conflict" aria-labelledby="conflict-title">
           <div>
@@ -332,11 +395,35 @@ export function ChapterEditor({
                 撤回发布
               </button>
             ) : null}
+            {versions.length ? (
+              <button type="button" onClick={compareCurrentDraft}>
+                对照当前草稿
+              </button>
+            ) : null}
             <span>{article.path}</span>
           </div>
         </div>
-        <VersionHistory articleId={article.id} versions={versions} />
+        <VersionHistory
+          articleId={article.id}
+          versions={versions}
+          onCompare={compareVersions}
+        />
       </div>
+      {comparison ? (
+        <MarkdownDiffView
+          title={comparison.title}
+          oldMarkdown={comparison.oldMarkdown}
+          newMarkdown={comparison.newMarkdown}
+          mode={comparison.mode}
+          onNavigate={
+            comparison.mode === 'draft' ? focusDraft : undefined
+          }
+          onClose={() => {
+            setComparison(null)
+            setFocusMessage('')
+          }}
+        />
+      ) : null}
     </section>
   )
 }
