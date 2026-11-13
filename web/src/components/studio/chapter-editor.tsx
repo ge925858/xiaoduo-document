@@ -4,14 +4,17 @@ import { useEffect, useRef, useState } from 'react'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Markdown } from '@tiptap/markdown'
+import TiptapImage from '@tiptap/extension-image'
 import type { JSONContent } from '@tiptap/core'
 import { useRouter } from 'next/navigation'
+import { ImagePlus } from 'lucide-react'
 import {
   VersionHistory,
   type VersionItem,
 } from './version-history'
 import { MarkdownDiffView } from './markdown-diff-view'
 import type { MarkdownDiffChange } from '@/lib/markdown-diff'
+import { compressImageForUpload } from '@/lib/image-compression'
 
 interface CategoryItem {
   id: string
@@ -85,6 +88,8 @@ export function ChapterEditor({
   const [conflict, setConflict] = useState<ConflictSnapshot | null>(null)
   const [comparison, setComparison] = useState<Comparison | null>(null)
   const [focusMessage, setFocusMessage] = useState('')
+  const [imageBusy, setImageBusy] = useState(false)
+  const [imageMessage, setImageMessage] = useState('')
   const titleRef = useRef(title)
   const categoryRef = useRef(categoryId)
   const revisionRef = useRef(article.revision)
@@ -94,7 +99,13 @@ export function ChapterEditor({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const editor = useEditor({
-    extensions: [StarterKit, Markdown],
+    extensions: [
+      StarterKit,
+      Markdown,
+      TiptapImage.configure({
+        allowBase64: false,
+      }),
+    ],
     content: initialContent(article),
     contentType: article.contentJson ? 'json' : 'markdown',
     immediatelyRender: false,
@@ -245,6 +256,65 @@ export function ChapterEditor({
     )
   }
 
+  async function uploadImage(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file || !editor) return
+    setImageBusy(true)
+    setImageMessage('')
+    try {
+      const compressed = await compressImageForUpload(file)
+      const response = await fetch(
+        `/api/studio/articles/${article.id}/images`,
+        {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            contentType: compressed.contentType,
+            size: compressed.blob.size,
+          }),
+        },
+      )
+      const payload = (await response.json()) as {
+        upload?: {
+          uploadUrl: string
+          publicUrl: string
+          contentType: string
+        }
+        error?: string
+      }
+      if (!response.ok || !payload.upload) {
+        throw new Error(
+          payload.error === 'OSS_NOT_CONFIGURED'
+            ? '图片存储尚未配置'
+            : '图片签名失败',
+        )
+      }
+      const uploadResponse = await fetch(payload.upload.uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': payload.upload.contentType },
+        body: compressed.blob,
+      })
+      if (!uploadResponse.ok) throw new Error('图片上传失败，请重试')
+      editor
+        .chain()
+        .focus()
+        .setImage({
+          src: payload.upload.publicUrl,
+          alt: file.name,
+          title: file.name,
+        })
+        .run()
+      setImageMessage('图片已插入')
+    } catch (error) {
+      setImageMessage(
+        error instanceof Error ? error.message : '图片插入失败',
+      )
+    } finally {
+      setImageBusy(false)
+    }
+  }
+
   useEffect(() => {
     if (!editor) return
     const onUpdate = () => markDirty()
@@ -350,6 +420,34 @@ export function ChapterEditor({
       </label>
       <div className="editor-surface">
         <EditorContent editor={editor} />
+      </div>
+      <div className="editor-image-action">
+        <button
+          type="button"
+          title="插入图片"
+          aria-label="插入图片"
+          disabled={imageBusy}
+          onClick={() => document.getElementById('chapter-image-input')?.click()}
+        >
+          <ImagePlus aria-hidden="true" size={18} />
+        </button>
+        <label className="sr-only" htmlFor="chapter-image-input">
+          选择正文图片
+        </label>
+        <input
+          id="chapter-image-input"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          disabled={imageBusy}
+          onChange={(event) => void uploadImage(event)}
+        />
+        {imageMessage ? (
+          <p
+            role={imageMessage === '图片已插入' ? 'status' : 'alert'}
+          >
+            {imageMessage}
+          </p>
+        ) : null}
       </div>
       {focusMessage ? <p role="status">{focusMessage}</p> : null}
       {conflict ? (

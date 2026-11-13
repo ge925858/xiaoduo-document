@@ -151,6 +151,17 @@ test('owner grants one article and collaborator cannot access the rest', async (
   expect(
     (
       await collaboratorPage.request.post(
+        `/api/studio/articles/${created.article.id}/images`,
+        {
+          headers: { origin },
+          data: { contentType: 'image/webp', size: 1024 },
+        },
+      )
+    ).status(),
+  ).toBe(403)
+  expect(
+    (
+      await collaboratorPage.request.post(
         `/api/studio/articles/${created.article.id}/publish`,
         { headers: { origin } },
       )

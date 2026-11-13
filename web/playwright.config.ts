@@ -28,6 +28,12 @@ export default defineConfig({
       DATABASE_URL: 'mysql://root@127.0.0.1:3307/zhijian_test',
       APP_ORIGIN: 'http://127.0.0.1:3100',
       BETTER_AUTH_RATE_LIMIT_MAX: '1000',
+      OSS_BUCKET: 'test-bucket',
+      OSS_REGION: 'oss-cn-hangzhou',
+      OSS_ENDPOINT: 'oss-cn-hangzhou.aliyuncs.com',
+      OSS_ACCESS_KEY_ID: 'test-access-key',
+      OSS_ACCESS_KEY_SECRET: 'test-access-secret',
+      OSS_PUBLIC_BASE_URL: 'https://cdn.example.com',
     },
   },
 })
