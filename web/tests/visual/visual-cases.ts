@@ -16,9 +16,17 @@ export interface VisualCase {
   prototypePath: string
   productionPath: string
   productionLogin: VisualRole
+  overlay?: 'design-tokens'
 }
 
 export const visualCases: VisualCase[] = [
+  {
+    id: 'design-tokens',
+    prototypePath: '/',
+    productionPath: '/',
+    productionLogin: null,
+    overlay: 'design-tokens',
+  },
   {
     id: 'public-preview',
     prototypePath: '/',

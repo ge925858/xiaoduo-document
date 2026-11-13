@@ -19,9 +19,19 @@ test('owner update keeps old URL and withdrawal removes public access', async ({
   await page.getByLabel('章节标题').fill('旧地址测试')
   await page.getByRole('textbox', { name: '章节正文' }).fill('## 内容\n\n第一版')
   await expect(page.getByRole('status').first()).toContainText('草稿已保存')
-  await page
-    .getByRole('button', { name: /发布章节|更新发布/ })
-    .click()
+  const [publishResponse] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === 'POST' &&
+        /\/api\/studio\/articles\/article-1\/publish$/.test(
+          response.url(),
+        ),
+    ),
+    page
+      .getByRole('button', { name: /发布章节|更新发布/ })
+      .click(),
+  ])
+  expect(publishResponse.status()).toBe(200)
   await expect(page.getByRole('button', { name: '撤回发布' })).toBeVisible()
 
   await page.getByLabel('章节标题').fill('新地址测试')
@@ -29,7 +39,17 @@ test('owner update keeps old URL and withdrawal removes public access', async ({
     'ControlOrMeta+KeyS',
   )
   await expect(page.getByRole('status').first()).toContainText('草稿已保存')
-  await page.getByRole('button', { name: '更新发布' }).click()
+  const [updateResponse] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === 'POST' &&
+        /\/api\/studio\/articles\/article-1\/publish$/.test(
+          response.url(),
+        ),
+    ),
+    page.getByRole('button', { name: '更新发布' }).click(),
+  ])
+  expect(updateResponse.status()).toBe(200)
 
   await page.goto('/library/attention-and-writing/旧地址测试')
   await expect
@@ -40,7 +60,17 @@ test('owner update keeps old URL and withdrawal removes public access', async ({
   ).toBeVisible()
 
   await page.goto('/studio/notes/article-1')
-  await page.getByRole('button', { name: '撤回发布' }).click()
+  const [withdrawResponse] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === 'POST' &&
+        /\/api\/studio\/articles\/article-1\/withdraw$/.test(
+          response.url(),
+        ),
+    ),
+    page.getByRole('button', { name: '撤回发布' }).click(),
+  ])
+  expect(withdrawResponse.status()).toBe(200)
   const response = await page.goto(
     '/library/attention-and-writing/新地址测试',
   )

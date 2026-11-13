@@ -14,8 +14,10 @@ const enforce = process.env.VISUAL_ENFORCE === '1'
 const tolerance = Number(process.env.VISUAL_TOLERANCE ?? 0)
 const artifactRoot = path.join(
   process.cwd(),
-  'test-results',
+  '..',
+  '.scratch',
   'ui-revamp',
+  'screenshots',
   process.env.VISUAL_TICKET ?? '01',
 )
 
@@ -96,6 +98,73 @@ async function settle(page: Page) {
   })
 }
 
+async function applyDesignTokenSample(page: Page) {
+  await page.evaluate(() => {
+    document.body.innerHTML = `
+      <main class="token-specimen">
+        <header>
+          <span class="section-kicker">Design tokens</span>
+          <h1 class="font-display">把零散的知识整理成书</h1>
+          <p>同一组颜色、字体、间距、圆角、边框与焦点规则。</p>
+        </header>
+        <section class="swatches" aria-label="颜色">
+          <span class="canvas"></span>
+          <span class="panel"></span>
+          <span class="field"></span>
+          <span class="ink"></span>
+          <span class="muted"></span>
+          <span class="line"></span>
+          <span class="accent"></span>
+          <span class="rust"></span>
+          <span class="gold"></span>
+        </section>
+        <section class="surfaces">
+          <article>
+            <strong class="font-display">Panel</strong>
+            <p>正文使用稳定行高和舒展留白。</p>
+            <button type="button">主要操作</button>
+          </article>
+          <label>
+            输入字段
+            <input value="专注写作" />
+          </label>
+        </section>
+      </main>
+    `
+    const style = document.createElement('style')
+    style.textContent = `
+      html,body { margin:0; min-height:100%; background:var(--canvas); color:var(--ink); }
+      .token-specimen { width:min(960px, calc(100% - 48px)); margin:0 auto; padding:48px 0; }
+      .token-specimen header { display:grid; gap:14px; }
+      .token-specimen h1 { margin:0; font-size:48px; line-height:1.12; }
+      .token-specimen p { margin:0; color:var(--muted); line-height:1.7; }
+      .swatches { display:grid; grid-template-columns:repeat(9, minmax(0, 1fr)); gap:10px; margin-top:32px; }
+      .swatches span { aspect-ratio:1; border:1px solid var(--line); border-radius:6px; }
+      .swatches .canvas { background:var(--canvas); }
+      .swatches .panel { background:var(--panel); }
+      .swatches .field { background:var(--field); }
+      .swatches .ink { background:var(--ink); }
+      .swatches .muted { background:var(--muted); }
+      .swatches .line { background:var(--line-strong); }
+      .swatches .accent { background:var(--accent); }
+      .swatches .rust { background:var(--rust); }
+      .swatches .gold { background:var(--gold); }
+      .surfaces { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-top:24px; }
+      .surfaces article, .surfaces label { display:grid; gap:12px; border:1px solid var(--line); border-radius:8px; padding:20px; background:var(--panel); }
+      .surfaces strong { font-size:26px; }
+      .surfaces button, .surfaces input { border:1px solid var(--line-strong); border-radius:5px; padding:10px 12px; font:inherit; }
+      .surfaces button { width:max-content; background:var(--ink); color:var(--canvas); }
+      @media (max-width:700px) {
+        .token-specimen { width:calc(100% - 32px); padding:32px 0; }
+        .token-specimen h1 { font-size:36px; }
+        .swatches { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+        .surfaces { grid-template-columns:1fr; }
+      }
+    `
+    document.head.append(style)
+  })
+}
+
 function masks(page: Page) {
   return visualFixture.maskSelectors.map((selector) => page.locator(selector))
 }
@@ -133,6 +202,9 @@ for (const visualCase of visualCases) {
         await prototypePage.goto(
           `${visualOrigins.prototype}${visualCase.prototypePath}`,
         )
+        if (visualCase.overlay === 'design-tokens') {
+          await applyDesignTokenSample(prototypePage)
+        }
         await settle(prototypePage)
         const prototypePng = await prototypePage.screenshot({
           path: prototypePath,
@@ -156,6 +228,9 @@ for (const visualCase of visualCases) {
           visualCase.productionPath,
           themeMode,
         )
+        if (visualCase.overlay === 'design-tokens') {
+          await applyDesignTokenSample(productionPage)
+        }
         await settle(productionPage)
         const productionPng = await productionPage.screenshot({
           path: productionPath,
