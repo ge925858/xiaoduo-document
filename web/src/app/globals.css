@@ -1226,6 +1226,64 @@ a {
   font-size: 0.78rem;
 }
 
+.analytics-page {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.analytics-page h1,
+.analytics-page h2,
+.analytics-page p {
+  margin: 0;
+}
+
+.analytics-totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.analytics-totals article {
+  display: grid;
+  gap: 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fffdf8;
+}
+
+.analytics-totals span {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.analytics-totals strong {
+  font-size: 2rem;
+}
+
+.analytics-page table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fffdf8;
+  font-size: 0.82rem;
+}
+
+.analytics-page th,
+.analytics-page td {
+  border-bottom: 1px solid var(--line);
+  padding: 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.analytics-table-scroll {
+  overflow-x: auto;
+}
+
+.analytics-table-scroll table {
+  min-width: 760px;
+}
+
 .invitation-page {
   width: min(560px, calc(100% - 40px));
   margin: 10vh auto 0;

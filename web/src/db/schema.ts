@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm'
 import {
   boolean,
+  date,
   datetime,
   index,
   int,
@@ -379,5 +380,52 @@ export const notification = mysqlTable(
   (table) => [
     uniqueIndex('notification_event_key_unique').on(table.eventKey),
     index('notification_created_at_idx').on(table.createdAt),
+  ],
+)
+
+export const articleViewEvent = mysqlTable(
+  'article_view_event',
+  {
+    id: varchar('id', { length: 36 }).primaryKey(),
+    articleId: varchar('article_id', { length: 36 })
+      .notNull()
+      .references(() => article.id, { onDelete: 'cascade' }),
+    visitorIp: varchar('visitor_ip', { length: 64 }).notNull(),
+    visitorHash: varchar('visitor_hash', { length: 64 }).notNull(),
+    location: varchar('location', { length: 120 }).notNull(),
+    referrerDomain: varchar('referrer_domain', { length: 255 }).notNull(),
+    visitedAt: datetime('visited_at', { mode: 'date', fsp: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
+  },
+  (table) => [
+    index('article_view_event_article_time_idx').on(
+      table.articleId,
+      table.visitedAt,
+    ),
+    index('article_view_event_ip_time_idx').on(
+      table.visitorIp,
+      table.visitedAt,
+    ),
+  ],
+)
+
+export const dailyArticleMetric = mysqlTable(
+  'daily_article_metric',
+  {
+    articleId: varchar('article_id', { length: 36 })
+      .notNull()
+      .references(() => article.id, { onDelete: 'cascade' }),
+    metricDate: date('metric_date', { mode: 'string' }).notNull(),
+    views: int('views').notNull().default(0),
+    uniqueVisitors: int('unique_visitors').notNull().default(0),
+    lastVisitedAt: datetime('last_visited_at', { mode: 'date', fsp: 3 }),
+  },
+  (table) => [
+    uniqueIndex('daily_article_metric_article_date_unique').on(
+      table.articleId,
+      table.metricDate,
+    ),
+    index('daily_article_metric_date_idx').on(table.metricDate),
   ],
 )

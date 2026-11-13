@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import { MarkdownArticle } from '@/components/markdown-article'
 import { AuthorAvatar } from '@/components/author-avatar'
 import { PublicCollaborationForm } from '@/components/public-collaboration-form'
+import { ArticleViewBeacon } from '@/components/article-view-beacon'
 import Link from 'next/link'
 import {
   getPublicChapterByPath,
@@ -50,7 +51,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           avatarUrl={profile?.avatarUrl}
         />
         <strong>{profile?.authorName ?? chapter.authorName}</strong> ·{' '}
-        {countWords(chapter.plainText)} 字 · 更新于{' '}
+        {countWords(chapter.plainText)} 字 · {chapter.viewCount} 次浏览 · 更新于{' '}
         <time dateTime={chapter.publishedAt}>
           {new Intl.DateTimeFormat('zh-CN', {
             dateStyle: 'long',
@@ -108,6 +109,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         )}
       </nav>
       <PublicCollaborationForm articleId={chapter.id} />
+      <ArticleViewBeacon articleId={chapter.id} />
     </article>
   )
 }

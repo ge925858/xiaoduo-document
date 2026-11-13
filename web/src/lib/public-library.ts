@@ -8,6 +8,7 @@ import {
   siteProfile,
   urlRedirect,
 } from '@/db/schema'
+import { getArticleViewCount } from '@/server/analytics'
 
 export interface PublicChapter {
   id: string
@@ -23,6 +24,7 @@ export interface PublicChapter {
   authorName: string
   authorRole: 'owner' | 'collaborator'
   contributors: PublicContributor[]
+  viewCount: number
 }
 
 export interface PublicContributor {
@@ -282,6 +284,7 @@ export async function getPublicChapterByPath(
       id: current.id,
       categoryId: current.categoryId,
       contributors: await listPublicContributors(current.id),
+      viewCount: await getArticleViewCount(current.id),
     }
   }
 

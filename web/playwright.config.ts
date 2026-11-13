@@ -34,6 +34,8 @@ export default defineConfig({
       OSS_ACCESS_KEY_ID: 'test-access-key',
       OSS_ACCESS_KEY_SECRET: 'test-access-secret',
       OSS_PUBLIC_BASE_URL: 'https://cdn.example.com',
+      TRUST_PROXY: 'true',
+      ANALYTICS_HASH_SECRET: 'playwright-analytics-secret',
     },
   },
 })
