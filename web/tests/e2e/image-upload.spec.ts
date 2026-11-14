@@ -83,10 +83,10 @@ test('editor compresses and uploads an image without embedding OSS credentials',
       .locator('img'),
   ).toHaveAttribute('src', signPayload.upload.publicUrl)
 
-  await page.getByRole('button', { name: '保存草稿' }).click()
+  await page.keyboard.press('ControlOrMeta+KeyS')
   await expect(page.getByRole('status').first()).toContainText('草稿已保存')
   await page.getByRole('button', { name: /发布章节|更新发布/ }).click()
-  await expect(page.getByRole('button', { name: '更新发布' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '已是最新' })).toBeDisabled()
   await page.reload()
   await expect(
     page

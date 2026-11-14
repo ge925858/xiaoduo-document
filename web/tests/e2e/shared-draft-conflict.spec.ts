@@ -53,16 +53,17 @@ test('stale editor compares both versions and adopts the saved draft', async ({
   )
   expect(savedResponse.status()).toBe(200)
 
+  const conflictResponsePromise = page.waitForResponse(
+    (response) =>
+      response.url().endsWith('/api/studio/articles/article-1/draft') &&
+      response.status() === 409,
+  )
   await page.getByLabel('章节标题').fill('我的冲突编辑')
   await page
     .getByRole('textbox', { name: '章节正文' })
     .fill('我的尚未保存正文')
-  const [conflictResponse] = await Promise.all([
-    page.waitForResponse((response) =>
-      response.url().endsWith('/api/studio/articles/article-1/draft'),
-    ),
-    page.getByRole('button', { name: '保存草稿' }).click(),
-  ])
+  await page.keyboard.press('ControlOrMeta+KeyS')
+  const conflictResponse = await conflictResponsePromise
   expect(conflictResponse.status()).toBe(409)
 
   await expect(
@@ -108,16 +109,17 @@ test('stale editor compares both versions and adopts the saved draft', async ({
   )
   expect(thirdSave.status()).toBe(200)
 
+  const secondConflictPromise = page.waitForResponse(
+    (response) =>
+      response.url().endsWith('/api/studio/articles/article-1/draft') &&
+      response.status() === 409,
+  )
   await page.getByLabel('章节标题').fill('我的覆盖编辑')
   await page
     .getByRole('textbox', { name: '章节正文' })
     .fill('我的覆盖正文')
-  const [secondConflict] = await Promise.all([
-    page.waitForResponse((response) =>
-      response.url().endsWith('/api/studio/articles/article-1/draft'),
-    ),
-    page.getByRole('button', { name: '保存草稿' }).click(),
-  ])
+  await page.keyboard.press('ControlOrMeta+KeyS')
+  const secondConflict = await secondConflictPromise
   expect(secondConflict.status()).toBe(409)
   const [keptResponse] = await Promise.all([
     page.waitForResponse((response) =>

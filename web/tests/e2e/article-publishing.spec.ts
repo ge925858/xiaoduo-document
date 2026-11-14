@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test'
 test('owner publishes a chapter and readers see the current public version', async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/studio/login')
   await page.getByLabel('邮箱').fill('owner@example.com')
   await page.getByLabel('密码').fill('owner-test-password')
@@ -29,7 +30,7 @@ test('owner publishes a chapter and readers see the current public version', asy
       .click(),
   ])
   expect(publishResponse.status()).toBe(200)
-  await expect(page.getByRole('button', { name: '更新发布' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '已是最新' })).toBeDisabled()
 
   await page.goto('/library/attention-and-writing/公开测试章节')
   await expect(
@@ -38,5 +39,5 @@ test('owner publishes a chapter and readers see the current public version', asy
   await expect(page.getByText('这是读者应该看到的正文。')).toBeVisible()
   await expect(page.locator('.chapter-byline strong')).toHaveText('小多')
   await expect(page.getByRole('heading', { level: 2, name: '公开小节' })).toBeVisible()
-  await expect(page.getByRole('navigation', { name: '本章目录' })).toBeVisible()
+  await expect(page.getByLabel('本章目录')).toBeVisible()
 })
