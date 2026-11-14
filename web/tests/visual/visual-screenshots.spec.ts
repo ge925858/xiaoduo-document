@@ -185,6 +185,15 @@ async function applyVisualInteraction(
     await page
       .getByPlaceholder('搜索分类或章节')
       .fill(searchQuery ?? '写作')
+    return
+  }
+  if (interaction === 'open-collaboration-application') {
+    await page
+      .getByRole('button', { name: '申请参与编辑' })
+      .click()
+    await expect(
+      page.getByRole('dialog', { name: '申请参与编辑' }),
+    ).toBeVisible()
   }
 }
 

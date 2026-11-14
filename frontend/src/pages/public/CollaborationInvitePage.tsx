@@ -150,7 +150,7 @@ export function CollaborationInvitePage() {
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="至少 6 个字符"
+                placeholder="至少 8 个字符"
               />
             </div>
           </label>

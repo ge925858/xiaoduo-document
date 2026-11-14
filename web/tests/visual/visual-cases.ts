@@ -18,6 +18,7 @@ export interface VisualCase {
   productionLogin: VisualRole
   overlay?: 'design-tokens'
   interaction?: 'open-library-sidebar' | 'open-public-search'
+    | 'open-collaboration-application'
   searchQuery?: string
   viewports?: ReadonlyArray<'desktop' | 'tablet' | 'mobile'>
 }
@@ -172,6 +173,21 @@ export const visualCases: VisualCase[] = [
     id: 'collaboration-invite',
     prototypePath: '/collaborate/accept/visual-invite-token',
     productionPath: '/collaborate/accept/visual-invite-token',
+    productionLogin: null,
+  },
+  {
+    id: 'collaboration-application-dialog',
+    prototypePath:
+      '/library/attention-and-writing/keep-thinking-on-paper',
+    productionPath:
+      '/library/attention-and-writing/keep-thinking-on-paper',
+    productionLogin: null,
+    interaction: 'open-collaboration-application',
+  },
+  {
+    id: 'password-reset',
+    prototypePath: '/visual-fixtures/password-reset',
+    productionPath: '/collaborate/reset/visual-reset-token',
     productionLogin: null,
   },
 ]

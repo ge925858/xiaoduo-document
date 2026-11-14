@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { KeyRound, LoaderCircle, UserRound } from 'lucide-react'
 import { useState } from 'react'
 
 const errors: Record<string, string> = {
@@ -16,9 +17,11 @@ const errors: Record<string, string> = {
 export function InvitationActivationForm({
   token,
   initialDisplayName,
+  expiresAt,
 }: {
   token: string
   initialDisplayName: string
+  expiresAt: string
 }) {
   const [error, setError] = useState('')
   const [activated, setActivated] = useState(false)
@@ -57,47 +60,71 @@ export function InvitationActivationForm({
     return (
       <div className="invitation-result">
         <p role="status">账号已激活，现在可以登录写作台。</p>
-        <Link href="/studio/login">前往登录</Link>
+        <Link href="/studio/login" className="invite-state-action">
+          前往登录
+        </Link>
       </div>
     )
   }
 
   return (
-    <form className="studio-form invitation-form" onSubmit={submit}>
-      <label>
-        显示名称
-        <input
-          name="displayName"
-          defaultValue={initialDisplayName}
-          maxLength={120}
-          required
-        />
+    <form className="invite-activation-form" onSubmit={submit}>
+      <label className="invite-field">
+        <span>昵称</span>
+        <div className="invite-input-wrap">
+          <UserRound size={15} />
+          <input
+            name="displayName"
+            defaultValue={initialDisplayName}
+            maxLength={32}
+            placeholder="协作者昵称"
+            required
+          />
+        </div>
       </label>
-      <label>
-        设置密码
-        <input
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          minLength={8}
-          maxLength={128}
-          required
-        />
+      <label className="invite-field">
+        <span>设置密码</span>
+        <div className="invite-input-wrap">
+          <KeyRound size={15} />
+          <input
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            minLength={8}
+            maxLength={128}
+            placeholder="至少 8 个字符"
+            required
+          />
+        </div>
       </label>
-      <label>
-        确认密码
-        <input
-          name="confirmPassword"
-          type="password"
-          autoComplete="new-password"
-          minLength={8}
-          maxLength={128}
-          required
-        />
+      <label className="invite-field">
+        <span>确认密码</span>
+        <div className="invite-input-wrap">
+          <KeyRound size={15} />
+          <input
+            name="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            minLength={8}
+            maxLength={128}
+            placeholder="再次输入密码"
+            required
+          />
+        </div>
       </label>
-      {error ? <p role="alert">{error}</p> : null}
-      <button type="submit" disabled={pending}>
-        {pending ? '正在激活…' : '激活协作者账号'}
+      <p className="invite-expiry">邀请将在 {expiresAt} 过期。</p>
+      {error ? (
+        <p role="alert" className="invite-form-error">
+          {error}
+        </p>
+      ) : null}
+      <button
+        type="submit"
+        className="invite-submit-button"
+        disabled={pending}
+      >
+        {pending ? <LoaderCircle className="animate-spin" size={15} /> : null}
+        {pending ? '正在激活…' : '激活协作账号'}
       </button>
     </form>
   )

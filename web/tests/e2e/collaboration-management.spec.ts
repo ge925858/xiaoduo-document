@@ -92,9 +92,28 @@ test('owner suspends, restores, and resets a collaborator account', async ({
   const resetContext = await browser.newContext()
   const resetPage = await resetContext.newPage()
   await resetPage.goto(resetLink)
+  await expect(
+    resetPage.getByRole('heading', { level: 1, name: '设置新密码' }),
+  ).toBeVisible()
+  await expect(
+    resetPage.getByRole('link', { name: '返回知笺' }),
+  ).toBeVisible()
+  await expect(
+    resetPage.getByText('managed-19@example.com'),
+  ).toBeVisible()
+  await expect(
+    resetPage.getByText(/重置链接将在 .* 过期/),
+  ).toBeVisible()
   await resetPage
     .getByLabel('新密码', { exact: true })
     .fill('new-collaborator-password')
+  await resetPage
+    .getByLabel('确认新密码')
+    .fill('different-password')
+  await resetPage.getByRole('button', { name: '设置新密码' }).click()
+  await expect(
+    resetPage.getByText('两次输入的密码不一致。', { exact: true }),
+  ).toBeVisible()
   await resetPage
     .getByLabel('确认新密码')
     .fill('new-collaborator-password')

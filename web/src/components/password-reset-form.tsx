@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { KeyRound, LoaderCircle } from 'lucide-react'
 import { useState } from 'react'
 
 const errors: Record<string, string> = {
@@ -11,7 +12,13 @@ const errors: Record<string, string> = {
   RESET_FAILED: '密码更新失败，请稍后重试。',
 }
 
-export function PasswordResetForm({ token }: { token: string }) {
+export function PasswordResetForm({
+  token,
+  expiresAt,
+}: {
+  token: string
+  expiresAt: string
+}) {
   const [error, setError] = useState('')
   const [completed, setCompleted] = useState(false)
   const [pending, setPending] = useState(false)
@@ -46,37 +53,57 @@ export function PasswordResetForm({ token }: { token: string }) {
     return (
       <div className="invitation-result">
         <p role="status">密码已更新，可以重新登录。</p>
-        <Link href="/studio/login">前往登录</Link>
+        <Link href="/studio/login" className="invite-state-action">
+          前往登录
+        </Link>
       </div>
     )
   }
 
   return (
-    <form className="studio-form invitation-form" onSubmit={submit}>
-      <label>
-        新密码
-        <input
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          minLength={8}
-          maxLength={128}
-          required
-        />
+    <form className="invite-activation-form" onSubmit={submit}>
+      <label className="invite-field">
+        <span>新密码</span>
+        <div className="invite-input-wrap">
+          <KeyRound size={15} />
+          <input
+            name="password"
+            type="password"
+            autoComplete="new-password"
+            minLength={8}
+            maxLength={128}
+            placeholder="至少 8 个字符"
+            required
+          />
+        </div>
       </label>
-      <label>
-        确认新密码
-        <input
-          name="confirmPassword"
-          type="password"
-          autoComplete="new-password"
-          minLength={8}
-          maxLength={128}
-          required
-        />
+      <label className="invite-field">
+        <span>确认新密码</span>
+        <div className="invite-input-wrap">
+          <KeyRound size={15} />
+          <input
+            name="confirmPassword"
+            type="password"
+            autoComplete="new-password"
+            minLength={8}
+            maxLength={128}
+            placeholder="再次输入新密码"
+            required
+          />
+        </div>
       </label>
-      {error ? <p role="alert">{error}</p> : null}
-      <button type="submit" disabled={pending}>
+      <p className="invite-expiry">重置链接将在 {expiresAt} 过期。</p>
+      {error ? (
+        <p role="alert" className="invite-form-error">
+          {error}
+        </p>
+      ) : null}
+      <button
+        type="submit"
+        className="invite-submit-button"
+        disabled={pending}
+      >
+        {pending ? <LoaderCircle className="animate-spin" size={15} /> : null}
         {pending ? '正在更新…' : '设置新密码'}
       </button>
     </form>

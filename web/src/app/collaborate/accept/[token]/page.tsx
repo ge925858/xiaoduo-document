@@ -1,5 +1,7 @@
 import Link from 'next/link'
+import { ArrowLeft, Mail } from 'lucide-react'
 import { InvitationActivationForm } from '@/components/invitation-activation-form'
+import { formatDateTime } from '@/lib/format-time'
 import { getInvitationActivationPreview } from '@/server/collaboration'
 
 export const dynamic = 'force-dynamic'
@@ -20,35 +22,77 @@ export default async function InvitationActivationPage({
 
   if (!invite) {
     return (
-      <main className="invitation-page">
-        <h1>邀请链接无效</h1>
-        <p role="alert">请联系站主确认邀请链接是否完整。</p>
-      </main>
+      <InviteState
+        title="邀请链接不存在"
+        description="请向站主确认链接是否完整，或者重新生成邀请。"
+      />
     )
   }
 
   if (invite.status !== 'pending') {
     return (
-      <main className="invitation-page">
-        <p className="eyebrow">Collaborator invitation</p>
-        <h1>{statusMessages[invite.status]}</h1>
-        <Link href="/studio/login">前往登录</Link>
-      </main>
+      <InviteState
+        title={
+          invite.status === 'activated'
+            ? '这个邀请已经激活'
+            : invite.status === 'expired'
+              ? '邀请链接已过期'
+              : '邀请已经被撤销'
+        }
+        description={statusMessages[invite.status]}
+      />
     )
   }
 
   return (
-    <main className="invitation-page">
-      <p className="eyebrow">Collaborator invitation</p>
-      <h1>激活协作者账号</h1>
-      <p>
-        绑定的邮箱：<strong>{invite.email}</strong>
-      </p>
-      <p>获授权章节：{invite.articleTitles.join('、')}</p>
-      <InvitationActivationForm
-        token={token}
-        initialDisplayName={invite.displayName ?? ''}
-      />
+    <main className="invite-accept-page">
+      <div className="invite-accept-card">
+        <Link href="/" className="invite-back-link">
+          <ArrowLeft size={14} />
+          返回知笺
+        </Link>
+        <p className="section-kicker mt-8">Collaboration invitation</p>
+        <h1>接受协作邀请</h1>
+        <p className="invite-accept-intro">
+          设置账号后，你只会看到下面这些被授权的文章。
+        </p>
+        <div className="invite-account-email">
+          <Mail size={15} />
+          <span>{invite.email}</span>
+        </div>
+        <div className="invite-scope-list">
+          <p>可编辑文章</p>
+          {invite.articleTitles.map((title) => (
+            <span key={title}>{title}</span>
+          ))}
+        </div>
+        <InvitationActivationForm
+          token={token}
+          initialDisplayName={invite.displayName ?? ''}
+          expiresAt={formatDateTime(invite.expiresAt.toISOString())}
+        />
+      </div>
+    </main>
+  )
+}
+
+function InviteState({
+  title,
+  description,
+}: {
+  title: string
+  description: string
+}) {
+  return (
+    <main className="invite-accept-page">
+      <div className="invite-state-card">
+        <p className="section-kicker">Collaboration invitation</p>
+        <h1>{title}</h1>
+        <p>{description}</p>
+        <Link href="/studio/login" className="invite-state-action">
+          前往登录
+        </Link>
+      </div>
     </main>
   )
 }

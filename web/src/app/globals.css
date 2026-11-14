@@ -1125,7 +1125,6 @@ select:focus {
   font-size: 0.8rem;
 }
 
-.collaboration-application,
 .collaboration-manager {
   margin-top: 3rem;
   border-top: 1px solid var(--line);
@@ -1133,13 +1132,11 @@ select:focus {
   font-family: ui-sans-serif, system-ui, sans-serif;
 }
 
-.collaboration-application form,
 .collaboration-manager form {
   display: grid;
   gap: 0.75rem;
 }
 
-.collaboration-application label,
 .collaboration-manager label {
   display: grid;
   gap: 0.35rem;
@@ -1147,8 +1144,6 @@ select:focus {
   font-weight: 600;
 }
 
-.collaboration-application input,
-.collaboration-application textarea,
 .collaboration-manager input,
 .collaboration-manager select,
 .collaboration-manager button {
@@ -1372,27 +1367,6 @@ select:focus {
   background: var(--ink);
   color: var(--paper);
   text-decoration: none;
-}
-
-.invitation-page {
-  width: min(560px, calc(100% - 40px));
-  margin: 10vh auto 0;
-  font-family: ui-sans-serif, system-ui, sans-serif;
-}
-
-.invitation-page h1 {
-  margin-top: 0.4rem;
-  line-height: 1.25;
-}
-
-.invitation-result {
-  display: grid;
-  gap: 1rem;
-  margin-top: 2rem;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 1.25rem;
-  background: var(--surface);
 }
 
 .studio-select-trigger {
@@ -3100,6 +3074,7 @@ select:focus {
   margin-bottom: 7px;
   color: var(--ink-soft);
   font-size: 10px;
+  font-weight: 550;
 }
 
 .collaboration-application-form input,
@@ -3107,9 +3082,46 @@ select:focus {
   width: 100%;
   border: 1px solid var(--line);
   background: var(--field);
-  padding: 8px 10px;
+  padding: 10px 11px;
   color: var(--ink);
   font-size: 12px;
+  line-height: 1.7;
+}
+
+.collaboration-form-hint {
+  color: var(--muted-faint);
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.collaboration-application-form button {
+  height: 34px;
+  gap: 6px;
+  border-radius: 4px;
+  padding: 0 12px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 15px;
+}
+
+.collaboration-application-form button[type="button"] {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--muted);
+}
+
+.collaboration-application-form button[type="button"]:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+.collaboration-application-form button[type="submit"] {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.collaboration-application-form button[type="submit"]:hover {
+  background: var(--accent-strong);
 }
 
 .zhijian-prose {
@@ -3554,5 +3566,205 @@ select:focus {
   .chapter-pagination {
     flex-direction: column;
     gap: 20px;
+  }
+}
+
+.invite-accept-page {
+  display: flex;
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent-soft) 72%, var(--paper)),
+      var(--paper) 48%
+    );
+  padding: 32px 18px;
+}
+
+.invite-accept-card,
+.invite-state-card {
+  width: min(100%, 570px);
+  border-radius: 7px;
+  background: var(--paper);
+  padding: 30px;
+  box-shadow: 0 18px 60px var(--shadow);
+}
+
+.invite-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.invite-accept-card h1,
+.invite-state-card h1 {
+  margin-top: 9px;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.invite-accept-intro,
+.invite-state-card > p:last-of-type {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.invite-account-email {
+  display: flex;
+  height: 40px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  border-radius: 5px;
+  background: var(--field);
+  padding: 0 12px;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.invite-scope-list {
+  margin-top: 16px;
+  border-left: 2px solid var(--accent);
+  padding-left: 14px;
+}
+
+.invite-scope-list p {
+  color: var(--muted-faint);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.invite-scope-list span {
+  display: block;
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+.invite-activation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.invite-field > span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 550;
+}
+
+.invite-input-wrap {
+  position: relative;
+}
+
+.invite-input-wrap svg {
+  position: absolute;
+  top: 50%;
+  left: 11px;
+  color: var(--muted-faint);
+  transform: translateY(-50%);
+}
+
+.invite-input-wrap input {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--line);
+  background: var(--field);
+  padding: 0 12px 0 34px;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.invite-expiry {
+  color: var(--muted-faint);
+  font-size: 10px;
+  line-height: 20px;
+}
+
+.invite-form-error {
+  border-radius: 5px;
+  background: var(--rust-soft);
+  padding: 9px 11px;
+  color: var(--rust);
+  font-size: 10px;
+}
+
+.invite-submit-button,
+.invite-state-action {
+  display: inline-flex;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 4px;
+  background: var(--accent);
+  padding: 0 12px;
+  color: var(--accent-contrast);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.invite-submit-button {
+  width: 100%;
+}
+
+.invite-submit-button:hover,
+.invite-state-action:hover {
+  background: var(--accent-strong);
+}
+
+.invite-submit-button:disabled {
+  opacity: 0.55;
+}
+
+.invite-state-card {
+  text-align: center;
+}
+
+.invite-state-card .section-kicker {
+  justify-content: center;
+}
+
+.invite-state-action {
+  width: fit-content;
+  margin-top: 24px;
+}
+
+.invitation-result {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  margin-top: 28px;
+  border-radius: 5px;
+  background: var(--field);
+  padding: 16px;
+}
+
+.invitation-result .invite-state-action {
+  margin-top: 0;
+}
+
+@media (max-width: 767px) {
+  .invite-accept-card,
+  .invite-state-card {
+    padding: 22px 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .collaboration-application-form button[type="submit"] {
+    padding-inline: 9px;
   }
 }

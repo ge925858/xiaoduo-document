@@ -77,6 +77,7 @@ test('mobile reading, search, themes and studio controls remain usable', async (
     name: '申请参与编辑',
   })
   await expect(applicationDialog.getByLabel('昵称')).toBeVisible()
+  await expect(applicationDialog.getByLabel('申请说明')).toBeVisible()
   await expect(
     applicationDialog.getByRole('button', { name: '提交申请' }),
   ).toBeVisible()

@@ -15,6 +15,7 @@ import { LibraryIndexPage } from './pages/public/LibraryIndexPage'
 import { NotFoundPage } from './pages/public/NotFoundPage'
 import { CollaborationInvitePage } from './pages/public/CollaborationInvitePage'
 import { ComponentGalleryPage } from './pages/public/ComponentGalleryPage'
+import { PasswordResetVisualPage } from './pages/public/PasswordResetVisualPage'
 import { PublicShellFixturePage } from './pages/public/PublicShellFixturePage'
 import { SearchResultsPage } from './pages/public/SearchResultsPage'
 import { StudioDashboardPage } from './pages/studio/StudioDashboardPage'
@@ -110,6 +111,10 @@ export default function App() {
         <Route
           path="/collaborate/accept/:token"
           element={<CollaborationInvitePage />}
+        />
+        <Route
+          path="/visual-fixtures/password-reset"
+          element={<PasswordResetVisualPage />}
         />
         <Route path="/studio/login" element={<StudioLoginPage />} />
         <Route element={<ProtectedStudio />}>

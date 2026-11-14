@@ -37,10 +37,18 @@ test('owner reviews applications through notifications only', async ({
   browser,
 }) => {
   await page.goto('/library/attention-and-writing/写作不是归档')
-  await page.getByLabel('昵称').fill('申请通知测试')
-  await page.getByLabel('邮箱').fill('notify-application@example.com')
-  await page.getByLabel('申请备注').fill('希望参与修订')
-  await page.getByRole('button', { name: '提交申请' }).click()
+  await page.getByRole('button', { name: '申请参与编辑' }).click()
+  const applicationDialog = page.getByRole('dialog', {
+    name: '申请参与编辑',
+  })
+  await applicationDialog.getByLabel('昵称').fill('申请通知测试')
+  await applicationDialog
+    .getByLabel('邮箱')
+    .fill('notify-application@example.com')
+  await applicationDialog.getByLabel('申请说明').fill('希望参与修订')
+  await applicationDialog
+    .getByRole('button', { name: '提交申请' })
+    .click()
   await expect(page.getByText('申请已提交，等待站主审核。')).toBeVisible()
 
   await page.goto('/studio/login')

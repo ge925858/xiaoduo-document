@@ -175,6 +175,20 @@ try {
     )
   }
 
+  await connection.query(
+    `INSERT INTO collaboration_password_reset (
+      id, user_id, email, token_hash, status, expires_at, created_at
+    ) VALUES (?, ?, ?, ?, 'pending', ?, ?)`,
+    [
+      'visual-password-reset',
+      'collaborator-1',
+      'zhou@example.com',
+      createHash('sha256').update('visual-reset-token').digest('hex'),
+      dateTime('2099-11-13T13:00:00.000Z'),
+      dateTime('2026-11-13T12:00:00.000Z'),
+    ],
+  )
+
   for (const application of fixture.prototypeState.collaborationApplications) {
     await connection.query(
       `INSERT INTO collaboration_application (
