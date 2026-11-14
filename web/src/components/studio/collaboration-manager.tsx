@@ -299,7 +299,7 @@ export function CollaborationManager({
             aria-label="复制邀请链接"
             onClick={() => void copy(generatedInviteLink, '邀请链接已复制')}
           >
-            <Copy size={14} />
+            <Copy size={18} />
           </button>
         </label>
       ) : null}
@@ -318,7 +318,7 @@ export function CollaborationManager({
             aria-label="复制密码重置链接"
             onClick={() => void copy(resetLink, '重置链接已复制')}
           >
-            <Copy size={14} />
+            <Copy size={18} />
           </button>
         </label>
       ) : null}
@@ -339,7 +339,7 @@ export function CollaborationManager({
             className={section === value ? 'is-active' : ''}
             onClick={() => setSection(value)}
           >
-            <Icon size={14} />
+            <Icon size={18} />
             {label}
           </button>
         ))}
@@ -376,7 +376,7 @@ export function CollaborationManager({
                     </span>
                     <time>{formatApplicationTime(application.createdAt)}</time>
                   </div>
-                  <p className="mt-1 text-[10px] text-[var(--muted)]">
+                  <p className="mt-1 text-[13px] text-[var(--muted)]">
                     {application.email} · 申请编辑「{application.articleTitle}」
                   </p>
                   <p className="collaboration-application-note">
@@ -390,7 +390,7 @@ export function CollaborationManager({
                       className="studio-secondary-button"
                       onClick={() => void review(application.id, 'reject')}
                     >
-                      <X size={13} />
+                      <X size={17} />
                       拒绝
                     </button>
                     <button
@@ -398,7 +398,7 @@ export function CollaborationManager({
                       className="studio-primary-button"
                       onClick={() => void review(application.id, 'approve')}
                     >
-                      <Check size={13} />
+                      <Check size={17} />
                       通过
                     </button>
                   </div>
@@ -452,7 +452,7 @@ export function CollaborationManager({
                 title="选择可编辑文章"
               />
               <button type="submit" className="studio-primary-button">
-                <MailPlus size={14} />
+                <MailPlus size={18} />
                 生成邀请链接
               </button>
             </form>
@@ -501,7 +501,7 @@ export function CollaborationManager({
                         aria-disabled={!invite.token}
                       >
                         打开
-                        <ExternalLink size={12} />
+                        <ExternalLink size={16} />
                       </Link>
                       <button
                         type="button"
@@ -509,7 +509,7 @@ export function CollaborationManager({
                         onClick={() => void revokeInvite(invite.id)}
                         aria-label="撤销邀请"
                       >
-                        <Ban size={14} />
+                        <Ban size={18} />
                       </button>
                     </div>
                   ) : null}
@@ -586,9 +586,9 @@ export function CollaborationManager({
                     }
                   >
                     {collaborator.status === 'active' ? (
-                      <Ban size={15} />
+                      <Ban size={19} />
                     ) : (
-                      <RotateCcw size={15} />
+                      <RotateCcw size={19} />
                     )}
                   </button>
                   <button
@@ -598,7 +598,7 @@ export function CollaborationManager({
                     aria-label={`生成重置链接 ${collaborator.name}`}
                     title="生成密码重置链接"
                   >
-                    <RotateCcw size={15} />
+                    <RotateCcw size={19} />
                   </button>
                 </article>
               )
@@ -645,7 +645,7 @@ export function CollaborationManager({
               className="studio-primary-button"
               onClick={() => void saveGrants()}
             >
-              <UserRoundCheck size={14} />
+              <UserRoundCheck size={18} />
               保存授权
             </button>
           </div>
@@ -700,7 +700,7 @@ function CollaborationEmpty({
 }) {
   return (
     <div className="collaboration-empty">
-      <Users size={20} />
+      <Users size={24} />
       <strong>{title}</strong>
       <p>{description}</p>
     </div>

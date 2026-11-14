@@ -223,7 +223,7 @@ export const SlashMenu = forwardRef<SlashMenuHandle, SlashMenuProps>(
 
     return (
       <div className="slash-menu" role="listbox" aria-label="插入内容块">
-        <p className="px-2.5 pb-1.5 pt-2 text-[9px] font-medium tracking-[0.18em] text-[var(--muted-faint)] uppercase">
+        <p className="px-2.5 pb-1.5 pt-2 text-[12px] font-medium tracking-[0.18em] text-[var(--muted-faint)] uppercase">
           Insert block
         </p>
         <div className="max-h-[280px] overflow-y-auto p-1">
@@ -248,11 +248,11 @@ export const SlashMenu = forwardRef<SlashMenuHandle, SlashMenuProps>(
                 onMouseEnter={() => setSelected(index)}
               >
                 <span className="flex size-7 items-center justify-center rounded-[4px] border border-[var(--line)] bg-[var(--panel-strong)] text-[var(--accent)]">
-                  <Icon size={15} strokeWidth={1.8} />
+                  <Icon size={19} strokeWidth={1.8} />
                 </span>
                 <span className="min-w-0">
                   <span className="block text-xs font-medium">{item.title}</span>
-                  <span className="mt-0.5 block text-[10px] text-[var(--muted)]">
+                  <span className="mt-0.5 block text-[13px] text-[var(--muted)]">
                     {item.hint}
                   </span>
                 </span>
@@ -260,7 +260,7 @@ export const SlashMenu = forwardRef<SlashMenuHandle, SlashMenuProps>(
             )
           })}
         </div>
-        <div className="flex items-center gap-3 border-t border-[var(--line)] px-3 py-2 text-[9px] text-[var(--muted-faint)]">
+        <div className="flex items-center gap-3 border-t border-[var(--line)] px-3 py-2 text-[12px] text-[var(--muted-faint)]">
           <span>↑↓ 选择</span>
           <span>Enter 插入</span>
         </div>

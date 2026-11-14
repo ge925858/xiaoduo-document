@@ -154,7 +154,7 @@ export function VersionHistory({
                 <strong className="mt-1.5 block truncate">
                   {version.label || version.title}
                 </strong>
-                <p className="mt-1 text-[10px] text-[var(--muted-faint)]">
+                <p className="mt-1 text-[11px] text-[var(--muted-faint)]">
                   {countWords(version.plainText ?? version.markdown)} 字 ·{' '}
                   {version.title}
                 </p>
@@ -168,7 +168,7 @@ export function VersionHistory({
                     title="查看与上一版本的变化"
                     aria-label={`与 ${version.label || version.title} 对比上一版本`}
                   >
-                    <Eye size={14} />
+                    <Eye size={18} />
                   </button>
                 ) : null}
                 <button
@@ -178,7 +178,7 @@ export function VersionHistory({
                   title="恢复到当前草稿"
                   aria-label={`恢复 ${version.label || version.title} 为当前草稿`}
                 >
-                  <RotateCcw size={14} />
+                  <RotateCcw size={18} />
                 </button>
                 {version.kind === 'manual' &&
                 (actorRole === 'owner' || version.authorId === actorId) ? (
@@ -190,7 +190,7 @@ export function VersionHistory({
                     title="删除手动版本"
                     aria-label={`删除 ${version.label || version.title}`}
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={18} />
                   </button>
                 ) : null}
               </div>

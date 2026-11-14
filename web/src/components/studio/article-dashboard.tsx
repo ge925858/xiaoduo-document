@@ -206,7 +206,7 @@ export function ArticleDashboard({
                 setImportOpen(true)
               }}
             >
-              <Upload size={14} />
+              <Upload size={18} />
               导入 Markdown
             </button>
             <StudioSelect
@@ -224,7 +224,7 @@ export function ArticleDashboard({
               onClick={() => void create()}
               disabled={!newCategoryId || pending}
             >
-              <FilePlus2 size={15} />
+              <FilePlus2 size={19} />
               新建章节
             </button>
           </div>
@@ -288,7 +288,7 @@ export function ArticleDashboard({
             ariaLabel="按分类筛选"
           />
           <label className="studio-search">
-            <Search size={14} />
+            <Search size={18} />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -317,19 +317,19 @@ export function ArticleDashboard({
               <span className="min-w-0">
                 <span className="flex items-center gap-2">
                   <FileText
-                    size={14}
+                    size={18}
                     className="shrink-0 text-[var(--muted-faint)]"
                   />
-                  <span className="truncate text-[13px] font-medium text-[var(--ink)]">
+                  <span className="truncate text-[16px] font-medium text-[var(--ink)]">
                     {article.title}
                   </span>
                 </span>
-                <span className="mt-1 block truncate pl-6 text-[10px] text-[var(--muted)]">
+                <span className="mt-1 block truncate pl-6 text-[13px] text-[var(--muted)]">
                   {article.plainText || '还没有正文内容'}
                 </span>
               </span>
             </Link>
-            <span className="truncate text-[11px] text-[var(--muted)]">
+            <span className="truncate text-[14px] text-[var(--muted)]">
               {article.categoryTitle}
             </span>
             <span>
@@ -350,7 +350,7 @@ export function ArticleDashboard({
               </span>
             </span>
             <span
-              className="text-[10px] text-[var(--muted-faint)]"
+              className="text-[13px] text-[var(--muted-faint)]"
               data-visual-dynamic
             >
               {formatRelativeTime(article.updatedAt)}
@@ -365,7 +365,7 @@ export function ArticleDashboard({
                     void move(article.id, -1)
                   }}
                 >
-                  <ArrowUp size={13} />
+                  <ArrowUp size={17} />
                 </button>
               ) : null}
               {canManage ? (
@@ -377,7 +377,7 @@ export function ArticleDashboard({
                     void move(article.id, 1)
                   }}
                 >
-                  <ArrowDown size={13} />
+                  <ArrowDown size={17} />
                 </button>
               ) : null}
               <button
@@ -388,7 +388,7 @@ export function ArticleDashboard({
                   void trash(article.id)
                 }}
               >
-                <Trash2 size={13} />
+                <Trash2 size={17} />
               </button>
             </span>
           </div>
@@ -446,7 +446,7 @@ export function ArticleDashboard({
               className="studio-primary-button"
               disabled={pending || !importCategoryId}
             >
-              <Upload size={14} />
+              <Upload size={18} />
               {pending ? '正在导入…' : '导入为草稿'}
             </button>
           </div>

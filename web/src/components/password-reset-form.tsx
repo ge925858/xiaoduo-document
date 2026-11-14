@@ -65,7 +65,7 @@ export function PasswordResetForm({
       <label className="invite-field">
         <span>新密码</span>
         <div className="invite-input-wrap">
-          <KeyRound size={15} />
+          <KeyRound size={19} />
           <input
             name="password"
             type="password"
@@ -80,7 +80,7 @@ export function PasswordResetForm({
       <label className="invite-field">
         <span>确认新密码</span>
         <div className="invite-input-wrap">
-          <KeyRound size={15} />
+          <KeyRound size={19} />
           <input
             name="confirmPassword"
             type="password"
@@ -103,7 +103,7 @@ export function PasswordResetForm({
         className="invite-submit-button"
         disabled={pending}
       >
-        {pending ? <LoaderCircle className="animate-spin" size={15} /> : null}
+        {pending ? <LoaderCircle className="animate-spin" size={19} /> : null}
         {pending ? '正在更新…' : '设置新密码'}
       </button>
     </form>

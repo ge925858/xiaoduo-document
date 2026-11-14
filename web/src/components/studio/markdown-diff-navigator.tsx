@@ -68,7 +68,7 @@ export function MarkdownDiffNavigator({
           </small>
         </span>
         <ChevronDown
-          size={15}
+          size={19}
           className={cn(expanded && 'rotate-180')}
         />
       </button>
@@ -79,7 +79,7 @@ export function MarkdownDiffNavigator({
           aria-label="上一处变化"
           title="上一处变化"
         >
-          <ChevronLeft size={15} />
+          <ChevronLeft size={19} />
         </button>
         <span>
           {activeIndex >= 0 ? activeIndex + 1 : 0}/{changes.length}
@@ -90,7 +90,7 @@ export function MarkdownDiffNavigator({
           aria-label="下一处变化"
           title="下一处变化"
         >
-          <ChevronRight size={15} />
+          <ChevronRight size={19} />
         </button>
       </div>
       {expanded ? (

@@ -102,16 +102,16 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         <div>
           <nav className="chapter-breadcrumb" aria-label="面包屑">
             <Link href="/" className="breadcrumb-home" aria-label="返回预览页">
-              <Home size={14} />
+              <Home size={18} />
             </Link>
-            <ChevronRight size={13} className="breadcrumb-separator" />
+            <ChevronRight size={17} className="breadcrumb-separator" />
             <Link
               href={`/library/${categorySlug}`}
               className="breadcrumb-category"
             >
               {chapter.categoryTitle}
             </Link>
-            <ChevronRight size={13} className="breadcrumb-separator" />
+            <ChevronRight size={17} className="breadcrumb-separator" />
             <span className="breadcrumb-current">{chapter.title}</span>
           </nav>
 
@@ -164,7 +164,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
               >
                 <span>上一章</span>
                 <strong>
-                  <ArrowLeft size={15} />
+                  <ArrowLeft size={19} />
                   {navigation.previous.title}
                 </strong>
               </Link>
@@ -179,7 +179,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
                 <span>下一章</span>
                 <strong>
                   {navigation.next.title}
-                  <ArrowRight size={15} />
+                  <ArrowRight size={19} />
                 </strong>
               </Link>
             ) : (
@@ -190,7 +190,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
                 <span>返回目录</span>
                 <strong>
                   查看全部章节
-                  <ArrowRight size={15} />
+                  <ArrowRight size={19} />
                 </strong>
               </Link>
             )}

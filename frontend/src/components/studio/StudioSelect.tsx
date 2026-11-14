@@ -28,7 +28,7 @@ export function StudioSelect({
           aria-label={ariaLabel}
         >
           <span>{selected?.label ?? '请选择'}</span>
-          <ChevronDown size={14} />
+          <ChevronDown size={18} />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -49,7 +49,7 @@ export function StudioSelect({
               onSelect={() => onChange(option.value)}
             >
               <span>{option.label}</span>
-              {option.value === value && <Check size={13} />}
+              {option.value === value && <Check size={17} />}
             </DropdownMenu.Item>
           ))}
         </DropdownMenu.Content>

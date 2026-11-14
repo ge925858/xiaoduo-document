@@ -37,7 +37,7 @@ export function ComponentGalleryPage() {
           <Button variant="ghost">稍后处理</Button>
           <Button variant="danger">移入回收站</Button>
           <Button disabled aria-busy="true">
-            <Loader2 className="gallery-spin" size={15} />
+            <Loader2 className="gallery-spin" size={19} />
             正在保存
           </Button>
           <Button disabled>不可用</Button>
@@ -58,7 +58,7 @@ export function ComponentGalleryPage() {
           <div className="component-gallery-inline">
             <Hint label="支持 Markdown 快捷输入">
               <IconButton label="查看格式提示">
-                <Bold size={16} />
+                <Bold size={20} />
               </IconButton>
             </Hint>
             <StudioSelect

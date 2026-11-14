@@ -59,7 +59,7 @@
   margin-top: 4px;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
 }
 
@@ -70,7 +70,7 @@
   background: var(--paper);
   padding: 0 10px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .version-diff-dialog {
@@ -96,7 +96,7 @@
 .markdown-diff-navigator.is-empty {
   justify-content: center;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .markdown-diff-summary {
@@ -109,7 +109,7 @@
   border-radius: 4px;
   padding: 5px 7px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   text-align: left;
 }
 
@@ -122,7 +122,7 @@
   align-items: center;
   gap: 4px;
   margin-left: 9px;
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .markdown-diff-summary small span {
@@ -170,7 +170,7 @@
 .markdown-diff-arrows span {
   min-width: 32px;
   color: var(--muted-faint);
-  font: 8px/1 "Cascadia Code", monospace;
+  font: 11px/1 "Cascadia Code", monospace;
   text-align: center;
 }
 
@@ -241,7 +241,7 @@
   border-radius: 50%;
   background: var(--field);
   color: var(--muted-faint);
-  font: 8px/1 "Cascadia Code", monospace;
+  font: 11px/1 "Cascadia Code", monospace;
 }
 
 .markdown-diff-change-title {
@@ -249,13 +249,13 @@
   align-items: center;
   gap: 6px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
 }
 
 .markdown-diff-change-title small {
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 400;
 }
 
@@ -264,7 +264,7 @@
   display: block;
   margin-top: 3px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.65;
 }
 
@@ -331,7 +331,7 @@
 
 .markdown-diff-block .markdown-body {
   max-width: none;
-  font-size: 15.5px;
+  font-size: 18.5px;
   line-height: 1.9;
 }
 
@@ -357,7 +357,7 @@
   gap: 12px;
   padding: 10px 12px;
   color: var(--ink-soft);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .version-diff-columns > section > header.is-old {
@@ -381,7 +381,7 @@
 .version-diff-columns > section > header small {
   overflow: hidden;
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -396,7 +396,7 @@
 
 .version-diff-content .markdown-body {
   max-width: none;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.8;
 }
 
@@ -410,7 +410,7 @@
 
 .version-diff-empty {
   color: var(--muted-faint);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 @media (max-width: 767px) {
@@ -443,7 +443,10 @@
   }
 
   .version-diff-dialog {
-    max-height: calc(100dvh - 159.03125px);
+    top: 10dvh;
+    height: 78dvh;
+    max-height: none;
+    transform: translateX(-50%);
   }
 }
 
@@ -576,7 +579,7 @@ select:focus {
   box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--ink) 76%, white 4%);
   color: var(--canvas);
   font-family: var(--display);
-  font-size: 17px;
+  font-size: 20px;
   line-height: 1;
 }
 
@@ -585,7 +588,7 @@ select:focus {
   align-items: center;
   gap: 7px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.22em;
   line-height: 1.5;
@@ -632,19 +635,19 @@ select:focus {
 .author-avatar.is-sm {
   width: 32px;
   height: 32px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .author-avatar.is-md {
   width: 40px;
   height: 40px;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .author-avatar.is-lg {
   width: 76px;
   height: 76px;
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .author-avatar img {
@@ -752,7 +755,7 @@ select:focus {
   background: var(--paper);
   padding: 0 10px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   text-align: left;
 }
 
@@ -788,7 +791,7 @@ select:focus {
   border-radius: 4px;
   padding: 0 8px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   outline: none;
 }
 
@@ -827,7 +830,7 @@ select:focus {
 
 .component-gallery-header h1 {
   margin-top: 8px;
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 500;
 }
 
@@ -844,7 +847,7 @@ select:focus {
 
 .component-gallery-section h2,
 .component-gallery-card h2 {
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 600;
 }
 
@@ -889,7 +892,7 @@ select:focus {
   background: var(--rust-soft);
   padding: 9px 11px;
   color: var(--rust) !important;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .gallery-spin {
@@ -906,7 +909,7 @@ select:focus {
   display: grid;
   gap: 7px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .gallery-dialog-body input {
@@ -934,7 +937,7 @@ select:focus {
   }
 
   .component-gallery-header h1 {
-    font-size: 30px;
+    font-size: 32px;
   }
 
   .component-gallery-grid {
@@ -951,7 +954,7 @@ select:focus {
   align-items: center;
   gap: 6px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .back-link:hover {
@@ -981,7 +984,7 @@ select:focus {
   background: var(--ink);
   padding: 8px 12px;
   color: var(--paper);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .skip-link:focus {
@@ -1003,11 +1006,11 @@ select:focus {
   width: 30px;
   height: 30px;
   border-radius: 4px;
-  font-size: 15px;
+  font-size: 18px;
 }
 
 .library-brand .font-display {
-  font-size: 18px;
+  font-size: 21px;
 }
 
 .library-brand .text-\[9px\] {
@@ -1022,7 +1025,7 @@ select:focus {
 
 .library-header-title {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .library-icon-button {
@@ -1062,7 +1065,7 @@ select:focus {
   border-radius: 4px;
   padding: 0 10px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .library-search-button:hover {
@@ -1145,7 +1148,7 @@ select:focus {
 .library-category-link > strong {
   overflow: hidden;
   color: var(--ink-soft);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 650;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1171,7 +1174,7 @@ select:focus {
   border-radius: 3px;
   padding: 9px 11px;
   color: var(--ink-soft);
-  font-size: 13.5px;
+  font-size: 16.5px;
   line-height: 1.6;
 }
 
@@ -1193,7 +1196,7 @@ select:focus {
   border-top: 1px solid var(--line);
   padding: 11px 13px;
   color: var(--muted-faint);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .library-sidebar-footer a {
@@ -1315,7 +1318,7 @@ select:focus {
   border-radius: 3px;
   padding: 0 12px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .segmented-control button.is-active {
@@ -1355,7 +1358,7 @@ select:focus {
   background: var(--paper);
   padding: 0 11px;
   color: var(--ink);
-  font-size: 11px;
+  font-size: 14px;
   box-shadow: 0 1px 2px var(--shadow);
 }
 
@@ -1372,7 +1375,7 @@ select:focus {
   border-radius: 4px;
   padding: 0 9px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .studio-nav-link:hover {
@@ -1392,7 +1395,7 @@ select:focus {
   justify-content: space-between;
   padding: 7px 8px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .studio-site-link:hover {
@@ -1473,7 +1476,7 @@ select:focus {
   align-items: center;
   gap: 6px;
   color: rgba(255, 255, 255, 0.55);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .studio-login-form {
@@ -1510,7 +1513,7 @@ select:focus {
     display: flex;
     height: 56px;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     background: color-mix(in srgb, var(--paper) 94%, transparent);
     padding: 0 12px;
     backdrop-filter: blur(14px);
@@ -1522,20 +1525,20 @@ select:focus {
     flex: 1;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 1px;
   }
 
   .studio-mobile-nav-link {
     display: inline-flex;
-    width: 30px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     align-items: center;
     justify-content: center;
     gap: 3px;
     border-radius: 4px;
     padding: 0;
     color: var(--muted);
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .studio-mobile-nav-link span {
@@ -1549,11 +1552,18 @@ select:focus {
 
   .studio-mobile-site-link {
     display: inline-flex;
+    width: 34px;
+    height: 34px;
     flex-shrink: 0;
     align-items: center;
+    justify-content: center;
     gap: 2px;
     color: var(--muted);
-    font-size: 9px;
+    font-size: 12px;
+  }
+
+  .studio-mobile-site-link span {
+    display: none;
   }
 
   .studio-main {
@@ -1617,7 +1627,7 @@ select:focus {
   border-radius: 4px;
   padding: 0 12px;
   color: var(--ink);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -1638,7 +1648,7 @@ select:focus {
 
 .landing-kicker {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -1659,7 +1669,7 @@ select:focus {
   max-width: 560px;
   margin-top: 24px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 16px;
   line-height: 2;
 }
 
@@ -1680,7 +1690,7 @@ select:focus {
   background: var(--ink);
   padding: 0 17px;
   color: var(--paper);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -1693,7 +1703,7 @@ select:focus {
   align-items: center;
   gap: 7px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .landing-count span {
@@ -1727,7 +1737,7 @@ select:focus {
   border-bottom: 1px solid var(--line);
   padding: 0 13px;
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .landing-preview-body {
@@ -1745,7 +1755,7 @@ select:focus {
 .landing-preview-body > aside > p {
   padding: 0 7px 9px;
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -1761,7 +1771,7 @@ select:focus {
   border-radius: 3px;
   padding: 5px 7px;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 11px;
   line-height: 1.45;
 }
 
@@ -1789,7 +1799,7 @@ select:focus {
   align-items: center;
   gap: 5px;
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .landing-preview-content h2 {
@@ -1804,7 +1814,7 @@ select:focus {
   max-width: 390px;
   margin-top: 15px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.9;
 }
 
@@ -1842,7 +1852,7 @@ select:focus {
   border-top: 0;
   padding: 18px 0 22px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 @media (max-width: 1023px) {
@@ -1881,7 +1891,7 @@ select:focus {
   }
 
   .landing-copy h1 {
-    font-size: 38px;
+    font-size: 40px;
   }
 
   .landing-actions {
@@ -1918,13 +1928,13 @@ select:focus {
 .library-empty-page h1 {
   margin-top: 12px;
   font-family: var(--display);
-  font-size: 32px;
+  font-size: 34px;
 }
 
 .library-empty-page p:last-child {
   margin-top: 9px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .chapter-index-page {
@@ -1954,7 +1964,7 @@ select:focus {
   max-width: 680px;
   margin-top: 12px;
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: 16.5px;
   line-height: 1.95;
 }
 
@@ -1971,7 +1981,7 @@ select:focus {
   border-bottom: 0;
   padding: 0 12px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.08em;
 }
 
@@ -1994,7 +2004,7 @@ select:focus {
   flex-shrink: 0;
   padding-top: 6px;
   color: var(--muted-faint);
-  font: 9px/1.5 "Cascadia Code", monospace;
+  font: 12px/1.5 "Cascadia Code", monospace;
 }
 
 .chapter-list-meta {
@@ -2006,7 +2016,7 @@ select:focus {
   gap: 9px;
   padding-top: 7px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 @media (max-width: 1023px) {
@@ -2024,7 +2034,7 @@ select:focus {
   }
 
   .chapter-index-header h1 {
-    font-size: 37px;
+    font-size: 39px;
   }
 
   .chapter-list-row {
@@ -2097,7 +2107,7 @@ select:focus {
   border: 0 !important;
   background: transparent;
   color: var(--ink);
-  font-size: 14px;
+  font-size: 17px;
   outline: none;
 }
 
@@ -2107,13 +2117,13 @@ select:focus {
   background: var(--ink);
   padding: 0 12px;
   color: var(--paper);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .search-results-summary {
   margin-top: 24px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.08em;
 }
 
@@ -2124,7 +2134,7 @@ select:focus {
 .search-result-group h2 {
   margin: 0 8px 5px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -2149,7 +2159,7 @@ select:focus {
 .search-results-empty p {
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .page-loader {
@@ -2159,7 +2169,7 @@ select:focus {
   justify-content: center;
   gap: 10px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.1em;
 }
 
@@ -2212,7 +2222,7 @@ select:focus {
 
 .breadcrumb-category {
   color: var(--ink-soft);
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .breadcrumb-category:hover {
@@ -2227,7 +2237,7 @@ select:focus {
   background: var(--field);
   padding: 0 12px;
   color: var(--accent);
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .chapter-header {
@@ -2258,13 +2268,13 @@ select:focus {
   font-family:
     "Source Han Sans SC", "Noto Sans SC", "MiSans", "HarmonyOS Sans SC",
     "PingFang SC", sans-serif;
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
 .chapter-byline strong {
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 650;
 }
 
@@ -2318,7 +2328,7 @@ select:focus {
 .chapter-pagination > a > span {
   display: block;
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -2336,7 +2346,7 @@ select:focus {
   margin-top: 7px;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 500;
 }
 
@@ -2365,24 +2375,24 @@ select:focus {
 .chapter-toc a {
   display: block;
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: 16.5px;
   line-height: 1.65;
 }
 
 .chapter-toc .section-kicker {
-  font-size: 10.5px;
+  font-size: 13.5px;
   letter-spacing: 0.18em;
 }
 
 .chapter-toc a.is-top-level {
   color: var(--ink-soft);
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 650;
 }
 
 .chapter-toc a[data-level="4"],
 .chapter-toc a[data-level="5"] {
-  font-size: 12.5px;
+  font-size: 15.5px;
 }
 
 .chapter-toc a:hover,
@@ -2408,27 +2418,29 @@ select:focus {
 .collaboration-apply-card strong {
   color: var(--ink);
   font-family: var(--display);
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 600;
 }
 
 .collaboration-apply-card p {
   margin-top: 3px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .collaboration-apply-card button {
-  height: 34px;
+  height: 38px;
+  justify-content: center;
   gap: 6px;
   border-color: var(--line);
   border-radius: 4px;
   background: var(--paper);
   padding-inline: 12px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 1.5;
+  white-space: nowrap;
 }
 
 .collaboration-apply-card button:hover {
@@ -2447,7 +2459,7 @@ select:focus {
   display: block;
   margin-bottom: 7px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 550;
 }
 
@@ -2458,24 +2470,24 @@ select:focus {
   background: var(--field);
   padding: 10px 11px;
   color: var(--ink);
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.7;
 }
 
 .collaboration-form-hint {
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.7;
 }
 
 .collaboration-application-form button {
-  height: 34px;
+  height: 38px;
   gap: 6px;
   border-radius: 4px;
   padding: 0 12px;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 500;
-  line-height: 15px;
+  line-height: 21px;
 }
 
 .collaboration-application-form button[type="button"] {
@@ -2502,7 +2514,7 @@ select:focus {
   min-height: 240px;
   color: var(--ink-soft);
   font-family: var(--display);
-  font-size: 17px;
+  font-size: 20px;
   line-height: 1.95;
   outline: none;
 }
@@ -2663,7 +2675,7 @@ select:focus {
   max-width: 780px;
   margin-top: 0;
   color: var(--ink-soft);
-  font-size: 17px;
+  font-size: 20px;
   line-height: 1.92;
 }
 
@@ -2929,7 +2941,7 @@ select:focus {
   }
 
   .chapter-header h1 {
-    font-size: 37px;
+    font-size: 39px;
   }
 
   .chapter-pagination {
@@ -2966,7 +2978,7 @@ select:focus {
   align-items: center;
   gap: 5px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .invite-accept-card h1,
@@ -2974,7 +2986,7 @@ select:focus {
   margin-top: 9px;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 600;
 }
 
@@ -2982,7 +2994,7 @@ select:focus {
 .invite-state-card > p:last-of-type {
   margin-top: 8px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.8;
 }
 
@@ -2996,7 +3008,7 @@ select:focus {
   background: var(--field);
   padding: 0 12px;
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .invite-scope-list {
@@ -3007,7 +3019,7 @@ select:focus {
 
 .invite-scope-list p {
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -3016,7 +3028,7 @@ select:focus {
   display: block;
   margin-top: 6px;
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .invite-activation-form {
@@ -3030,7 +3042,7 @@ select:focus {
   display: block;
   margin-bottom: 8px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 550;
 }
 
@@ -3053,12 +3065,12 @@ select:focus {
   background: var(--field);
   padding: 0 12px 0 34px;
   color: var(--ink);
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .invite-expiry {
   color: var(--muted-faint);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 20px;
 }
 
@@ -3067,7 +3079,7 @@ select:focus {
   background: var(--rust-soft);
   padding: 9px 11px;
   color: var(--rust);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .invite-submit-button,
@@ -3081,7 +3093,7 @@ select:focus {
   background: var(--accent);
   padding: 0 12px;
   color: var(--accent-contrast);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -3157,27 +3169,27 @@ select:focus {
   margin-top: 8px;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 38px;
+  font-size: 40px;
   line-height: 1.2;
 }
 
 .studio-page-header > div > p:last-child {
   margin-top: 8px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.8;
 }
 
 .studio-primary-button,
 .studio-secondary-button {
   display: inline-flex;
-  height: 34px;
+  height: 38px;
   align-items: center;
   justify-content: center;
   gap: 6px;
   border-radius: 4px;
   padding: 0 12px;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -3230,7 +3242,7 @@ select:focus {
 .studio-stats span {
   display: block;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .studio-stats strong {
@@ -3238,13 +3250,13 @@ select:focus {
   margin-top: 9px;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 500;
 }
 
 .studio-stats .studio-stat-relative {
   font-family: inherit;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .studio-toolbar {
@@ -3274,7 +3286,7 @@ select:focus {
   border: 0;
   background: transparent;
   color: var(--ink);
-  font-size: 10px;
+  font-size: 13px;
   outline: none;
 }
 
@@ -3296,7 +3308,7 @@ select:focus {
   height: 33px;
   padding-inline: 12px;
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -3323,7 +3335,7 @@ select:focus {
   background: var(--field);
   padding: 3px 6px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .studio-status.is-public {
@@ -3375,13 +3387,13 @@ select:focus {
 .studio-empty-state p {
   color: var(--ink);
   font-family: var(--display);
-  font-size: 22px;
+  font-size: 24px;
 }
 
 .studio-empty-state span {
   margin-top: 8px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .studio-empty-state button {
@@ -3391,7 +3403,7 @@ select:focus {
   background: var(--paper);
   padding: 7px 10px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .studio-import-dialog {
@@ -3405,7 +3417,7 @@ select:focus {
   display: block;
   margin-bottom: 7px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 550;
 }
 
@@ -3415,7 +3427,7 @@ select:focus {
   background: var(--field);
   padding: 10px;
   color: var(--ink);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .studio-import-dialog > div:last-child {
@@ -3444,6 +3456,7 @@ select:focus {
 
   .studio-page-header > div:last-child {
     width: 100%;
+    flex-wrap: wrap;
   }
 
   .studio-primary-button {
@@ -3578,7 +3591,7 @@ select:focus {
   border-radius: 3px;
   padding: 0 7px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .bubble-menu button:hover,
@@ -3646,7 +3659,7 @@ select:focus {
 .block-type-menu-label {
   padding: 5px 8px 7px;
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -3660,7 +3673,7 @@ select:focus {
   border-radius: 4px;
   padding: 0 8px;
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 14px;
   outline: none;
 }
 
@@ -3733,6 +3746,10 @@ select:focus {
   background: color-mix(in srgb, var(--paper) 96%, transparent);
   padding: 0 16px;
   backdrop-filter: blur(16px);
+}
+
+.studio-editor-breadcrumb {
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
 }
 
 .studio-editor-topbar .studio-primary-button:disabled,
@@ -3810,20 +3827,20 @@ select:focus {
   background: transparent;
   padding: 0;
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: 16.5px;
   line-height: 1.65;
   text-align: left;
 }
 
 .studio-editor-toc button.is-top-level {
   color: var(--ink-soft);
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 650;
 }
 
 .studio-editor-toc button[data-level="4"],
 .studio-editor-toc button[data-level="5"] {
-  font-size: 12.5px;
+  font-size: 15.5px;
 }
 
 .studio-editor-toc button:hover,
@@ -3838,7 +3855,7 @@ select:focus {
 .studio-editor-toc-empty {
   margin-top: 16px;
   color: var(--muted-faint);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .studio-title-input {
@@ -3847,7 +3864,7 @@ select:focus {
   background: transparent;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 42px;
+  font-size: 44px;
   font-weight: 600;
   line-height: 1.24;
   outline: none;
@@ -3861,7 +3878,7 @@ select:focus {
   gap: 8px 15px;
   margin-top: 10px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.6;
 }
 
@@ -3873,7 +3890,7 @@ select:focus {
   background: var(--field);
   padding: 0 8px;
   color: var(--ink-soft);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .studio-editor-toolbar {
@@ -3896,7 +3913,7 @@ select:focus {
   font-family:
     "Source Han Sans SC", "Noto Sans SC", "MiSans", "HarmonyOS Sans SC",
     "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: 17px;
+  font-size: 20px;
   line-height: 1.92;
 }
 
@@ -3990,7 +4007,7 @@ select:focus {
   gap: 24px;
   margin-top: 58px;
   color: var(--muted-faint);
-  font: 9px/1.6 "Cascadia Code", monospace;
+  font: 12px/1.6 "Cascadia Code", monospace;
   letter-spacing: 0.04em;
 }
 
@@ -4010,7 +4027,7 @@ select:focus {
   border-radius: 3px;
   padding: 0 9px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .studio-view-switch button.is-active {
@@ -4031,7 +4048,7 @@ select:focus {
   background: var(--accent-soft);
   padding: 0 9px;
   color: var(--accent);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -4050,7 +4067,7 @@ select:focus {
   border-radius: 4px;
   padding: 4px 7px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .studio-editor-danger-link:hover {
@@ -4079,14 +4096,14 @@ select:focus {
   margin-top: 8px;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 600;
 }
 
 .studio-current-draft-card p {
   margin-top: 5px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .studio-history-kind {
@@ -4095,9 +4112,10 @@ select:focus {
   background: color-mix(in srgb, var(--gold) 14%, var(--paper));
   padding: 2px 5px;
   color: var(--gold);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .studio-history-kind.is-published {
@@ -4136,7 +4154,7 @@ select:focus {
 
 .studio-version-row time {
   color: var(--muted-faint);
-  font: 8px/1.5 "Cascadia Code", monospace;
+  font: 11px/1.5 "Cascadia Code", monospace;
 }
 
 .studio-version-author {
@@ -4144,7 +4162,9 @@ select:focus {
   align-items: center;
   gap: 4px;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .studio-version-author strong {
@@ -4152,7 +4172,7 @@ select:focus {
   min-width: 24px;
   transform: translateX(2px);
   color: var(--ink-soft);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -4161,7 +4181,8 @@ select:focus {
   background: var(--field);
   padding: 1px 4px;
   color: var(--muted-faint);
-  font-size: 7px;
+  font-size: 9px;
+  white-space: nowrap;
 }
 
 .studio-version-author small.is-owner {
@@ -4176,14 +4197,20 @@ select:focus {
 
 .studio-version-row > div > strong {
   color: var(--ink-soft);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .studio-version-row time {
+    display: none;
+  }
 }
 
 .studio-version-empty {
   padding: 36px 12px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
   text-align: center;
 }
 
@@ -4193,7 +4220,7 @@ select:focus {
   background: var(--rust-soft);
   padding: 8px 10px;
   color: var(--rust);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .studio-version-save-dialog {
@@ -4207,7 +4234,7 @@ select:focus {
   display: block;
   margin-bottom: 7px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 550;
 }
 
@@ -4218,7 +4245,7 @@ select:focus {
   background: var(--field);
   padding: 0 11px;
   color: var(--ink);
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .studio-version-save-dialog > div {
@@ -4320,7 +4347,7 @@ select:focus {
   }
 
   .studio-title-input {
-    font-size: 34px;
+    font-size: 36px;
   }
 
   .studio-editor-toolbar {
@@ -4353,7 +4380,7 @@ select:focus {
     gap: 2px;
     border-radius: 4px;
     color: var(--muted);
-    font-size: 8px;
+    font-size: 11px;
   }
 
   .studio-mobile-editor-dock button:hover,
@@ -4448,7 +4475,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--field);
   padding: 0 10px;
   color: var(--ink);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .category-create-form input:nth-of-type(2) {
@@ -4478,19 +4505,19 @@ button.markdown-diff-change-item.is-active {
 .category-editor > header > span {
   padding-top: 4px;
   color: var(--muted-faint);
-  font: 9px/1.5 "Cascadia Code", monospace;
+  font: 12px/1.5 "Cascadia Code", monospace;
 }
 
 .category-editor h2 {
   color: var(--ink);
   font-family: var(--display);
-  font-size: 22px;
+  font-size: 24px;
 }
 
 .category-editor header p {
   margin-top: 3px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .category-editor-fields {
@@ -4503,7 +4530,7 @@ button.markdown-diff-change-item.is-active {
   display: block;
   margin-bottom: 6px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .category-editor-fields input,
@@ -4513,7 +4540,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--field);
   padding: 8px 10px;
   color: var(--ink);
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -4528,7 +4555,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--rust-soft);
   padding: 9px 11px;
   color: var(--rust);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 @media (max-width: 767px) {
@@ -4541,7 +4568,7 @@ button.markdown-diff-change-item.is-active {
     flex: 1;
     max-width: none;
     padding-inline: 7px;
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .category-create-form input:nth-of-type(2) {
@@ -4566,7 +4593,8 @@ button.markdown-diff-change-item.is-active {
   flex-direction: column;
   gap: 5px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-size: 12px;
   text-align: right;
 }
 
@@ -4588,7 +4616,7 @@ button.markdown-diff-change-item.is-active {
   border-radius: 4px;
   padding: 0 12px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .collaboration-tabs button.is-active {
@@ -4612,15 +4640,17 @@ button.markdown-diff-change-item.is-active {
 
 .collaboration-section-heading h2 {
   color: var(--ink);
-  font-family: var(--display);
-  font-size: 22px;
-  font-weight: 600;
+  font-family:
+    "Source Han Sans SC", "Noto Sans SC", "MiSans", "HarmonyOS Sans SC",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
 }
 
 .collaboration-section-heading p {
   margin-top: 4px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.7;
 }
 
@@ -4648,20 +4678,20 @@ button.markdown-diff-change-item.is-active {
 .collaboration-invite-row strong,
 .collaborator-row strong {
   color: var(--ink);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .collaboration-application-row time {
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .collaboration-application-note {
   max-width: 680px;
   margin-top: 9px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.7;
 }
 
@@ -4669,7 +4699,7 @@ button.markdown-diff-change-item.is-active {
 .collaborator-row p {
   margin-top: 5px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .collaboration-invite-form {
@@ -4684,7 +4714,7 @@ button.markdown-diff-change-item.is-active {
   display: block;
   margin-bottom: 6px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .collaboration-invite-form input[type="email"],
@@ -4696,7 +4726,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--field);
   padding: 0 10px;
   color: var(--ink);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .collaboration-article-picker {
@@ -4710,7 +4740,7 @@ button.markdown-diff-change-item.is-active {
 .collaboration-article-picker > p {
   padding: 4px 7px 9px;
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -4725,7 +4755,7 @@ button.markdown-diff-change-item.is-active {
   border-radius: 4px;
   padding: 5px 8px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .collaboration-article-picker label:hover {
@@ -4738,7 +4768,7 @@ button.markdown-diff-change-item.is-active {
 
 .collaboration-article-picker small {
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .collaborator-avatar {
@@ -4751,7 +4781,7 @@ button.markdown-diff-change-item.is-active {
   border-radius: 50%;
   background: var(--ink);
   color: var(--paper);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -4768,12 +4798,12 @@ button.markdown-diff-change-item.is-active {
   margin-top: 10px;
   color: var(--ink-soft);
   font-family: var(--display);
-  font-size: 17px;
+  font-size: 20px;
 }
 
 .collaboration-empty p {
   margin-top: 5px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .collaboration-feedback {
@@ -4782,7 +4812,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--accent-soft);
   padding: 9px 11px;
   color: var(--accent);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .collaboration-generated-link {
@@ -4795,7 +4825,7 @@ button.markdown-diff-change-item.is-active {
 
 .collaboration-generated-link > span {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .collaboration-generated-link input {
@@ -4804,7 +4834,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--field);
   padding: 0 8px;
   color: var(--muted);
-  font: 9px/1.4 "Cascadia Code", monospace;
+  font: 12px/1.4 "Cascadia Code", monospace;
 }
 
 @media (max-width: 767px) {
@@ -4867,13 +4897,13 @@ button.markdown-diff-change-item.is-active {
 }
 
 .analytics-kpi span {
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .analytics-kpi strong {
   color: var(--ink);
   font-family: var(--display);
-  font-size: 25px;
+  font-size: 27px;
   font-weight: 600;
 }
 
@@ -4890,14 +4920,14 @@ button.markdown-diff-change-item.is-active {
 .analytics-section h2 {
   color: var(--ink);
   font-family: var(--display);
-  font-size: 21px;
+  font-size: 23px;
   font-weight: 600;
 }
 
 .analytics-section header p {
   margin-top: 4px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .analytics-chart {
@@ -4932,7 +4962,7 @@ button.markdown-diff-change-item.is-active {
 .analytics-chart-column small {
   margin-top: 5px;
   color: var(--muted-faint);
-  font-size: 7px;
+  font-size: 10px;
 }
 
 .analytics-article-table,
@@ -4955,12 +4985,12 @@ button.markdown-diff-change-item.is-active {
 .analytics-table-head,
 .analytics-visit-head {
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .analytics-table-row {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .analytics-table-row:hover,
@@ -4971,7 +5001,7 @@ button.markdown-diff-change-item.is-active {
 .analytics-table-row strong {
   overflow: hidden;
   color: var(--ink-soft);
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 550;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -4992,7 +5022,7 @@ button.markdown-diff-change-item.is-active {
 .analytics-visit-row {
   min-width: 0;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .analytics-visit-row > span:first-child {
@@ -5004,13 +5034,13 @@ button.markdown-diff-change-item.is-active {
 
 .analytics-visit-row code {
   color: var(--ink-soft);
-  font: 9px/1.5 "Cascadia Code", monospace;
+  font: 12px/1.5 "Cascadia Code", monospace;
 }
 
 .analytics-empty {
   padding: 45px 0;
   color: var(--muted-faint);
-  font-size: 10px;
+  font-size: 13px;
   text-align: center;
 }
 
@@ -5098,7 +5128,7 @@ button.markdown-diff-change-item.is-active {
   overflow: hidden;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -5108,7 +5138,7 @@ button.markdown-diff-change-item.is-active {
   overflow: hidden;
   margin-top: 3px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -5119,7 +5149,7 @@ button.markdown-diff-change-item.is-active {
   flex-direction: column;
   gap: 3px;
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
   text-align: right;
 }
 
@@ -5137,12 +5167,12 @@ button.markdown-diff-change-item.is-active {
   margin-top: 12px;
   color: var(--ink-soft);
   font-family: var(--display);
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .studio-trash-empty span {
   margin-top: 5px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .trash-feedback {
@@ -5151,7 +5181,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--accent-soft);
   padding: 9px 11px;
   color: var(--accent);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .trash-danger-button {
@@ -5162,7 +5192,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--rust);
   padding: 0 12px;
   color: white;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -5196,14 +5226,14 @@ button.markdown-diff-change-item.is-active {
 
 .studio-profile-avatar-section strong {
   color: var(--ink);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .studio-profile-avatar-section p {
   margin-top: 4px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.7;
 }
 
@@ -5216,7 +5246,7 @@ button.markdown-diff-change-item.is-active {
   display: block;
   margin-bottom: 6px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .studio-profile-avatar-url input {
@@ -5226,7 +5256,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--field);
   padding: 0 10px;
   color: var(--ink);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .studio-profile-fields {
@@ -5243,7 +5273,7 @@ button.markdown-diff-change-item.is-active {
   display: block;
   margin-bottom: 8px;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 550;
 }
 
@@ -5254,7 +5284,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--field);
   padding: 9px 12px;
   color: var(--ink);
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.8;
 }
 
@@ -5266,7 +5296,7 @@ button.markdown-diff-change-item.is-active {
   display: block;
   margin-top: 7px;
   color: var(--muted-faint);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .studio-profile-actions {
@@ -5280,7 +5310,7 @@ button.markdown-diff-change-item.is-active {
   margin-top: 16px;
   border-radius: 5px;
   padding: 9px 11px;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .profile-success {
@@ -5308,13 +5338,13 @@ button.markdown-diff-change-item.is-active {
   margin-top: 5px;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 22px;
+  font-size: 24px;
 }
 
 .studio-page > .export-panel p {
   margin-top: 5px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .studio-page > .export-panel a {
@@ -5326,7 +5356,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--accent);
   padding: 0 12px;
   color: var(--accent-contrast);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 @media (min-width: 640px) {
@@ -5366,7 +5396,7 @@ button.markdown-diff-change-item.is-active {
 
 .notification-unread-count {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .notification-center ol {
@@ -5406,7 +5436,7 @@ button.markdown-diff-change-item.is-active {
 
 .notification-center .notification-row p {
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .notification-unread-dot {
@@ -5420,7 +5450,7 @@ button.markdown-diff-change-item.is-active {
   margin-top: 4px;
   color: var(--ink);
   font-family: var(--display);
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -5429,13 +5459,13 @@ button.markdown-diff-change-item.is-active {
   display: block;
   margin-top: 4px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.7;
 }
 
 .notification-center .notification-row time {
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .notification-actions {
@@ -5447,7 +5477,7 @@ button.markdown-diff-change-item.is-active {
 
 .notification-read-label {
   color: var(--muted-faint);
-  font-size: 8px;
+  font-size: 11px;
 }
 
 .notification-feedback {
@@ -5456,7 +5486,7 @@ button.markdown-diff-change-item.is-active {
   background: var(--accent-soft);
   padding: 9px 11px;
   color: var(--accent);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .notification-empty {
@@ -5473,12 +5503,12 @@ button.markdown-diff-change-item.is-active {
   margin-top: 10px;
   color: var(--ink-soft);
   font-family: var(--display);
-  font-size: 19px;
+  font-size: 22px;
 }
 
 .notification-empty span {
   margin-top: 5px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 @media (max-width: 767px) {

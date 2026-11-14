@@ -98,7 +98,7 @@ export function CollaborationInvitePage() {
     <main className="invite-accept-page">
       <div className="invite-accept-card">
         <Link to="/" className="invite-back-link">
-          <ArrowLeft size={14} />
+          <ArrowLeft size={18} />
           返回知笺
         </Link>
         <p className="section-kicker mt-8">Collaboration invitation</p>
@@ -108,13 +108,13 @@ export function CollaborationInvitePage() {
         </p>
 
         <div className="invite-account-email">
-          <Mail size={15} />
+          <Mail size={19} />
           <span>{invite.email}</span>
         </div>
 
         {studioAuthed && (
           <div className="invite-session-warning">
-            <Info size={15} />
+            <Info size={19} />
             <span>
               当前已以{studioRole === 'owner' ? '站主' : '协作者'}身份登录。
               激活此邀请后会切换为新的协作者会话，便于调试邀请流程。
@@ -133,7 +133,7 @@ export function CollaborationInvitePage() {
           <label className="studio-profile-field !mt-0">
             <span>昵称</span>
             <div className="invite-input-wrap">
-              <UserRound size={15} />
+              <UserRound size={19} />
               <input
                 value={displayName}
                 onChange={(event) => setDisplayName(event.target.value)}
@@ -145,7 +145,7 @@ export function CollaborationInvitePage() {
           <label className="studio-profile-field !mt-0">
             <span>设置密码</span>
             <div className="invite-input-wrap">
-              <KeyRound size={15} />
+              <KeyRound size={19} />
               <input
                 type="password"
                 value={password}
@@ -157,7 +157,7 @@ export function CollaborationInvitePage() {
           <label className="studio-profile-field !mt-0">
             <span>确认密码</span>
             <div className="invite-input-wrap">
-              <KeyRound size={15} />
+              <KeyRound size={19} />
               <input
                 type="password"
                 value={confirmPassword}
@@ -166,7 +166,7 @@ export function CollaborationInvitePage() {
               />
             </div>
           </label>
-          <p className="text-[10px] leading-5 text-[var(--muted-faint)]">
+          <p className="text-[13px] leading-5 text-[var(--muted-faint)]">
             邀请将在 {formatDateTime(invite.expiresAt)} 过期。
           </p>
           <button
@@ -174,7 +174,7 @@ export function CollaborationInvitePage() {
             className="studio-primary-button h-11 w-full"
             disabled={loading}
           >
-            {loading && <LoaderCircle className="animate-spin" size={15} />}
+            {loading && <LoaderCircle className="animate-spin" size={19} />}
             激活协作账号
           </button>
         </form>

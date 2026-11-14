@@ -57,7 +57,7 @@ export function Dialog({
                 className="flex size-8 items-center justify-center rounded-[6px] text-[var(--muted)] hover:bg-[var(--hover)] hover:text-[var(--ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
                 aria-label="关闭"
               >
-                <X size={17} />
+                <X size={21} />
               </button>
             </DialogPrimitive.Close>
           </div>

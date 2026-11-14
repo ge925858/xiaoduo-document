@@ -89,7 +89,7 @@ export function CollaborationApplicationDialog({
             取消
           </button>
           <button type="submit" className="studio-primary-button">
-            <Send size={14} />
+            <Send size={18} />
             提交申请
           </button>
         </div>

@@ -64,7 +64,7 @@ export function PublicCollaborationForm({
           size="sm"
           onClick={() => setOpen(true)}
         >
-          <UserRoundPlus size={14} />
+          <UserRoundPlus size={18} />
           申请参与编辑
         </Button>
       </section>
@@ -120,7 +120,7 @@ export function PublicCollaborationForm({
               取消
             </Button>
             <Button type="submit" size="sm" disabled={pending}>
-              <Send size={14} />
+              <Send size={18} />
               {pending ? '正在提交…' : '提交申请'}
             </Button>
           </div>

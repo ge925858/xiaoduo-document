@@ -49,13 +49,13 @@ export function LibraryIndexPage() {
               {String(index + 1).padStart(2, '0')}
             </span>
             <span className="min-w-0 flex-1">
-              <span className="text-[22px] font-semibold text-[var(--ink)] group-hover:text-[var(--accent)]">
+              <span className="text-[24px] font-semibold text-[var(--ink)] group-hover:text-[var(--accent)]">
                 {category.title}
               </span>
             </span>
             <span className="chapter-list-meta">
               {category.chapters.length} 篇
-              <ArrowRight size={14} />
+              <ArrowRight size={18} />
             </span>
           </Link>
         ))}

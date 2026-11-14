@@ -109,18 +109,18 @@ export function StudioShell({
       <div className="studio-shell">
       {!isEditor ? (
         <div className="studio-mobile-bar">
-          <BrandMark />
+          <BrandMark compact />
           <nav aria-label="写作台导航">
             <StudioMobileNav
               to="/studio"
               end
-              icon={<FileText size={15} />}
+              icon={<FileText size={19} />}
               label="内容"
               pathname={pathname}
             />
             <StudioMobileNav
               to="/studio/trash"
-              icon={<Trash2 size={15} />}
+              icon={<Trash2 size={19} />}
               label="回收"
               pathname={pathname}
             />
@@ -128,40 +128,44 @@ export function StudioShell({
               <>
                 <StudioMobileNav
                   to="/studio/collaboration"
-                  icon={<UsersRound size={15} />}
+                  icon={<UsersRound size={19} />}
                   label="协作"
                   pathname={pathname}
                 />
                 <StudioMobileNav
                   to="/studio/analytics"
-                  icon={<BarChart3 size={15} />}
+                  icon={<BarChart3 size={19} />}
                   label="报表"
                   pathname={pathname}
                 />
                 <StudioMobileNav
                   to="/studio/categories"
-                  icon={<FolderTree size={15} />}
+                  icon={<FolderTree size={19} />}
                   label="分类"
                   pathname={pathname}
                 />
                 <StudioMobileNav
                   to="/studio/settings"
-                  icon={<Settings size={15} />}
+                  icon={<Settings size={19} />}
                   label="资料"
                   pathname={pathname}
                 />
                 <StudioMobileNav
                   to="/studio/notifications"
-                  icon={<Bell size={15} />}
+                  icon={<Bell size={19} />}
                   label="通知"
                   pathname={pathname}
                 />
               </>
             ) : null}
           </nav>
-          <Link href="/" className="studio-mobile-site-link">
-            公开站
-            <ArrowUpRight size={12} />
+          <Link
+            href="/"
+            className="studio-mobile-site-link"
+            aria-label="打开公开站"
+          >
+            <span>公开站</span>
+            <ArrowUpRight size={16} />
           </Link>
         </div>
       ) : null}
@@ -169,7 +173,7 @@ export function StudioShell({
       <aside className="studio-sidebar">
         <div className="px-5 pb-5 pt-5">
           <BrandMark />
-          <p className="mt-2 text-[9px] uppercase tracking-[0.18em] text-[var(--muted-faint)]">
+          <p className="mt-2 text-[12px] uppercase tracking-[0.18em] text-[var(--muted-faint)]">
             Writing studio
           </p>
         </div>
@@ -181,7 +185,7 @@ export function StudioShell({
               className="studio-new-button"
               onClick={startWriting}
             >
-              <Sparkles size={15} />
+              <Sparkles size={19} />
               开始写作
             </button>
           </div>
@@ -191,14 +195,14 @@ export function StudioShell({
           <StudioNav
             to="/studio"
             end
-            icon={<FileText size={15} />}
+            icon={<FileText size={19} />}
             pathname={pathname}
           >
             内容
           </StudioNav>
           <StudioNav
             to="/studio/trash"
-            icon={<Trash2 size={15} />}
+            icon={<Trash2 size={19} />}
             pathname={pathname}
           >
             回收站
@@ -207,14 +211,14 @@ export function StudioShell({
             <>
               <StudioNav
                 to="/studio/collaboration"
-                icon={<UsersRound size={15} />}
+                icon={<UsersRound size={19} />}
                 pathname={pathname}
               >
                 协作管理
               </StudioNav>
               <StudioNav
                 to="/studio/analytics"
-                icon={<BarChart3 size={15} />}
+                icon={<BarChart3 size={19} />}
                 pathname={pathname}
                 ariaLabel="访问统计"
               >
@@ -222,14 +226,14 @@ export function StudioShell({
               </StudioNav>
               <StudioNav
                 to="/studio/categories"
-                icon={<FolderTree size={15} />}
+                icon={<FolderTree size={19} />}
                 pathname={pathname}
               >
                 分类管理
               </StudioNav>
               <StudioNav
                 to="/studio/settings"
-                icon={<Settings size={15} />}
+                icon={<Settings size={19} />}
                 pathname={pathname}
               >
                 个人资料
@@ -241,7 +245,7 @@ export function StudioShell({
         <div className="mt-auto border-t border-[var(--line)] p-3">
           <Link href="/" className="studio-site-link">
             查看公开站
-            <ArrowUpRight size={13} />
+            <ArrowUpRight size={17} />
           </Link>
           <div className="mt-4 flex items-center gap-2.5 px-2">
             <AuthorAvatar
@@ -253,7 +257,7 @@ export function StudioShell({
               <span className="block truncate text-xs font-medium text-[var(--ink)]">
                 {currentName}
               </span>
-              <span className="mt-0.5 block text-[9px] text-[var(--muted-faint)]">
+              <span className="mt-0.5 block text-[12px] text-[var(--muted-faint)]">
                 {isOwner ? '站主' : '协作者'}
               </span>
             </span>
@@ -264,7 +268,7 @@ export function StudioShell({
                 aria-label="通知"
                 title="通知"
               >
-                <Bell size={15} />
+                <Bell size={19} />
               </Link>
             ) : null}
             <form action={signOutAction}>
@@ -274,7 +278,7 @@ export function StudioShell({
                 aria-label="退出写作台"
                 title="退出写作台"
               >
-                <LogOut size={15} />
+                <LogOut size={19} />
               </button>
             </form>
           </div>
@@ -326,7 +330,7 @@ export function StudioShell({
               取消
             </Button>
             <Button type="submit" disabled={creating || !newCategoryId}>
-              <Sparkles size={14} />
+              <Sparkles size={18} />
               {creating ? '正在创建…' : '创建并开始写作'}
             </Button>
           </div>

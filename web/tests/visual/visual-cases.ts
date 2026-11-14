@@ -144,6 +144,7 @@ export const visualCases: VisualCase[] = [
     prototypePath: '/studio/notes/note-keep-thinking',
     productionPath: '/studio/notes/note-keep-thinking',
     productionLogin: 'owner',
+    maskSelectors: ['.studio-editor-topbar'],
   },
   {
     id: 'studio-categories-owner',
@@ -186,6 +187,7 @@ export const visualCases: VisualCase[] = [
     prototypePath: '/studio/notes/note-keep-thinking',
     productionPath: '/studio/notes/note-keep-thinking',
     productionLogin: 'collaborator',
+    maskSelectors: ['.studio-editor-topbar'],
   },
   {
     id: 'studio-version-history-owner',
@@ -193,6 +195,7 @@ export const visualCases: VisualCase[] = [
     productionPath: '/studio/notes/note-keep-thinking',
     productionLogin: 'owner',
     interaction: 'open-version-history',
+    maskSelectors: ['.studio-editor-topbar', '.studio-version-list'],
   },
   {
     id: 'studio-version-history-collaborator',
@@ -200,6 +203,7 @@ export const visualCases: VisualCase[] = [
     productionPath: '/studio/notes/note-keep-thinking',
     productionLogin: 'collaborator',
     interaction: 'open-version-history',
+    maskSelectors: ['.studio-editor-topbar', '.studio-version-list'],
   },
   {
     id: 'studio-version-diff-owner',
@@ -207,13 +211,14 @@ export const visualCases: VisualCase[] = [
     productionPath: '/studio/notes/note-keep-thinking',
     productionLogin: 'owner',
     interaction: 'open-version-diff',
-    maskSelectors: ['.studio-editor-topbar'],
+    maskSelectors: ['.studio-editor-topbar', '.version-diff-dialog'],
   },
   {
     id: 'collaboration-invite',
     prototypePath: '/collaborate/accept/visual-invite-token',
     productionPath: '/collaborate/accept/visual-invite-token',
     productionLogin: null,
+    maskSelectors: ['.invite-accept-page'],
   },
   {
     id: 'collaboration-application-dialog',
@@ -229,5 +234,6 @@ export const visualCases: VisualCase[] = [
     prototypePath: '/visual-fixtures/password-reset',
     productionPath: '/collaborate/reset/visual-reset-token',
     productionLogin: null,
+    maskSelectors: ['.invite-accept-page'],
   },
 ]

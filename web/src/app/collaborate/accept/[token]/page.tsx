@@ -48,7 +48,7 @@ export default async function InvitationActivationPage({
     <main className="invite-accept-page">
       <div className="invite-accept-card">
         <Link href="/" className="invite-back-link">
-          <ArrowLeft size={14} />
+          <ArrowLeft size={18} />
           返回知笺
         </Link>
         <p className="section-kicker mt-8">Collaboration invitation</p>
@@ -57,7 +57,7 @@ export default async function InvitationActivationPage({
           设置账号后，你只会看到下面这些被授权的文章。
         </p>
         <div className="invite-account-email">
-          <Mail size={15} />
+          <Mail size={19} />
           <span>{invite.email}</span>
         </div>
         <div className="invite-scope-list">

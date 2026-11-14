@@ -81,59 +81,63 @@ export function StudioLayout() {
     <div className="studio-shell">
       {!isEditor && (
         <div className="studio-mobile-bar">
-          <BrandMark />
+          <BrandMark compact />
           <nav aria-label="写作台导航">
-            <StudioMobileNav to="/studio" end icon={<FileText size={15} />}>
+            <StudioMobileNav to="/studio" end icon={<FileText size={19} />}>
               内容
             </StudioMobileNav>
-            <StudioMobileNav to="/studio/trash" icon={<Trash2 size={15} />}>
+            <StudioMobileNav to="/studio/trash" icon={<Trash2 size={19} />}>
               回收
             </StudioMobileNav>
             {isOwner && (
               <>
                 <StudioMobileNav
                   to="/studio/collaboration"
-                  icon={<UsersRound size={15} />}
+                  icon={<UsersRound size={19} />}
                 >
                   协作
                 </StudioMobileNav>
                 <StudioMobileNav
                   to="/studio/analytics"
-                  icon={<BarChart3 size={15} />}
+                  icon={<BarChart3 size={19} />}
                 >
                   报表
                 </StudioMobileNav>
                 <StudioMobileNav
                   to="/studio/categories"
-                  icon={<FolderTree size={15} />}
+                  icon={<FolderTree size={19} />}
                 >
                   分类
                 </StudioMobileNav>
                 <StudioMobileNav
                   to="/studio/settings"
-                  icon={<Settings size={15} />}
+                  icon={<Settings size={19} />}
                 >
                   资料
                 </StudioMobileNav>
                 <StudioMobileNav
                   to="/studio/notifications"
-                  icon={<Bell size={15} />}
+                  icon={<Bell size={19} />}
                 >
                   通知
                 </StudioMobileNav>
               </>
             )}
           </nav>
-          <Link to="/" className="studio-mobile-site-link">
-            公开站
-            <ArrowUpRight size={12} />
+          <Link
+            to="/"
+            className="studio-mobile-site-link"
+            aria-label="打开公开站"
+          >
+            <span>公开站</span>
+            <ArrowUpRight size={16} />
           </Link>
         </div>
       )}
       <aside className="studio-sidebar">
         <div className="px-5 pb-5 pt-5">
           <BrandMark />
-          <p className="mt-2 text-[9px] tracking-[0.18em] text-[var(--muted-faint)] uppercase">
+          <p className="mt-2 text-[12px] tracking-[0.18em] text-[var(--muted-faint)] uppercase">
             Writing studio
           </p>
         </div>
@@ -141,37 +145,37 @@ export function StudioLayout() {
         {isOwner && (
           <div className="px-3">
             <button type="button" className="studio-new-button" onClick={startWriting}>
-              <Sparkles size={15} />
+              <Sparkles size={19} />
               开始写作
             </button>
           </div>
         )}
 
         <nav className="mt-5 space-y-1 px-3">
-          <StudioNav to="/studio" end icon={<FileText size={15} />}>
+          <StudioNav to="/studio" end icon={<FileText size={19} />}>
             内容
           </StudioNav>
-          <StudioNav to="/studio/trash" icon={<Trash2 size={15} />}>
+          <StudioNav to="/studio/trash" icon={<Trash2 size={19} />}>
             回收站
           </StudioNav>
           {isOwner && (
             <>
               <StudioNav
                 to="/studio/collaboration"
-                icon={<UsersRound size={15} />}
+                icon={<UsersRound size={19} />}
               >
                 协作管理
               </StudioNav>
               <StudioNav
                 to="/studio/analytics"
-                icon={<BarChart3 size={15} />}
+                icon={<BarChart3 size={19} />}
               >
                 访问报表
               </StudioNav>
-              <StudioNav to="/studio/categories" icon={<FolderTree size={15} />}>
+              <StudioNav to="/studio/categories" icon={<FolderTree size={19} />}>
                 分类管理
               </StudioNav>
-              <StudioNav to="/studio/settings" icon={<Settings size={15} />}>
+              <StudioNav to="/studio/settings" icon={<Settings size={19} />}>
                 个人资料
               </StudioNav>
             </>
@@ -181,7 +185,7 @@ export function StudioLayout() {
         <div className="mt-auto border-t border-[var(--line)] p-3">
           <Link to="/" className="studio-site-link">
             查看公开站
-            <ArrowUpRight size={13} />
+            <ArrowUpRight size={17} />
           </Link>
           <div className="mt-4 flex items-center gap-2.5 px-2">
             <AuthorAvatar
@@ -193,7 +197,7 @@ export function StudioLayout() {
               <span className="block truncate text-xs font-medium text-[var(--ink)]">
                 {currentName}
               </span>
-              <span className="mt-0.5 block text-[9px] text-[var(--muted-faint)]">
+              <span className="mt-0.5 block text-[12px] text-[var(--muted-faint)]">
                 {isOwner ? '站主' : '协作者'}
               </span>
             </span>
@@ -204,7 +208,7 @@ export function StudioLayout() {
                 aria-label="通知"
                 title="通知"
               >
-                <Bell size={15} />
+                <Bell size={19} />
               </Link>
             )}
             <button
@@ -214,7 +218,7 @@ export function StudioLayout() {
               aria-label="退出写作台"
               title="退出写作台"
             >
-              <LogOut size={15} />
+              <LogOut size={19} />
             </button>
           </div>
         </div>
@@ -271,7 +275,7 @@ export function StudioLayout() {
               className="studio-primary-button"
               disabled={!newCategoryId}
             >
-              <Sparkles size={14} />
+              <Sparkles size={18} />
               创建并开始写作
             </button>
           </div>

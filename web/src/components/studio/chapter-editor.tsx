@@ -750,12 +750,12 @@ export function ChapterEditor({
             }}
             aria-label="返回写作台"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={20} />
           </button>
           <div className="min-w-0">
-            <div className="studio-editor-breadcrumb flex min-w-0 items-center gap-1.5 text-[9px] text-[var(--muted-faint)]">
+            <div className="studio-editor-breadcrumb flex min-w-0 items-center gap-1.5 text-[12px] text-[var(--muted-faint)]">
               <span className="truncate">{currentCategory?.title ?? '未分类'}</span>
-              <ChevronRight size={11} />
+              <ChevronRight size={15} />
               <span className="max-w-[230px] truncate text-[var(--ink-soft)]">
                 {title || '无标题章节'}
               </span>
@@ -763,7 +763,7 @@ export function ChapterEditor({
             <p
               role="status"
               data-save-state={saveState}
-              className="mt-0.5 flex items-center gap-1.5 text-[9px] text-[var(--muted-faint)]"
+              className="mt-0.5 flex items-center gap-1.5 text-[12px] text-[var(--muted-faint)]"
             >
               <span
                 className={cn(
@@ -799,7 +799,7 @@ export function ChapterEditor({
               disabled={!versions.length}
               aria-label="对照当前草稿"
             >
-              <Columns2 size={13} />
+              <Columns2 size={17} />
               对照
             </button>
           </div>
@@ -811,7 +811,7 @@ export function ChapterEditor({
             aria-label="打开对照模式"
             title="对照线上版本"
           >
-            <Columns2 size={16} />
+            <Columns2 size={20} />
           </button>
 
           <div className="hidden items-center gap-1 sm:flex">
@@ -823,7 +823,7 @@ export function ChapterEditor({
                   onClick={() => markdownInputRef.current?.click()}
                   aria-label="导入 Markdown"
                 >
-                  <FileUp size={16} />
+                  <FileUp size={20} />
                 </button>
               </Hint>
             ) : null}
@@ -834,7 +834,7 @@ export function ChapterEditor({
                 onClick={() => setHistoryOpen(true)}
                 aria-label="版本历史"
               >
-                <History size={16} />
+                <History size={20} />
               </button>
             </Hint>
             <Hint label="保存版本">
@@ -844,7 +844,7 @@ export function ChapterEditor({
                 onClick={() => setVersionDialogOpen(true)}
                 aria-label="保存版本"
               >
-                <Save size={16} />
+                <Save size={20} />
               </button>
             </Hint>
           </div>
@@ -856,7 +856,7 @@ export function ChapterEditor({
               rel="noreferrer"
               className="studio-secondary-button studio-topbar-public-link"
             >
-              <Eye size={14} />
+              <Eye size={18} />
               查看
             </a>
           ) : null}
@@ -874,7 +874,7 @@ export function ChapterEditor({
                     : undefined
                 }
               >
-                <Send size={14} />
+                <Send size={18} />
                 {!pendingChanges && saveState === 'saved'
                   ? '已是最新'
                   : '更新线上'}
@@ -887,7 +887,7 @@ export function ChapterEditor({
                   aria-label="撤回公开访问"
                   title="撤回公开访问"
                 >
-                  <Eye size={16} />
+                  <Eye size={20} />
                 </button>
               ) : null}
             </>
@@ -897,7 +897,7 @@ export function ChapterEditor({
               className="studio-primary-button"
               onClick={() => void publish()}
             >
-              <Send size={14} />
+              <Send size={18} />
               发布章节
             </button>
           )}
@@ -952,7 +952,7 @@ export function ChapterEditor({
                       label: category.title,
                     }))}
                     ariaLabel="所属分类"
-                    className="!h-[26px] !min-w-[112px] !text-[9px]"
+                    className="!h-[26px] !min-w-[112px] !text-[12px]"
                   />
                 ) : (
                   <span className="studio-readonly-category">
@@ -1008,7 +1008,7 @@ export function ChapterEditor({
                 <p
                   role={imageMessage === '图片已插入' ? 'status' : 'alert'}
                   className={cn(
-                    'mt-3 text-[10px]',
+                    'mt-3 text-[13px]',
                     imageMessage === '图片已插入'
                       ? 'text-[var(--accent)]'
                       : 'text-[var(--rust)]',
@@ -1093,15 +1093,15 @@ export function ChapterEditor({
 
       <div className="studio-mobile-editor-dock">
         <button type="button" onClick={() => setHistoryOpen(true)}>
-          <History size={16} />
+          <History size={20} />
           <span>历史</span>
         </button>
         <button type="button" onClick={() => setVersionDialogOpen(true)}>
-          <Save size={16} />
+          <Save size={20} />
           <span>版本</span>
         </button>
         <button type="button" onClick={() => setTrashOpen(true)}>
-          <Trash2 size={16} />
+          <Trash2 size={20} />
           <span>回收</span>
         </button>
         {isOwner ? (
@@ -1109,19 +1109,19 @@ export function ChapterEditor({
             type="button"
             onClick={() => markdownInputRef.current?.click()}
           >
-            <FileUp size={16} />
+            <FileUp size={20} />
             <span>导入</span>
           </button>
         ) : null}
         {publicationState === 'published' && publicPath ? (
           <a href={publicPath} target="_blank" rel="noreferrer">
-            <Eye size={16} />
+            <Eye size={20} />
             <span>查看</span>
           </a>
         ) : null}
         {isOwner && publicationState === 'published' ? (
           <button type="button" onClick={() => setWithdrawOpen(true)}>
-            <EyeOff size={16} />
+            <EyeOff size={20} />
             <span>撤回</span>
           </button>
         ) : null}
@@ -1132,7 +1132,7 @@ export function ChapterEditor({
         className="studio-editor-danger-link"
         onClick={() => setTrashOpen(true)}
       >
-        <Trash2 size={12} />
+        <Trash2 size={16} />
         移到回收站
       </button>
 
@@ -1147,24 +1147,24 @@ export function ChapterEditor({
             active={editor.isActive('bold')}
             onClick={() => editor.chain().focus().toggleBold().run()}
           >
-            <Bold size={14} />
+            <Bold size={18} />
           </ToolbarButton>
           <ToolbarButton
             label="斜体"
             active={editor.isActive('italic')}
             onClick={() => editor.chain().focus().toggleItalic().run()}
           >
-            <Italic size={14} />
+            <Italic size={18} />
           </ToolbarButton>
           <ToolbarButton
             label="代码"
             active={editor.isActive('code')}
             onClick={() => editor.chain().focus().toggleCode().run()}
           >
-            <Code2 size={14} />
+            <Code2 size={18} />
           </ToolbarButton>
           <ToolbarButton label="链接" onClick={openLinkDialog}>
-            <Link2 size={14} />
+            <Link2 size={18} />
           </ToolbarButton>
         </BubbleMenu>
       ) : null}
@@ -1301,7 +1301,7 @@ export function ChapterEditor({
               className="studio-primary-button"
               disabled={versionPending}
             >
-              <Save size={14} />
+              <Save size={18} />
               {versionPending ? '正在保存…' : '保存版本'}
             </button>
           </div>
@@ -1504,7 +1504,7 @@ function BlockTypeMenu({ editor }: { editor: Editor | null }) {
           aria-label="转换内容块"
           title="点击转换格式，拖动调整位置"
         >
-          <GripVertical size={16} />
+          <GripVertical size={20} />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -1530,9 +1530,9 @@ function BlockTypeMenu({ editor }: { editor: Editor | null }) {
                 )}
                 onSelect={() => convertBlock(option.kind)}
               >
-                <Icon size={15} />
+                <Icon size={19} />
                 <span>{option.label}</span>
-                {active ? <Check size={14} className="ml-auto" /> : null}
+                {active ? <Check size={18} className="ml-auto" /> : null}
               </DropdownMenu.Item>
             )
           })}
@@ -1559,7 +1559,7 @@ function TextColorMenu({
           aria-label="文字颜色"
           title="文字颜色"
         >
-          <Palette size={15} />
+          <Palette size={19} />
           <span
             className="text-color-indicator"
             style={{ backgroundColor: currentColor ?? 'var(--ink-soft)' }}
@@ -1599,7 +1599,7 @@ function TextColorMenu({
                   }}
                 />
                 {(currentColor ?? null) === color.value ? (
-                  <Check size={12} />
+                  <Check size={16} />
                 ) : null}
               </DropdownMenu.Item>
             ))}
@@ -1661,70 +1661,70 @@ function StudioToolbar({
           active={selectionState.h1}
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         >
-          <Heading1 size={15} />
+          <Heading1 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="二级标题"
           active={selectionState.h2}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         >
-          <Heading2 size={15} />
+          <Heading2 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="三级标题"
           active={selectionState.h3}
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         >
-          <Heading3 size={15} />
+          <Heading3 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="四级标题"
           active={selectionState.h4}
           onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
         >
-          <Heading4 size={15} />
+          <Heading4 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="五级标题"
           active={selectionState.h5}
           onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
         >
-          <Heading5 size={15} />
+          <Heading5 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="加粗"
           active={selectionState.bold}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
-          <Bold size={15} />
+          <Bold size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="斜体"
           active={selectionState.italic}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
-          <Italic size={15} />
+          <Italic size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="下划线"
           active={selectionState.underline}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
         >
-          <Underline size={15} />
+          <Underline size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="删除线"
           active={selectionState.strike}
           onClick={() => editor.chain().focus().toggleStrike().run()}
         >
-          <Strikethrough size={15} />
+          <Strikethrough size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="高亮"
           active={selectionState.highlight}
           onClick={() => editor.chain().focus().toggleHighlight().run()}
         >
-          <Highlighter size={15} />
+          <Highlighter size={19} />
         </ToolbarButton>
         <TextColorMenu editor={editor} currentColor={selectionState.color} />
       </div>
@@ -1735,35 +1735,35 @@ function StudioToolbar({
           active={selectionState.bulletList}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
-          <List size={15} />
+          <List size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="编号列表"
           active={selectionState.orderedList}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
-          <ListOrdered size={15} />
+          <ListOrdered size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="待办事项"
           active={selectionState.taskList}
           onClick={() => editor.chain().focus().toggleTaskList().run()}
         >
-          <CheckSquare2 size={15} />
+          <CheckSquare2 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="引用"
           active={selectionState.blockquote}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
         >
-          <Quote size={15} />
+          <Quote size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="代码块"
           active={selectionState.codeBlock}
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         >
-          <Code2 size={15} />
+          <Code2 size={19} />
         </ToolbarButton>
       </div>
       <div className="toolbar-separator" />
@@ -1773,13 +1773,13 @@ function StudioToolbar({
           active={selectionState.link}
           onClick={onLink}
         >
-          <Link2 size={15} />
+          <Link2 size={19} />
         </ToolbarButton>
         <ToolbarButton label="插入图片" onClick={onImage} disabled={imageBusy}>
           {imageBusy ? (
-            <LoaderCircle className="animate-spin" size={15} />
+            <LoaderCircle className="animate-spin" size={19} />
           ) : (
-            <ImagePlus size={15} />
+            <ImagePlus size={19} />
           )}
         </ToolbarButton>
       </div>
@@ -1789,14 +1789,14 @@ function StudioToolbar({
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!selectionState.canUndo}
         >
-          <Undo2 size={15} />
+          <Undo2 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="重做"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!selectionState.canRedo}
         >
-          <Redo2 size={15} />
+          <Redo2 size={19} />
         </ToolbarButton>
       </div>
     </div>

@@ -81,7 +81,7 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
                 className="studio-secondary-button pointer-events-none opacity-50 data-[enabled=true]:pointer-events-auto data-[enabled=true]:opacity-100"
                 data-enabled={Boolean(values.avatarUrl)}
               >
-                <ImagePlus size={14} />
+                <ImagePlus size={18} />
                 预览头像
               </a>
               {values.avatarUrl ? (
@@ -95,7 +95,7 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
                     }))
                   }
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={18} />
                   移除头像
                 </button>
               ) : null}
@@ -145,7 +145,7 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
 
         <div className="studio-profile-actions">
           <button type="submit" className="studio-primary-button" disabled={pending}>
-            <Save size={15} />
+            <Save size={19} />
             {pending ? '正在保存…' : '保存站点资料'}
           </button>
         </div>

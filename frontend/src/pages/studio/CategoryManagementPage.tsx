@@ -40,7 +40,7 @@ export function CategoryManagementPage() {
       </header>
 
       <form onSubmit={create} className="category-create-form">
-        <FolderPlus size={16} />
+        <FolderPlus size={20} />
         <input
           value={newTitle}
           onChange={(event) => setNewTitle(event.target.value)}
@@ -137,7 +137,7 @@ function CategoryEditor({
             className="studio-icon-button"
             aria-label="上移分类"
           >
-            <ArrowUp size={14} />
+            <ArrowUp size={18} />
           </button>
           <button
             type="button"
@@ -146,7 +146,7 @@ function CategoryEditor({
             className="studio-icon-button"
             aria-label="下移分类"
           >
-            <ArrowDown size={14} />
+            <ArrowDown size={18} />
           </button>
         </div>
       </header>
@@ -169,11 +169,11 @@ function CategoryEditor({
       <div className="flex items-center justify-between border-t border-[var(--line)] pt-4">
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 text-[10px] text-[var(--rust)] disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 text-[13px] text-[var(--rust)] disabled:opacity-40"
           onClick={onDelete}
           disabled={chapterCount > 0}
         >
-          <Trash2 size={12} />
+          <Trash2 size={16} />
           删除分类
         </button>
         <button
@@ -181,7 +181,7 @@ function CategoryEditor({
           className="studio-primary-button"
           onClick={() => onSave({ title, slug })}
         >
-          <Save size={14} />
+          <Save size={18} />
           保存
         </button>
       </div>

@@ -228,7 +228,7 @@ function MetricCard({
 }) {
   return (
     <article className="analytics-kpi">
-      <Icon size={16} />
+      <Icon size={20} />
       <span>{label}</span>
       <strong>{value}</strong>
     </article>

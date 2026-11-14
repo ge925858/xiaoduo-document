@@ -43,11 +43,11 @@ export function LandingPage() {
             }
             aria-label={themeMode === 'light' ? '切换深色' : '切换浅色'}
           >
-            {themeMode === 'light' ? <Moon size={17} /> : <Sun size={17} />}
+            {themeMode === 'light' ? <Moon size={21} /> : <Sun size={21} />}
           </button>
           <Link to="/library" className="landing-header-link">
             进入笔记库
-            <ArrowRight size={14} />
+            <ArrowRight size={18} />
           </Link>
         </div>
       </header>
@@ -68,10 +68,10 @@ export function LandingPage() {
           <div className="landing-actions">
             <Link to="/library" className="landing-primary-button">
               进入笔记库
-              <ArrowRight size={16} />
+              <ArrowRight size={20} />
             </Link>
             <span className="landing-count">
-              <BookOpen size={14} />
+              <BookOpen size={18} />
               {orderedCategories.filter((category) => categoryNotes(category, notes).length).length} 个分类
               <span />
               {published.length} 篇公开章节
@@ -110,7 +110,7 @@ export function LandingPage() {
             <div className="landing-preview-content">
               <p className="landing-preview-breadcrumb">
                 {previewCategory?.title}
-                <ChevronRight size={11} />
+                <ChevronRight size={15} />
                 第一章
               </p>
               <h2>

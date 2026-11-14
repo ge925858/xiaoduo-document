@@ -29,10 +29,10 @@ export function PublicPreview({
           <BrandMark />
         </Link>
         <div className="flex items-center gap-2">
-          <ThemeToggle className="landing-icon-button" iconSize={17} />
+          <ThemeToggle className="landing-icon-button" iconSize={21} />
           <Link href="/library" className="landing-header-link">
             进入笔记库
-            <ArrowRight size={14} />
+            <ArrowRight size={18} />
           </Link>
         </div>
       </header>
@@ -53,10 +53,10 @@ export function PublicPreview({
           <div className="landing-actions">
             <Link href="/library" className="landing-primary-button">
               进入笔记库
-              <ArrowRight size={16} />
+              <ArrowRight size={20} />
             </Link>
             <span className="landing-count">
-              <BookOpen size={14} />
+              <BookOpen size={18} />
               {categories.length} 个分类
               <span />
               {publishedCount} 篇公开章节
@@ -103,7 +103,7 @@ export function PublicPreview({
             <div className="landing-preview-content">
               <p className="landing-preview-breadcrumb">
                 {previewCategory?.title ?? '知笺'}
-                <ChevronRight size={11} />
+                <ChevronRight size={15} />
                 第一章
               </p>
               <h2>

@@ -63,7 +63,7 @@ export function PublicSearchResults({
         role="search"
         className="search-results-form"
       >
-        <Search size={17} aria-hidden="true" />
+        <Search size={21} aria-hidden="true" />
         <input
           name="q"
           type="search"
@@ -90,13 +90,13 @@ export function PublicSearchResults({
               className="search-result-row"
             >
               <span className="search-result-icon">
-                <Layers3 size={15} />
+                <Layers3 size={19} />
               </span>
               <span className="min-w-0 flex-1 text-sm font-semibold text-[var(--ink)]">
                 {category.title}
               </span>
               <ArrowRight
-                size={14}
+                size={18}
                 className="text-[var(--muted-faint)]"
               />
             </Link>
@@ -114,7 +114,7 @@ export function PublicSearchResults({
               className="search-result-row"
             >
               <span className="search-result-icon">
-                <FileText size={15} />
+                <FileText size={19} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold text-[var(--ink)]">
@@ -125,7 +125,7 @@ export function PublicSearchResults({
                 </span>
               </span>
               <ArrowRight
-                size={14}
+                size={18}
                 className="text-[var(--muted-faint)]"
               />
             </Link>

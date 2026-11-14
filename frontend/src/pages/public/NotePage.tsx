@@ -151,16 +151,16 @@ export function NotePage() {
         <div>
           <nav className="chapter-breadcrumb" aria-label="面包屑">
             <Link to="/" className="breadcrumb-home" aria-label="返回预览页">
-              <Home size={14} />
+              <Home size={18} />
             </Link>
-            <ChevronRight size={13} className="breadcrumb-separator" />
+            <ChevronRight size={17} className="breadcrumb-separator" />
             <Link
               to={`/library/${category.slug}`}
               className="breadcrumb-category"
             >
               {category.title}
             </Link>
-            <ChevronRight size={13} className="breadcrumb-separator" />
+            <ChevronRight size={17} className="breadcrumb-separator" />
             <span className="breadcrumb-current">{published.title}</span>
           </nav>
 
@@ -216,7 +216,7 @@ export function NotePage() {
               >
                 <span>上一章</span>
                 <strong>
-                  <ArrowLeft size={15} />
+                  <ArrowLeft size={19} />
                   {previous.published.title}
                 </strong>
               </Link>
@@ -231,7 +231,7 @@ export function NotePage() {
                 <span>下一章</span>
                 <strong>
                   {next.published.title}
-                  <ArrowRight size={15} />
+                  <ArrowRight size={19} />
                 </strong>
               </Link>
             ) : (
@@ -239,7 +239,7 @@ export function NotePage() {
                 <span>返回目录</span>
                 <strong>
                   查看全部章节
-                  <ArrowRight size={15} />
+                  <ArrowRight size={19} />
                 </strong>
               </Link>
             )}
@@ -256,7 +256,7 @@ export function NotePage() {
                 className="studio-secondary-button"
                 onClick={() => setApplicationOpen(true)}
               >
-                <UserRoundPlus size={14} />
+                <UserRoundPlus size={18} />
                 申请参与编辑
               </button>
             </section>

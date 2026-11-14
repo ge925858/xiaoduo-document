@@ -116,7 +116,7 @@ export function PublicLibraryShell({
           aria-controls="library-sidebar"
           aria-expanded={sidebarOpen}
         >
-          <Menu size={18} />
+          <Menu size={22} />
         </button>
         <Link
           href="/"
@@ -136,10 +136,10 @@ export function PublicLibraryShell({
             aria-label="搜索"
             onClick={() => setSearchOpen(true)}
           >
-            <Search aria-hidden="true" size={15} />
+            <Search aria-hidden="true" size={19} />
             <span>搜索</span>
           </button>
-          <ThemeToggle className="library-icon-button" iconSize={16} />
+          <ThemeToggle className="library-icon-button" iconSize={20} />
         </div>
       </header>
 
@@ -155,7 +155,7 @@ export function PublicLibraryShell({
           onClick={() => closeSidebar()}
           aria-label="关闭目录"
         >
-          <X size={17} />
+          <X size={21} />
         </button>
 
         <nav className="library-directory" aria-label="笔记目录">
@@ -186,9 +186,9 @@ export function PublicLibraryShell({
                     }
                   >
                     {isCollapsed ? (
-                      <ChevronRight size={13} />
+                      <ChevronRight size={17} />
                     ) : (
-                      <ChevronDown size={13} />
+                      <ChevronDown size={17} />
                     )}
                   </button>
                   <Link
@@ -236,7 +236,7 @@ export function PublicLibraryShell({
 
         <div className="library-sidebar-footer">
           <Link href="/" onClick={() => closeSidebar(false)}>
-            <ArrowLeft size={13} />
+            <ArrowLeft size={17} />
             返回预览页
           </Link>
         </div>

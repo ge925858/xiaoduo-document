@@ -44,7 +44,7 @@ export default async function PasswordResetPage({
     <main className="invite-accept-page">
       <div className="invite-accept-card">
         <Link href="/" className="invite-back-link">
-          <ArrowLeft size={14} />
+          <ArrowLeft size={18} />
           返回知笺
         </Link>
         <p className="section-kicker mt-8">Password reset</p>
@@ -53,7 +53,7 @@ export default async function PasswordResetPage({
           为协作者账号设置一个新密码，旧会话将立即失效。
         </p>
         <div className="invite-account-email">
-          <Mail size={15} />
+          <Mail size={19} />
           <span>{reset.email}</span>
         </div>
         <PasswordResetForm

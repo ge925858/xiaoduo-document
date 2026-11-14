@@ -47,14 +47,14 @@ export function CategoryPage() {
             </span>
             <span className="min-w-0 flex-1">
               <span className="flex flex-wrap items-center gap-3">
-                <span className="text-[22px] font-semibold text-[var(--ink)] group-hover:text-[var(--accent)]">
+                <span className="text-[24px] font-semibold text-[var(--ink)] group-hover:text-[var(--accent)]">
                   {published.title}
                 </span>
               </span>
             </span>
             <span className="chapter-list-meta" data-visual-dynamic>
               {formatRelativeTime(published.publishedAt)}
-              <ArrowRight size={14} />
+              <ArrowRight size={18} />
             </span>
           </Link>
           )

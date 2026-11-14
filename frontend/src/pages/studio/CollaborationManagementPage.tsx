@@ -168,7 +168,7 @@ export function CollaborationManagementPage() {
             className={section === value ? 'is-active' : ''}
             onClick={() => setSection(value)}
           >
-            <Icon size={14} />
+            <Icon size={18} />
             {label}
           </button>
         ))}
@@ -202,7 +202,7 @@ export function CollaborationManagementPage() {
                       </span>
                       <time>{formatRelativeTime(application.createdAt)}</time>
                     </div>
-                    <p className="mt-1 text-[10px] text-[var(--muted)]">
+                    <p className="mt-1 text-[13px] text-[var(--muted)]">
                       {application.email} · 申请编辑「{note?.title ?? '文章已删除'}」
                     </p>
                     <p className="collaboration-application-note">
@@ -216,7 +216,7 @@ export function CollaborationManagementPage() {
                         className="studio-secondary-button"
                         onClick={() => reject(application.id)}
                       >
-                        <X size={13} />
+                        <X size={17} />
                         拒绝
                       </button>
                       <button
@@ -224,7 +224,7 @@ export function CollaborationManagementPage() {
                         className="studio-primary-button"
                         onClick={() => approve(application.id)}
                       >
-                        <Check size={13} />
+                        <Check size={17} />
                         通过
                       </button>
                     </div>
@@ -295,7 +295,7 @@ export function CollaborationManagementPage() {
                 className="studio-primary-button"
                 onClick={createDirectInvite}
               >
-                <MailPlus size={14} />
+                <MailPlus size={18} />
                 生成邀请链接
               </button>
             </div>
@@ -350,14 +350,14 @@ export function CollaborationManagementPage() {
                             title="复制邀请链接"
                             aria-label="复制邀请链接"
                           >
-                            <Copy size={14} />
+                            <Copy size={18} />
                           </button>
                           <Link
                             to={`/collaborate/accept/${invite.token}`}
                             className="studio-secondary-button"
                           >
                             打开
-                            <ExternalLink size={12} />
+                            <ExternalLink size={16} />
                           </Link>
                         </div>
                       )}
@@ -371,7 +371,7 @@ export function CollaborationManagementPage() {
                           title="撤销邀请"
                           aria-label="撤销邀请"
                         >
-                          <Ban size={14} />
+                          <Ban size={18} />
                         </button>
                       </div>
                     )}
@@ -443,9 +443,9 @@ export function CollaborationManagementPage() {
                   }
                 >
                   {collaborator.status === 'active' ? (
-                    <Ban size={15} />
+                    <Ban size={19} />
                   ) : (
-                    <RotateCcw size={15} />
+                    <RotateCcw size={19} />
                   )}
                 </button>
               </article>
@@ -515,7 +515,7 @@ export function CollaborationManagementPage() {
                 toast.success('文章授权已更新')
               }}
             >
-              <UserRoundCheck size={14} />
+              <UserRoundCheck size={18} />
               保存授权
             </button>
           </div>
@@ -534,7 +534,7 @@ function CollaborationEmpty({
 }) {
   return (
     <div className="collaboration-empty">
-      <Users size={20} />
+      <Users size={24} />
       <strong>{title}</strong>
       <p>{description}</p>
     </div>

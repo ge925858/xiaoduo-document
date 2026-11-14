@@ -14,10 +14,10 @@ export function BrandMark({
       </div>
       {!compact && (
         <div className="leading-none">
-          <div className="font-display text-[21px] tracking-[0.16em] text-[var(--ink)]">
+          <div className="font-display text-[23px] tracking-[0.16em] text-[var(--ink)]">
             知笺
           </div>
-          <div className="mt-1 text-[9px] uppercase tracking-[0.3em] text-[var(--muted)]">
+          <div className="mt-1 text-[12px] uppercase tracking-[0.3em] text-[var(--muted)]">
             Zhijian
           </div>
         </div>

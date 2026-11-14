@@ -41,7 +41,7 @@ export function StudioSettingsVisualPage() {
                 className="studio-secondary-button pointer-events-none opacity-50 data-[enabled=true]:pointer-events-auto data-[enabled=true]:opacity-100"
                 data-enabled="false"
               >
-                <ImagePlus size={14} />
+                <ImagePlus size={18} />
                 预览头像
               </a>
             </div>
@@ -77,7 +77,7 @@ export function StudioSettingsVisualPage() {
 
         <div className="studio-profile-actions">
           <button type="submit" className="studio-primary-button">
-            <Save size={15} />
+            <Save size={19} />
             保存站点资料
           </button>
         </div>

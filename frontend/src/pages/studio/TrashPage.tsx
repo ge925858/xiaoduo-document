@@ -66,7 +66,7 @@ export function TrashPage() {
           return (
             <article key={note.id} className="studio-trash-row">
               <span className="studio-trash-icon">
-                <Trash2 size={15} />
+                <Trash2 size={19} />
               </span>
               <div className="min-w-0 flex-1">
                 <h2>{note.title}</h2>
@@ -95,7 +95,7 @@ export function TrashPage() {
                     aria-label="恢复章节"
                     title="恢复章节"
                   >
-                    <RotateCcw size={15} />
+                    <RotateCcw size={19} />
                   </button>
                 )}
                 {isOwner && (
@@ -106,7 +106,7 @@ export function TrashPage() {
                     aria-label="永久删除章节"
                     title="永久删除章节"
                   >
-                    <Trash2 size={15} />
+                    <Trash2 size={19} />
                   </button>
                 )}
               </div>
@@ -116,7 +116,7 @@ export function TrashPage() {
 
         {!trashed.length && (
           <div className="studio-trash-empty">
-            <Trash2 size={22} />
+            <Trash2 size={26} />
             <p>回收站是空的</p>
             <span>移到这里的章节会保留 30 天。</span>
           </div>
@@ -147,7 +147,7 @@ export function TrashPage() {
               <AlertDialog.Action asChild>
                 <button
                   type="button"
-                  className="inline-flex h-8 items-center rounded-[4px] bg-[var(--rust)] px-3 text-[10px] font-medium text-white"
+                  className="inline-flex h-8 items-center rounded-[4px] bg-[var(--rust)] px-3 text-[13px] font-medium text-white"
                   onClick={() => {
                     if (!deleteTarget) return
                     deleteNoteForever(deleteTarget)

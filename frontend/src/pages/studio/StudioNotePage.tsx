@@ -634,7 +634,7 @@ export function StudioNotePage() {
   if (note.trashedAt) {
     return (
       <div className="studio-page flex min-h-[70vh] flex-col items-center justify-center text-center">
-        <Trash2 size={22} className="text-[var(--muted)]" />
+        <Trash2 size={26} className="text-[var(--muted)]" />
         <p className="mt-4 font-display text-2xl text-[var(--ink)]">
           这个章节在回收站中
         </p>
@@ -658,7 +658,7 @@ export function StudioNotePage() {
                 toast.success('章节已恢复为未发布草稿')
               }}
             >
-              <RotateCcw size={14} />
+              <RotateCcw size={18} />
               恢复章节
             </button>
           )}
@@ -692,12 +692,12 @@ export function StudioNotePage() {
             }}
             aria-label="返回写作台"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={20} />
           </button>
           <div className="min-w-0">
-            <div className="studio-editor-breadcrumb flex min-w-0 items-center gap-1.5 text-[9px] text-[var(--muted-faint)]">
+            <div className="studio-editor-breadcrumb flex min-w-0 items-center gap-1.5 text-[12px] text-[var(--muted-faint)]">
               <span className="truncate">{currentCategory?.title ?? '未分类'}</span>
-              <ChevronRight size={11} />
+              <ChevronRight size={15} />
               <span className="max-w-[230px] truncate text-[var(--ink-soft)]">
                 {title || '无标题章节'}
               </span>
@@ -722,7 +722,7 @@ export function StudioNotePage() {
                   className={compareOpen ? 'is-active' : ''}
                   onClick={() => setCompareOpen(true)}
                 >
-                  <Columns2 size={13} />
+                  <Columns2 size={17} />
                   对照
                 </button>
               </div>
@@ -736,7 +736,7 @@ export function StudioNotePage() {
                 aria-label={compareOpen ? '退出对照模式' : '打开对照模式'}
                 title={compareOpen ? '退出对照模式' : '对照线上版本'}
               >
-                <Columns2 size={16} />
+                <Columns2 size={20} />
               </button>
             </>
           )}
@@ -750,7 +750,7 @@ export function StudioNotePage() {
                   onClick={() => markdownInputRef.current?.click()}
                   aria-label="导入 Markdown"
                 >
-                  <FileUp size={16} />
+                  <FileUp size={20} />
                 </button>
               </Hint>
             )}
@@ -761,7 +761,7 @@ export function StudioNotePage() {
                 onClick={() => setHistoryOpen(true)}
                 aria-label="版本历史"
               >
-                <History size={16} />
+                <History size={20} />
               </button>
             </Hint>
             <Hint label="保存版本">
@@ -771,7 +771,7 @@ export function StudioNotePage() {
                 onClick={() => setVersionDialogOpen(true)}
                 aria-label="保存版本"
               >
-                <Save size={16} />
+                <Save size={20} />
               </button>
             </Hint>
           </div>
@@ -783,7 +783,7 @@ export function StudioNotePage() {
               rel="noreferrer"
               className="studio-secondary-button studio-topbar-public-link"
             >
-              <Eye size={14} />
+              <Eye size={18} />
               查看
             </a>
           )}
@@ -796,7 +796,7 @@ export function StudioNotePage() {
                 onClick={handlePublish}
                 disabled={!pendingChanges}
               >
-                <Send size={14} />
+                <Send size={18} />
                 {pendingChanges ? '更新线上' : '已是最新'}
               </button>
               {isOwner && (
@@ -807,7 +807,7 @@ export function StudioNotePage() {
                   aria-label="撤回公开访问"
                   title="撤回公开访问"
                 >
-                  <Eye size={16} />
+                  <Eye size={20} />
                 </button>
               )}
             </>
@@ -817,7 +817,7 @@ export function StudioNotePage() {
               className="studio-primary-button"
               onClick={handlePublish}
             >
-              <Send size={14} />
+              <Send size={18} />
               {hasPublishedVersion ? '重新发布' : '发布'}
             </button>
           )}
@@ -890,7 +890,7 @@ export function StudioNotePage() {
                     title={syncScroll ? '关闭联动滚动' : '开启联动滚动'}
                     aria-label={syncScroll ? '关闭联动滚动' : '开启联动滚动'}
                   >
-                    {syncScroll ? <Link2 size={11} /> : <Unlink2 size={11} />}
+                    {syncScroll ? <Link2 size={15} /> : <Unlink2 size={15} />}
                   </button>
                 </div>
               </div>
@@ -942,7 +942,7 @@ export function StudioNotePage() {
                           label: category.title,
                         }))}
                       ariaLabel="所属分类"
-                      className="!h-[26px] !min-w-[112px] !text-[9px]"
+                      className="!h-[26px] !min-w-[112px] !text-[12px]"
                     />
                   ) : (
                     <span className="studio-readonly-category">
@@ -1069,15 +1069,15 @@ export function StudioNotePage() {
 
       <div className="studio-mobile-editor-dock">
         <button type="button" onClick={() => setHistoryOpen(true)}>
-          <History size={16} />
+          <History size={20} />
           <span>历史</span>
         </button>
         <button type="button" onClick={() => setVersionDialogOpen(true)}>
-          <Save size={16} />
+          <Save size={20} />
           <span>版本</span>
         </button>
         <button type="button" onClick={() => setTrashDialogOpen(true)}>
-          <Trash2 size={16} />
+          <Trash2 size={20} />
           <span>回收</span>
         </button>
         {isOwner && (
@@ -1085,19 +1085,19 @@ export function StudioNotePage() {
             type="button"
             onClick={() => markdownInputRef.current?.click()}
           >
-            <FileUp size={16} />
+            <FileUp size={20} />
             <span>导入</span>
           </button>
         )}
         {isPublished && publishedPath && (
           <a href={publishedPath} target="_blank" rel="noreferrer">
-            <Eye size={16} />
+            <Eye size={20} />
             <span>查看</span>
           </a>
         )}
         {isOwner && isPublished && (
           <button type="button" onClick={() => setUnpublishDialogOpen(true)}>
-            <EyeOff size={16} />
+            <EyeOff size={20} />
             <span>撤回</span>
           </button>
         )}
@@ -1122,7 +1122,7 @@ export function StudioNotePage() {
                 toast.success('图片链接已复制')
               }}
             >
-              <Link2 size={14} />
+              <Link2 size={18} />
               复制链接
             </button>
           ) : (
@@ -1132,24 +1132,24 @@ export function StudioNotePage() {
                 active={editor.isActive('bold')}
                 onClick={() => editor.chain().focus().toggleBold().run()}
               >
-                <Bold size={14} />
+                <Bold size={18} />
               </ToolbarButton>
               <ToolbarButton
                 label="斜体"
                 active={editor.isActive('italic')}
                 onClick={() => editor.chain().focus().toggleItalic().run()}
               >
-                <Italic size={14} />
+                <Italic size={18} />
               </ToolbarButton>
               <ToolbarButton
                 label="代码"
                 active={editor.isActive('code')}
                 onClick={() => editor.chain().focus().toggleCode().run()}
               >
-                <Code2 size={14} />
+                <Code2 size={18} />
               </ToolbarButton>
               <ToolbarButton label="链接" onClick={openLinkDialog}>
-                <Link2 size={14} />
+                <Link2 size={18} />
               </ToolbarButton>
             </>
           )}
@@ -1255,7 +1255,7 @@ export function StudioNotePage() {
               取消
             </button>
             <button type="submit" className="studio-primary-button">
-              <Save size={14} />
+              <Save size={18} />
               保存版本
             </button>
           </div>
@@ -1314,7 +1314,7 @@ export function StudioNotePage() {
                   <strong className="mt-1.5 block truncate">
                     {version.label || version.title}
                   </strong>
-                  <p className="mt-1 text-[10px] text-[var(--muted-faint)]">
+                  <p className="mt-1 text-[11px] text-[var(--muted-faint)]">
                     {countWords(version.plainText)} 字 · {version.title}
                   </p>
                 </div>
@@ -1329,7 +1329,7 @@ export function StudioNotePage() {
                     title="查看与上一版本的变化"
                     aria-label="查看与上一版本的变化"
                   >
-                    <Eye size={14} />
+                    <Eye size={18} />
                   </button>
                   <button
                     type="button"
@@ -1338,7 +1338,7 @@ export function StudioNotePage() {
                     title="恢复到当前草稿"
                     aria-label="恢复到当前草稿"
                   >
-                    <RotateCcw size={14} />
+                    <RotateCcw size={18} />
                   </button>
                   {version.kind === 'manual' &&
                     (isOwner ||
@@ -1354,7 +1354,7 @@ export function StudioNotePage() {
                       title="删除手动版本"
                       aria-label="删除手动版本"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={18} />
                     </button>
                   )}
                 </div>
@@ -1449,7 +1449,7 @@ export function StudioNotePage() {
               <AlertDialog.Action asChild>
                 <button
                   type="button"
-                  className="inline-flex h-8 items-center rounded-[4px] bg-[var(--rust)] px-3 text-[10px] font-medium text-white"
+                  className="inline-flex h-8 items-center rounded-[4px] bg-[var(--rust)] px-3 text-[13px] font-medium text-white"
                   onClick={() => {
                     saveNow()
                     trashNote(note.id)
@@ -1508,7 +1508,7 @@ export function StudioNotePage() {
         className="studio-editor-danger-link"
         onClick={() => setTrashDialogOpen(true)}
       >
-        <Trash2 size={12} />
+        <Trash2 size={16} />
         移到回收站
       </button>
     </div>
@@ -1523,7 +1523,7 @@ function SaveIndicator({
   savedAt: string
 }) {
   return (
-    <p className="mt-0.5 flex items-center gap-1.5 text-[9px] text-[var(--muted-faint)]">
+    <p className="mt-0.5 flex items-center gap-1.5 text-[12px] text-[var(--muted-faint)]">
       <span
         className={cn(
           'size-1.5 rounded-full',
@@ -1741,7 +1741,7 @@ function BlockTypeMenu({ editor }: { editor: Editor | null }) {
           aria-label="转换内容块"
           title="点击转换格式，拖动调整位置"
         >
-          <GripVertical size={16} />
+          <GripVertical size={20} />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -1767,9 +1767,9 @@ function BlockTypeMenu({ editor }: { editor: Editor | null }) {
                 )}
                 onSelect={() => convertBlock(option.kind)}
               >
-                <Icon size={15} />
+                <Icon size={19} />
                 <span>{option.label}</span>
-                {active && <Check size={14} className="ml-auto" />}
+                {active && <Check size={18} className="ml-auto" />}
               </DropdownMenu.Item>
             )
           })}
@@ -1800,7 +1800,7 @@ function TextColorMenu({
           aria-label="文字颜色"
           title="文字颜色"
         >
-          <Palette size={15} />
+          <Palette size={19} />
           <span
             className="text-color-indicator"
             style={{ backgroundColor: currentColor ?? 'var(--ink-soft)' }}
@@ -1840,7 +1840,7 @@ function TextColorMenu({
                   }}
                 />
                 {(currentColor ?? null) === color.value && (
-                  <Check size={12} />
+                  <Check size={16} />
                 )}
               </DropdownMenu.Item>
             ))}
@@ -1902,70 +1902,70 @@ function StudioToolbar({
           active={selectionState.h1}
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         >
-          <Heading1 size={15} />
+          <Heading1 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="二级标题"
           active={selectionState.h2}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         >
-          <Heading2 size={15} />
+          <Heading2 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="三级标题"
           active={selectionState.h3}
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         >
-          <Heading3 size={15} />
+          <Heading3 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="四级标题"
           active={selectionState.h4}
           onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
         >
-          <Heading4 size={15} />
+          <Heading4 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="五级标题"
           active={selectionState.h5}
           onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
         >
-          <Heading5 size={15} />
+          <Heading5 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="加粗"
           active={selectionState.bold}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
-          <Bold size={15} />
+          <Bold size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="斜体"
           active={selectionState.italic}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
-          <Italic size={15} />
+          <Italic size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="下划线"
           active={selectionState.underline}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
         >
-          <Underline size={15} />
+          <Underline size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="删除线"
           active={selectionState.strike}
           onClick={() => editor.chain().focus().toggleStrike().run()}
         >
-          <Strikethrough size={15} />
+          <Strikethrough size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="高亮"
           active={selectionState.highlight}
           onClick={() => editor.chain().focus().toggleHighlight().run()}
         >
-          <Highlighter size={15} />
+          <Highlighter size={19} />
         </ToolbarButton>
         <TextColorMenu editor={editor} currentColor={selectionState.color} />
       </div>
@@ -1976,47 +1976,47 @@ function StudioToolbar({
           active={selectionState.bulletList}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
-          <List size={15} />
+          <List size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="编号列表"
           active={selectionState.orderedList}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
-          <ListOrdered size={15} />
+          <ListOrdered size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="待办事项"
           active={selectionState.taskList}
           onClick={() => editor.chain().focus().toggleTaskList().run()}
         >
-          <CheckSquare2 size={15} />
+          <CheckSquare2 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="引用"
           active={selectionState.blockquote}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
         >
-          <Quote size={15} />
+          <Quote size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="代码块"
           active={selectionState.codeBlock}
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         >
-          <Code2 size={15} />
+          <Code2 size={19} />
         </ToolbarButton>
       </div>
       <div className="toolbar-separator" />
       <div className="toolbar-group">
         <ToolbarButton label="链接" active={selectionState.link} onClick={onLink}>
-          <Link2 size={15} />
+          <Link2 size={19} />
         </ToolbarButton>
         <ToolbarButton label="插入图片" onClick={onImage} disabled={imageBusy}>
           {imageBusy ? (
-            <LoaderCircle className="animate-spin" size={15} />
+            <LoaderCircle className="animate-spin" size={19} />
           ) : (
-            <ImagePlus size={15} />
+            <ImagePlus size={19} />
           )}
         </ToolbarButton>
       </div>
@@ -2026,14 +2026,14 @@ function StudioToolbar({
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!selectionState.canUndo}
         >
-          <Undo2 size={15} />
+          <Undo2 size={19} />
         </ToolbarButton>
         <ToolbarButton
           label="重做"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!selectionState.canRedo}
         >
-          <Redo2 size={15} />
+          <Redo2 size={19} />
         </ToolbarButton>
       </div>
     </div>

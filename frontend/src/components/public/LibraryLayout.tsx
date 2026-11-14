@@ -72,7 +72,7 @@ export function LibraryLayout() {
           onClick={() => setSidebarOpen(true)}
           aria-label="打开目录"
         >
-          <Menu size={18} />
+          <Menu size={22} />
         </button>
         <Link to="/" className="library-brand">
           <BrandMark />
@@ -86,7 +86,7 @@ export function LibraryLayout() {
             onClick={() => setSearchOpen(true)}
             aria-label="搜索"
           >
-            <Search size={15} />
+            <Search size={19} />
             <span>搜索</span>
           </button>
           <button
@@ -97,7 +97,7 @@ export function LibraryLayout() {
             }
             aria-label={themeMode === 'light' ? '切换深色' : '切换浅色'}
           >
-            {themeMode === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+            {themeMode === 'light' ? <Moon size={20} /> : <Sun size={20} />}
           </button>
         </div>
       </header>
@@ -112,7 +112,7 @@ export function LibraryLayout() {
           onClick={() => setSidebarOpen(false)}
           aria-label="关闭目录"
         >
-          <X size={17} />
+          <X size={21} />
         </button>
 
         <nav className="library-directory">
@@ -140,9 +140,9 @@ export function LibraryLayout() {
                     aria-expanded={!isCollapsed}
                   >
                     {isCollapsed ? (
-                      <ChevronRight size={13} />
+                      <ChevronRight size={17} />
                     ) : (
-                      <ChevronDown size={13} />
+                      <ChevronDown size={17} />
                     )}
                   </button>
                   <Link
@@ -188,7 +188,7 @@ export function LibraryLayout() {
 
         <div className="library-sidebar-footer">
           <Link to="/" onClick={() => setSidebarOpen(false)}>
-            <ArrowLeft size={13} />
+            <ArrowLeft size={17} />
             返回预览页
           </Link>
         </div>

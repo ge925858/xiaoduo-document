@@ -125,7 +125,7 @@ export function NotificationCenter({
               )}
             >
               <span className="notification-kind-icon">
-                <Icon size={16} />
+                <Icon size={20} />
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
@@ -157,7 +157,7 @@ export function NotificationCenter({
                     title="标记已读"
                     onClick={() => void markRead(item.id)}
                   >
-                    <Check size={15} />
+                    <Check size={19} />
                   </button>
                 ) : (
                   <span className="notification-read-label">已读</span>
@@ -170,7 +170,7 @@ export function NotificationCenter({
 
       {!items.length ? (
         <div className="notification-empty">
-          <MailPlus size={22} />
+          <MailPlus size={26} />
           <p>暂无通知</p>
           <span>协作申请、邀请、授权和发布事件会出现在这里。</span>
         </div>

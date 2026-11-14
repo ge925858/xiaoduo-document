@@ -72,7 +72,7 @@ export function InvitationActivationForm({
       <label className="invite-field">
         <span>昵称</span>
         <div className="invite-input-wrap">
-          <UserRound size={15} />
+          <UserRound size={19} />
           <input
             name="displayName"
             defaultValue={initialDisplayName}
@@ -85,7 +85,7 @@ export function InvitationActivationForm({
       <label className="invite-field">
         <span>设置密码</span>
         <div className="invite-input-wrap">
-          <KeyRound size={15} />
+          <KeyRound size={19} />
           <input
             name="password"
             type="password"
@@ -100,7 +100,7 @@ export function InvitationActivationForm({
       <label className="invite-field">
         <span>确认密码</span>
         <div className="invite-input-wrap">
-          <KeyRound size={15} />
+          <KeyRound size={19} />
           <input
             name="confirmPassword"
             type="password"
@@ -123,7 +123,7 @@ export function InvitationActivationForm({
         className="invite-submit-button"
         disabled={pending}
       >
-        {pending ? <LoaderCircle className="animate-spin" size={15} /> : null}
+        {pending ? <LoaderCircle className="animate-spin" size={19} /> : null}
         {pending ? '正在激活…' : '激活协作账号'}
       </button>
     </form>

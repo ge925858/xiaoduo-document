@@ -16,11 +16,13 @@ test('mobile reading, search, themes and studio controls remain usable', async (
     name: '切换到深色主题',
   })
   await expect(themeToggle).toBeVisible()
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= window.innerWidth + 1,
-    ),
-  ).toBe(true)
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth + 1,
+      ),
+    )
+    .toBe(true)
 
   await themeToggle.focus()
   await page.keyboard.press('Enter')
@@ -89,11 +91,13 @@ test('mobile reading, search, themes and studio controls remain usable', async (
   await page.getByLabel('密码').press('Enter')
   await expect(page).toHaveURL(/\/studio$/)
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= window.innerWidth + 1,
-    ),
-  ).toBe(true)
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth + 1,
+      ),
+    )
+    .toBe(true)
   await page.goto('/studio/notes/article-1')
   await page.getByRole('button', { name: '版本' }).focus()
   await expect(page.getByRole('button', { name: '版本' })).toBeFocused()
@@ -114,9 +118,11 @@ test('mobile reading, search, themes and studio controls remain usable', async (
       .map((element) => element.outerHTML.slice(0, 80)),
   )
   expect(unnamedControls).toEqual([])
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= window.innerWidth + 1,
-    ),
-  ).toBe(true)
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth + 1,
+      ),
+    )
+    .toBe(true)
 })

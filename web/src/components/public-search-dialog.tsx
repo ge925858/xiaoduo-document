@@ -111,16 +111,16 @@ export function PublicSearchDialog({
             className="flex h-15 items-center gap-3 border-b border-[var(--line)] px-5"
             onSubmit={submit}
           >
-            <Search size={18} className="text-[var(--muted)]" />
+            <Search size={22} className="text-[var(--muted)]" />
             <input
               ref={inputRef}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               aria-label="搜索公开章节"
               placeholder="搜索分类或章节"
-              className="h-full flex-1 border-0 bg-transparent text-[15px] text-[var(--ink)] outline-none placeholder:text-[var(--muted-faint)]"
+              className="h-full flex-1 border-0 bg-transparent text-[18px] text-[var(--ink)] outline-none placeholder:text-[var(--muted-faint)]"
             />
-            <span className="text-[9px] uppercase tracking-[0.14em] text-[var(--muted-faint)]">
+            <span className="text-[12px] uppercase tracking-[0.14em] text-[var(--muted-faint)]">
               ESC
             </span>
           </form>
@@ -137,13 +137,13 @@ export function PublicSearchDialog({
                     onClick={() => go(`/library/${category.slug}`)}
                   >
                     <span className="search-result-icon">
-                      <Layers3 size={15} />
+                      <Layers3 size={19} />
                     </span>
                     <span className="min-w-0 flex-1 text-sm font-semibold text-[var(--ink)]">
                       {category.title}
                     </span>
                     <ArrowRight
-                      size={14}
+                      size={18}
                       className="text-[var(--muted-faint)]"
                     />
                   </button>
@@ -165,7 +165,7 @@ export function PublicSearchDialog({
                     }
                   >
                     <span className="search-result-icon">
-                      <FileText size={15} />
+                      <FileText size={19} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold text-[var(--ink)]">
@@ -176,7 +176,7 @@ export function PublicSearchDialog({
                       </span>
                     </span>
                     <ArrowRight
-                      size={14}
+                      size={18}
                       className="text-[var(--muted-faint)]"
                     />
                   </button>
@@ -210,7 +210,7 @@ function SearchSection({
 }) {
   return (
     <section className="mb-3 last:mb-0">
-      <p className="px-2 pb-1 pt-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-[var(--muted-faint)]">
+      <p className="px-2 pb-1 pt-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-[var(--muted-faint)]">
         {label}
       </p>
       <div>{children}</div>

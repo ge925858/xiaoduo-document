@@ -75,9 +75,9 @@ export function StudioSettingsPage() {
                 disabled={avatarBusy}
               >
                 {avatarBusy ? (
-                  <LoaderCircle size={14} className="animate-spin" />
+                  <LoaderCircle size={18} className="animate-spin" />
                 ) : (
-                  <ImagePlus size={14} />
+                  <ImagePlus size={18} />
                 )}
                 选择图片
               </button>
@@ -87,7 +87,7 @@ export function StudioSettingsPage() {
                   className="studio-secondary-button hover:!text-[var(--rust)]"
                   onClick={() => setAvatarUrl('')}
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={18} />
                   移除头像
                 </button>
               )}
@@ -108,7 +108,7 @@ export function StudioSettingsPage() {
 
         <div className="studio-profile-actions">
           <button type="submit" className="studio-primary-button">
-            <Save size={15} />
+            <Save size={19} />
             保存资料
           </button>
         </div>

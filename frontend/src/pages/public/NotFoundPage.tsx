@@ -14,7 +14,7 @@ export function NotFoundPage() {
         它可能仍是草稿，也可能已经被移动到别处。
       </p>
       <Link to="/" className="back-link mt-8">
-        <ArrowLeft size={14} />
+        <ArrowLeft size={18} />
         回到首页
       </Link>
     </div>

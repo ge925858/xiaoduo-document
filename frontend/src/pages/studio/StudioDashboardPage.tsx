@@ -89,7 +89,7 @@ export function StudioDashboardPage() {
         {isOwner && (
           <div className="flex items-center gap-2">
             <button type="button" className="studio-secondary-button">
-              <Upload size={14} />
+              <Upload size={18} />
               导入 Markdown
             </button>
             <StudioSelect
@@ -107,7 +107,7 @@ export function StudioDashboardPage() {
               onClick={create}
               disabled={!newCategoryId}
             >
-              <FilePlus2 size={15} />
+              <FilePlus2 size={19} />
               新建章节
             </button>
           </div>
@@ -189,7 +189,7 @@ export function StudioDashboardPage() {
             ariaLabel="按分类筛选"
           />
           <label className="studio-search">
-            <Search size={14} />
+            <Search size={18} />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -222,18 +222,18 @@ export function StudioDashboardPage() {
               <span className="min-w-0">
                 <span className="flex items-center gap-2">
                   <FileText
-                    size={14}
+                    size={18}
                     className="shrink-0 text-[var(--muted-faint)]"
                   />
-                  <span className="truncate text-[13px] font-medium text-[var(--ink)]">
+                  <span className="truncate text-[16px] font-medium text-[var(--ink)]">
                     {note.title}
                   </span>
                 </span>
-                <span className="mt-1 block truncate pl-6 text-[10px] text-[var(--muted)]">
+                <span className="mt-1 block truncate pl-6 text-[13px] text-[var(--muted)]">
                   {note.plainText || '还没有正文内容'}
                 </span>
               </span>
-              <span className="truncate text-[11px] text-[var(--muted)]">
+              <span className="truncate text-[14px] text-[var(--muted)]">
                 {category?.title}
               </span>
               <span>
@@ -252,7 +252,7 @@ export function StudioDashboardPage() {
                 </span>
               </span>
               <span
-                className="text-[10px] text-[var(--muted-faint)]"
+                className="text-[13px] text-[var(--muted-faint)]"
                 data-visual-dynamic
               >
                 {formatRelativeTime(note.updatedAt)}

@@ -10,7 +10,7 @@ export function PasswordResetVisualPage() {
     <main className="invite-accept-page">
       <div className="invite-accept-card">
         <Link to="/" className="invite-back-link">
-          <ArrowLeft size={14} />
+          <ArrowLeft size={18} />
           返回知笺
         </Link>
         <p className="section-kicker mt-8">Password reset</p>
@@ -19,14 +19,14 @@ export function PasswordResetVisualPage() {
           为协作者账号设置一个新密码，旧会话将立即失效。
         </p>
         <div className="invite-account-email">
-          <Mail size={15} />
+          <Mail size={19} />
           <span>zhou@example.com</span>
         </div>
         <form className="mt-7 space-y-4">
           <label className="studio-profile-field !mt-0">
             <span>新密码</span>
             <div className="invite-input-wrap">
-              <KeyRound size={15} />
+              <KeyRound size={19} />
               <input
                 type="password"
                 placeholder="至少 8 个字符"
@@ -37,7 +37,7 @@ export function PasswordResetVisualPage() {
           <label className="studio-profile-field !mt-0">
             <span>确认新密码</span>
             <div className="invite-input-wrap">
-              <KeyRound size={15} />
+              <KeyRound size={19} />
               <input
                 type="password"
                 placeholder="再次输入新密码"
@@ -45,7 +45,7 @@ export function PasswordResetVisualPage() {
               />
             </div>
           </label>
-          <p className="text-[10px] leading-5 text-[var(--muted-faint)]">
+          <p className="text-[13px] leading-5 text-[var(--muted-faint)]">
             重置链接将在 2099/11/13 21:00 过期。
           </p>
           <button
