@@ -52,7 +52,7 @@ export function CategoryPage() {
                 </span>
               </span>
             </span>
-            <span className="chapter-list-meta">
+            <span className="chapter-list-meta" data-visual-dynamic>
               {formatRelativeTime(published.publishedAt)}
               <ArrowRight size={14} />
             </span>

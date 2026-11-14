@@ -38,6 +38,7 @@ export interface PublicChapterSummary {
   title: string
   path: string
   plainText: string
+  publishedAt: string
 }
 
 export interface PublicCategory {
@@ -118,7 +119,11 @@ async function listPublicContributors(
   return [...contributors.values()]
 }
 
-export async function listPublicLibrary(): Promise<PublicCategory[]> {
+export async function listPublicLibrary({
+  includeEmpty = false,
+}: {
+  includeEmpty?: boolean
+} = {}): Promise<PublicCategory[]> {
   const categories = await db
     .select({
       id: category.id,
@@ -151,9 +156,10 @@ export async function listPublicLibrary(): Promise<PublicCategory[]> {
         title: version.title,
         path: version.path,
         plainText: version.plainText,
+        publishedAt: version.publishedAt,
       })
     }
-    if (chapters.length) {
+    if (chapters.length || includeEmpty) {
       library.push({ ...item, chapters })
     }
   }

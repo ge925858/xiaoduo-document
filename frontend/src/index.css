@@ -3906,8 +3906,10 @@ select:focus {
 
 .chapter-list-meta {
   display: flex;
+  width: 88px;
   flex-shrink: 0;
   align-items: center;
+  justify-content: flex-end;
   gap: 9px;
   padding-top: 7px;
   color: var(--muted-faint);

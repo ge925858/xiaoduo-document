@@ -231,6 +231,20 @@ test('empty public preview keeps zero counts and a clear library entry', async (
   ).toBeVisible()
 })
 
+test('empty library index explains how content will appear', async ({
+  page,
+}) => {
+  await page.goto(
+    `${visualOrigins.production}/visual-fixtures/library-index-empty`,
+  )
+  await expect(
+    page.getByRole('heading', { name: '笔记库还是空的' }),
+  ).toBeVisible()
+  await expect(
+    page.getByText('站主创建并发布第一个分类和章节后，会在这里出现。'),
+  ).toBeVisible()
+})
+
 for (const visualCase of visualCases) {
   for (const viewport of visualViewports) {
     if (

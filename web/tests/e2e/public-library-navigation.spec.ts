@@ -34,4 +34,9 @@ test('reader navigates the public library and adjacent chapters', async ({
     page.getByRole('link', { name: '下一章 · 长期维护' }),
   ).toBeVisible()
   await expect(page.locator('.chapter-byline strong')).toHaveText('小多')
+
+  await page.goto('/library/tools')
+  await expect(
+    page.getByText('这个分类暂时没有公开章节。'),
+  ).toBeVisible()
 })
