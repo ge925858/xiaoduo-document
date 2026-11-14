@@ -268,7 +268,6 @@ export const visualFixture = {
   maskSelectors: [
     'time',
     '[data-visual-dynamic]',
-    '.chapter-byline',
     '.article-view-count',
   ],
   prototypeStorageKey: 'zhijian-public-site-v7',

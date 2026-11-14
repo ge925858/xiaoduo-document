@@ -7,6 +7,17 @@ import remarkGfm from 'remark-gfm'
 const sanitizeSchema = {
   ...defaultSchema,
   tagNames: [...(defaultSchema.tagNames ?? []), 'u', 'mark'],
+  attributes: {
+    ...defaultSchema.attributes,
+    span: [
+      ...(defaultSchema.attributes?.span ?? []),
+      ['style', /^color:\s*#[0-9a-f]{3,8}$/i],
+    ],
+    mark: [
+      ...(defaultSchema.attributes?.mark ?? []),
+      ['style', /^background-color:\s*#[0-9a-f]{3,8}$/i],
+    ],
+  },
 }
 
 export function MarkdownArticle({ markdown }: { markdown: string }) {
@@ -26,6 +37,11 @@ export function MarkdownArticle({ markdown }: { markdown: string }) {
             >
               {children}
             </a>
+          ),
+          img: ({ src, alt }) => (
+            // Markdown images keep their source dimensions and use native lazy loading.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={src} alt={alt ?? ''} loading="lazy" />
           ),
         }}
       >

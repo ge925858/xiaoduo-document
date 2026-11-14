@@ -1,10 +1,19 @@
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import {
+  ArrowLeft,
+  ArrowRight,
+  ChevronRight,
+  Home,
+} from 'lucide-react'
 import { MarkdownArticle } from '@/components/markdown-article'
 import { AuthorAvatar } from '@/components/author-avatar'
 import { PublicCollaborationForm } from '@/components/public-collaboration-form'
 import { ArticleViewBeacon } from '@/components/article-view-beacon'
-import Link from 'next/link'
+import { ChapterToc } from '@/components/chapter-toc'
+import { formatDateTime } from '@/lib/format-time'
+import { getServerSession } from '@/lib/server-session'
 import {
   getPublicChapterByPath,
   getPublicChapterNavigation,
@@ -85,75 +94,118 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
     decodedChapterPath,
   )
   const profile = await getPublicSiteProfile()
+  const session = await getServerSession()
 
   return (
-    <article className="chapter">
-      <p className="eyebrow">{chapter.categoryTitle}</p>
-      <h1>{chapter.title}</h1>
-      <p className="chapter-byline">
-        <AuthorAvatar
-          name={profile?.authorName ?? chapter.authorName}
-          avatarUrl={profile?.avatarUrl}
-        />
-        <strong>{profile?.authorName ?? chapter.authorName}</strong> ·{' '}
-        {countWords(chapter.plainText)} 字 · {chapter.viewCount} 次浏览 · 更新于{' '}
-        <time dateTime={chapter.publishedAt}>
-          {new Intl.DateTimeFormat('zh-CN', {
-            dateStyle: 'long',
-            timeStyle: 'short',
-            timeZone: 'Asia/Shanghai',
-          }).format(new Date(chapter.publishedAt))}
-        </time>
-        {chapter.contributors.length ? (
-          <span className="chapter-contributors">
-            {chapter.contributors.map((contributor) => (
-              <span key={contributor.id}>
-                <AuthorAvatar name={contributor.name} />
-                {contributor.name}
+    <article className="chapter-page">
+      <div className="chapter-main-grid">
+        <div>
+          <nav className="chapter-breadcrumb" aria-label="面包屑">
+            <Link href="/" className="breadcrumb-home" aria-label="返回预览页">
+              <Home size={14} />
+            </Link>
+            <ChevronRight size={13} className="breadcrumb-separator" />
+            <Link
+              href={`/library/${categorySlug}`}
+              className="breadcrumb-category"
+            >
+              {chapter.categoryTitle}
+            </Link>
+            <ChevronRight size={13} className="breadcrumb-separator" />
+            <span className="breadcrumb-current">{chapter.title}</span>
+          </nav>
+
+          <header className="chapter-header">
+            <h1>{chapter.title}</h1>
+            <div className="chapter-byline">
+              <AuthorAvatar
+                name={profile?.authorName ?? chapter.authorName}
+                avatarUrl={profile?.avatarUrl}
+                size="md"
+              />
+              <strong>{profile?.authorName ?? chapter.authorName}</strong>
+              <span className="chapter-byline-dot" aria-hidden="true" />
+              <span>{countWords(chapter.plainText)} 字</span>
+              <span className="chapter-byline-dot" aria-hidden="true" />
+              <span
+                className="article-view-count"
+                data-visual-dynamic
+              >
+                {chapter.viewCount} 次浏览
               </span>
-            ))}
-          </span>
-        ) : null}
-      </p>
-      <div className="chapter-public-grid">
-        <MarkdownArticle markdown={chapter.markdown} />
-        {headings.length ? (
-          <aside className="chapter-toc">
-            <p className="eyebrow">On this page</p>
-            <nav aria-label="本章目录">
-              {headings.map((heading) => (
-                <a key={heading.id} href={`#${heading.id}`}>
-                  {heading.text}
-                </a>
-              ))}
-            </nav>
-          </aside>
-        ) : null}
+              <span className="chapter-byline-dot" aria-hidden="true" />
+              <span>
+                更新于{' '}
+                <time dateTime={chapter.publishedAt}>
+                  {formatDateTime(chapter.publishedAt)}
+                </time>
+              </span>
+              {chapter.contributors.length ? (
+                <span className="chapter-contributors">
+                  {chapter.contributors.map((contributor) => (
+                    <span key={contributor.id}>
+                      <AuthorAvatar name={contributor.name} size="sm" />
+                      {contributor.name}
+                    </span>
+                  ))}
+                </span>
+              ) : null}
+            </div>
+          </header>
+
+          <div className="chapter-body">
+            <MarkdownArticle markdown={chapter.markdown} />
+          </div>
+
+          <nav className="chapter-pagination" aria-label="章节翻页">
+            {navigation?.previous ? (
+              <Link
+                href={`/library/${categorySlug}/${navigation.previous.path}`}
+              >
+                <span>上一章</span>
+                <strong>
+                  <ArrowLeft size={15} />
+                  {navigation.previous.title}
+                </strong>
+              </Link>
+            ) : (
+              <span />
+            )}
+            {navigation?.next ? (
+              <Link
+                href={`/library/${categorySlug}/${navigation.next.path}`}
+                className="text-right"
+              >
+                <span>下一章</span>
+                <strong>
+                  {navigation.next.title}
+                  <ArrowRight size={15} />
+                </strong>
+              </Link>
+            ) : (
+              <Link
+                href={`/library/${categorySlug}`}
+                className="text-right"
+              >
+                <span>返回目录</span>
+                <strong>
+                  查看全部章节
+                  <ArrowRight size={15} />
+                </strong>
+              </Link>
+            )}
+          </nav>
+
+          {!session ? (
+            <PublicCollaborationForm
+              articleId={chapter.id}
+              articleTitle={chapter.title}
+            />
+          ) : null}
+        </div>
+
+        {headings.length ? <ChapterToc headings={headings} /> : null}
       </div>
-      <nav className="chapter-pagination" aria-label="章节翻页">
-        {navigation?.previous ? (
-          <Link
-            href={`/library/${categorySlug}/${navigation.previous.path}`}
-          >
-            上一章 · {navigation.previous.title}
-          </Link>
-        ) : (
-          <span />
-        )}
-        {navigation?.next ? (
-          <Link
-            className="chapter-next"
-            href={`/library/${categorySlug}/${navigation.next.path}`}
-          >
-            下一章 · {navigation.next.title}
-          </Link>
-        ) : (
-          <Link className="chapter-next" href={`/library/${categorySlug}`}>
-            返回分类
-          </Link>
-        )}
-      </nav>
-      <PublicCollaborationForm articleId={chapter.id} />
       <ArticleViewBeacon articleId={chapter.id} />
     </article>
   )

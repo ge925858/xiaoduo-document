@@ -59,6 +59,22 @@ export function NotePage() {
   const viewCount = note
     ? articleViewCount(articleViewEvents, note.id)
     : 0
+  const contributors = note
+    ? [
+        ...new Map(
+          note.versions
+            .map((version) => version.author)
+            .filter(
+              (versionAuthor) =>
+                versionAuthor?.role === 'collaborator',
+            )
+            .map((versionAuthor) => [
+              versionAuthor!.id,
+              versionAuthor!,
+            ]),
+        ).values(),
+      ]
+    : []
   const redirectTo = resolveRedirect(redirects, location.pathname)
 
   usePageTitle(published ? `${published.title} · 知笺` : '未找到 · 知笺')
@@ -160,9 +176,32 @@ export function NotePage() {
               <span className="chapter-byline-dot" aria-hidden="true" />
               <span>{countWords(published.plainText)} 字</span>
               <span className="chapter-byline-dot" aria-hidden="true" />
-              <span>{viewCount} 次浏览</span>
+              <span
+                className="article-view-count"
+                data-visual-dynamic
+              >
+                {viewCount} 次浏览
+              </span>
               <span className="chapter-byline-dot" aria-hidden="true" />
-              <span>更新于 {formatDateTime(published.publishedAt)}</span>
+              <span>
+                更新于{' '}
+                <time dateTime={published.publishedAt}>
+                  {formatDateTime(published.publishedAt)}
+                </time>
+              </span>
+              {contributors.length ? (
+                <span className="chapter-contributors">
+                  {contributors.map((contributor) => (
+                    <span key={contributor.id}>
+                      <AuthorAvatar
+                        name={contributor.name}
+                        size="sm"
+                      />
+                      {contributor.name}
+                    </span>
+                  ))}
+                </span>
+              ) : null}
             </div>
           </header>
 

@@ -1,18 +1,20 @@
+import GithubSlugger from 'github-slugger'
+
 export interface MarkdownHeading {
   id: string
   level: number
   text: string
 }
 
-function headingId(text: string): string {
-  return text
+function plainHeadingText(value: string): string {
+  return value
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[*_~`]/g, '')
     .trim()
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s-]/gu, '')
-    .replace(/\s+/g, '-')
 }
 
 export function markdownHeadings(markdown: string): MarkdownHeading[] {
+  const slugger = new GithubSlugger()
   const headings: MarkdownHeading[] = []
   let inCodeBlock = false
   for (const line of markdown.split(/\r?\n/)) {
@@ -21,12 +23,14 @@ export function markdownHeadings(markdown: string): MarkdownHeading[] {
       continue
     }
     if (inCodeBlock) continue
-    const match = /^(#{1,5})\s+(.+?)\s*$/.exec(line)
+    const match = /^(#{1,5})\s+(.+?)\s*#*\s*$/.exec(line)
     if (!match) continue
+    const text = plainHeadingText(match[2])
+    if (!text) continue
     headings.push({
-      id: headingId(match[2]),
+      id: slugger.slug(text),
       level: match[1].length,
-      text: match[2],
+      text,
     })
   }
   return headings

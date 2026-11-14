@@ -135,6 +135,7 @@ export function LibraryLayout() {
                   <button
                     type="button"
                     className="library-category-toggle"
+                    data-visual-dynamic
                     onClick={() => toggleCategory(category.id)}
                     aria-expanded={!isCollapsed}
                   >

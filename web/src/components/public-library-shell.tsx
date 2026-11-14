@@ -125,9 +125,7 @@ export function PublicLibraryShell({
         <nav className="library-directory" aria-label="笔记目录">
           {categories.map((category) => {
             const categoryPath = `/library/${category.slug}`
-            const categoryActive =
-              pathname === categoryPath ||
-              pathname.startsWith(`${categoryPath}/`)
+            const categoryActive = pathname === categoryPath
             const isCollapsed = collapsed.has(category.id)
 
             return (
@@ -142,6 +140,7 @@ export function PublicLibraryShell({
                   <button
                     type="button"
                     className="library-category-toggle"
+                    data-visual-dynamic
                     onClick={() => toggleCategory(category.id)}
                     aria-expanded={!isCollapsed}
                     aria-label={

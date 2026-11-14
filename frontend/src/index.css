@@ -3771,6 +3771,10 @@ select:focus {
   color: var(--ink);
 }
 
+.library-category-toggle svg {
+  shape-rendering: geometricPrecision;
+}
+
 .library-category-link {
   display: flex;
   min-width: 0;
@@ -4131,6 +4135,19 @@ select:focus {
   height: 3px;
   border-radius: 50%;
   background: var(--line-strong);
+}
+
+.chapter-contributors {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.chapter-contributors > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .chapter-main-grid {
