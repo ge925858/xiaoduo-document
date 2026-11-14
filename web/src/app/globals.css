@@ -6028,3 +6028,117 @@ button.markdown-diff-change-item.is-active {
     grid-column: 2;
   }
 }
+
+.studio-trash-list {
+  margin-top: 24px;
+}
+
+.studio-trash-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 6px;
+  padding: 17px 12px;
+}
+
+.studio-trash-row:hover {
+  background: var(--paper-deep);
+}
+
+.studio-trash-icon {
+  display: flex;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: var(--field);
+  color: var(--muted);
+}
+
+.studio-trash-row h2 {
+  overflow: hidden;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-trash-row p {
+  overflow: hidden;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-trash-meta {
+  display: flex;
+  min-width: 150px;
+  flex-direction: column;
+  gap: 3px;
+  color: var(--muted-faint);
+  font-size: 8px;
+  text-align: right;
+}
+
+.studio-trash-empty {
+  display: flex;
+  min-height: 320px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: var(--muted-faint);
+  text-align: center;
+}
+
+.studio-trash-empty p {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-family: var(--display);
+  font-size: 20px;
+}
+
+.studio-trash-empty span {
+  margin-top: 5px;
+  font-size: 9px;
+}
+
+.trash-feedback {
+  margin-top: 14px;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  padding: 9px 11px;
+  color: var(--accent);
+  font-size: 10px;
+}
+
+.trash-danger-button {
+  display: inline-flex;
+  height: 32px;
+  align-items: center;
+  border-radius: 4px;
+  background: var(--rust);
+  padding: 0 12px;
+  color: white;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+@media (max-width: 767px) {
+  .studio-trash-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .studio-trash-meta {
+    width: 100%;
+    min-width: 0;
+    padding-left: 48px;
+    text-align: left;
+  }
+}

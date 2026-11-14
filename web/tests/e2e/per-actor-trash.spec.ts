@@ -59,7 +59,9 @@ test('collaborators only see and restore their own trash actor items', async ({
     .click()
   await firstPage.getByRole('link', { name: '回收站' }).click()
   await expect(firstPage).toHaveURL(/\/studio\/trash$/)
-  await expect(firstPage.getByText('写作不是归档')).toBeVisible()
+  await expect(
+    firstPage.getByRole('heading', { name: '写作不是归档' }),
+  ).toBeVisible()
   await expect(firstPage.getByText('长期维护')).toHaveCount(0)
   await expect(
     firstPage.getByRole('button', { name: '永久删除' }),
@@ -73,7 +75,9 @@ test('collaborators only see and restore their own trash actor items', async ({
     .click()
   await secondPage.getByRole('link', { name: '回收站' }).click()
   await expect(secondPage).toHaveURL(/\/studio\/trash$/)
-  await expect(secondPage.getByText('长期维护')).toBeVisible()
+  await expect(
+    secondPage.getByRole('heading', { name: '长期维护' }),
+  ).toBeVisible()
   await expect(secondPage.getByText('写作不是归档')).toHaveCount(0)
   expect(
     (
@@ -93,10 +97,10 @@ test('collaborators only see and restore their own trash actor items', async ({
   ).toBe(403)
 
   await secondPage.getByRole('button', { name: '恢复章节' }).click()
-  await expect(secondPage.getByText('回收站为空。')).toBeVisible()
+  await expect(secondPage.getByText('回收站是空的')).toBeVisible()
 
   await firstPage.getByRole('button', { name: '恢复章节' }).click()
-  await expect(firstPage.getByText('回收站为空。')).toBeVisible()
+  await expect(firstPage.getByText('回收站是空的')).toBeVisible()
 
   const ownerContext = await browser.newContext()
   const ownerPage = await ownerContext.newPage()
