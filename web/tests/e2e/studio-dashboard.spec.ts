@@ -1,0 +1,117 @@
+import './database-isolation'
+import { hashPassword } from 'better-auth/crypto'
+import { expect, test } from '@playwright/test'
+import { createTestConnection } from '../test-db'
+import { seedTestDatabase } from '../seed-test-db'
+
+test.beforeEach(async () => {
+  await seedTestDatabase()
+  const connection = await createTestConnection()
+  try {
+    await connection.query(
+      `INSERT INTO auth_user (
+        id, name, email, email_verified, role, status, created_at, updated_at
+      ) VALUES (
+        'collaborator-dashboard', '协作者首页', 'dashboard@example.com',
+        true, 'collaborator', 'active', NOW(3), NOW(3)
+      )`,
+    )
+    await connection.query(
+      `INSERT INTO auth_account (
+        id, account_id, provider_id, user_id, password, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, NOW(3), NOW(3))`,
+      [
+        'account-collaborator-dashboard',
+        'collaborator-dashboard',
+        'credential',
+        'collaborator-dashboard',
+        await hashPassword('collaborator-password'),
+      ],
+    )
+    await connection.query(
+      `INSERT INTO article_grant (user_id, article_id, created_at)
+       VALUES ('collaborator-dashboard', 'article-1', NOW(3))`,
+    )
+  } finally {
+    await connection.end()
+  }
+})
+
+test('owner filters and searches accessible chapters', async ({ page }) => {
+  await page.goto('/studio/login')
+  await page.getByLabel('邮箱').fill('owner@example.com')
+  await page.getByLabel('密码').fill('owner-test-password')
+  await page.getByRole('button', { name: '进入写作台' }).click()
+  await expect(page).toHaveURL(/\/studio$/)
+
+  await expect(
+    page.getByRole('heading', { level: 1, name: '写作台' }),
+  ).toBeVisible()
+  const stats = page.locator('.studio-stats')
+  await expect(stats.getByText('全部章节')).toBeVisible()
+  await expect(stats.getByText('公开', { exact: true })).toBeVisible()
+  await expect(stats.getByText('草稿', { exact: true })).toBeVisible()
+  await expect(stats.getByText('最近整理')).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: '导入 Markdown' }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: '新建章节', exact: true }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /写作不是归档/ }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /长期维护/ }),
+  ).toBeVisible()
+
+  await page.getByRole('button', { name: '已发布' }).click()
+  await expect(
+    page.getByRole('link', { name: /写作不是归档/ }),
+  ).toBeVisible()
+  await page.getByRole('button', { name: '草稿' }).click()
+  await expect(page.getByText('没有匹配的章节')).toBeVisible()
+  await page.getByRole('button', { name: '清除筛选' }).click()
+
+  const search = page.getByPlaceholder('搜索章节')
+  await search.fill('长期')
+  await expect(
+    page.getByRole('link', { name: /长期维护/ }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /写作不是归档/ }),
+  ).toHaveCount(0)
+
+  await search.fill('不存在的章节')
+  await expect(page.getByText('没有匹配的章节')).toBeVisible()
+  await page.getByRole('button', { name: '清除筛选' }).click()
+  await expect(
+    page.getByRole('link', { name: /长期维护/ }),
+  ).toBeVisible()
+})
+
+test('collaborator sees only authorized chapters and no owner actions', async ({
+  page,
+}) => {
+  await page.goto('/studio/login')
+  await page.getByLabel('邮箱').fill('dashboard@example.com')
+  await page.getByLabel('密码').fill('collaborator-password')
+  await page.getByRole('button', { name: '进入写作台' }).click()
+  await expect(page).toHaveURL(/\/studio$/)
+
+  await expect(
+    page.getByRole('heading', { level: 1, name: '写作台' }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /写作不是归档/ }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('link', { name: /长期维护/ }),
+  ).toHaveCount(0)
+  await expect(
+    page.getByRole('button', { name: '导入 Markdown' }),
+  ).toHaveCount(0)
+  await expect(
+    page.getByRole('button', { name: '新建章节', exact: true }),
+  ).toHaveCount(0)
+})

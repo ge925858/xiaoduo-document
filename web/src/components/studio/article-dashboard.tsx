@@ -1,8 +1,20 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import {
+  ArrowDown,
+  ArrowUp,
+  FilePlus2,
+  FileText,
+  Search,
+  Trash2,
+  Upload,
+} from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Dialog } from '@/components/ui/dialog'
+import { StudioSelect } from '@/components/ui/studio-select'
+import { formatRelativeTime } from '@/lib/format-time'
 
 interface CategoryItem {
   id: string
@@ -14,10 +26,14 @@ interface ArticleItem {
   title: string
   categoryId: string
   categoryTitle: string
-  publicationState: string
+  plainText: string
+  publicationState: 'draft' | 'published' | 'unpublished'
   revision: number
   updatedAt: string
+  pendingUpdate: boolean
 }
+
+type Filter = 'all' | 'draft' | 'published'
 
 export function ArticleDashboard({
   categories,
@@ -29,56 +45,129 @@ export function ArticleDashboard({
   canManage: boolean
 }) {
   const router = useRouter()
+  const [filter, setFilter] = useState<Filter>('all')
+  const [query, setQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('all')
+  const [newCategoryId, setNewCategoryId] = useState(
+    categories[0]?.id ?? '',
+  )
+  const [importOpen, setImportOpen] = useState(false)
+  const [importCategoryId, setImportCategoryId] = useState(
+    categories[0]?.id ?? '',
+  )
   const [message, setMessage] = useState('')
+  const [pending, setPending] = useState(false)
 
-  async function create(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setMessage('')
-    const data = new FormData(event.currentTarget)
-    const response = await fetch('/api/studio/articles', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        categoryId: String(data.get('categoryId') ?? ''),
-        title: '无标题章节',
-      }),
+  useEffect(() => {
+    const theme = window.localStorage.getItem('zhijian-theme')
+    if (theme === 'light' || theme === 'dark') {
+      document.documentElement.dataset.theme = theme
+      document.documentElement.style.colorScheme = theme
+    }
+  }, [])
+
+  const normalizedQuery = query.trim().toLowerCase()
+  const visible = articles
+    .filter(
+      (article) =>
+        categoryFilter === 'all' ||
+        article.categoryId === categoryFilter,
+    )
+    .filter((article) => {
+      if (filter === 'published') {
+        return article.publicationState === 'published'
+      }
+      if (filter === 'draft') {
+        return article.publicationState !== 'published'
+      }
+      return true
     })
-    const payload = (await response.json()) as {
-      article?: { id: string }
-      error?: string
-    }
-    if (!response.ok || !payload.article) {
-      setMessage(
-        payload.error === 'CATEGORY_NOT_FOUND'
-          ? '请先创建分类。'
-          : '创建章节失败，请重试。',
-      )
-      return
-    }
-    router.push(`/studio/notes/${payload.article.id}`)
+    .filter(
+      (article) =>
+        !normalizedQuery ||
+        article.title.toLowerCase().includes(normalizedQuery) ||
+        article.plainText.toLowerCase().includes(normalizedQuery) ||
+        article.categoryTitle.toLowerCase().includes(normalizedQuery),
+    )
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+
+  const publishedCount = articles.filter(
+    (article) => article.publicationState === 'published',
+  ).length
+  const draftCount = articles.length - publishedCount
+  const latest = articles
+    .slice()
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]
+
+  function clearFilters() {
+    setFilter('all')
+    setQuery('')
+    setCategoryFilter('all')
   }
 
-  async function importFile(event: React.FormEvent<HTMLFormElement>) {
+  async function create() {
+    if (!newCategoryId) return
+    setMessage('')
+    setPending(true)
+    try {
+      const response = await fetch('/api/studio/articles', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          categoryId: newCategoryId,
+          title: '无标题章节',
+        }),
+      })
+      const payload = (await response.json()) as {
+        article?: { id: string }
+        error?: string
+      }
+      if (!response.ok || !payload.article) {
+        setMessage(
+          payload.error === 'CATEGORY_NOT_FOUND'
+            ? '请先创建分类。'
+            : '创建章节失败，请重试。',
+        )
+        return
+      }
+      router.push(`/studio/notes/${payload.article.id}`)
+    } catch {
+      setMessage('创建章节失败，请重试。')
+    } finally {
+      setPending(false)
+    }
+  }
+
+  async function importMarkdown(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setMessage('')
-    const response = await fetch('/api/studio/articles/import', {
-      method: 'POST',
-      body: new FormData(event.currentTarget),
-    })
-    const payload = (await response.json()) as {
-      article?: { id: string }
-      error?: string
-    }
-    if (!response.ok || !payload.article) {
-      const errors: Record<string, string> = {
-        EMPTY_MARKDOWN: 'Markdown 文件内容为空。',
-        UNSUPPORTED_FILE: '请选择 .md 或 .markdown 文件。',
-        MARKDOWN_TOO_LARGE: 'Markdown 文件超过 2 MB。',
+    setPending(true)
+    const data = new FormData(event.currentTarget)
+    data.set('categoryId', importCategoryId)
+    try {
+      const response = await fetch('/api/studio/articles/import', {
+        method: 'POST',
+        body: data,
+      })
+      const payload = (await response.json()) as {
+        article?: { id: string }
+        error?: string
       }
-      setMessage(errors[payload.error ?? ''] ?? '导入失败，请重试。')
-      return
+      if (!response.ok || !payload.article) {
+        const errors: Record<string, string> = {
+          EMPTY_MARKDOWN: 'Markdown 文件内容为空。',
+          UNSUPPORTED_FILE: '请选择 .md 或 .markdown 文件。',
+          MARKDOWN_TOO_LARGE: 'Markdown 文件超过 2 MB。',
+        }
+        setMessage(errors[payload.error ?? ''] ?? '导入失败，请重试。')
+        return
+      }
+      router.push(`/studio/notes/${payload.article.id}`)
+    } catch {
+      setMessage('导入失败，请重试。')
+    } finally {
+      setPending(false)
     }
-    router.push(`/studio/notes/${payload.article.id}`)
   }
 
   async function move(id: string, direction: -1 | 1) {
@@ -96,99 +185,273 @@ export function ArticleDashboard({
   }
 
   return (
-    <div className="article-dashboard">
-      {canManage ? (
-        <>
-          <form className="studio-form create-article-form" onSubmit={create}>
-            <label>
-              所属分类
-              <select name="categoryId" required>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.title}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button type="submit" disabled={!categories.length}>
+    <div className="studio-page">
+      <header className="studio-page-header">
+        <div>
+          <p className="section-kicker">Content</p>
+          <h1>写作台</h1>
+          <p>
+            {canManage
+              ? '草稿与公开章节都在这里。读者只会看到最近一次发布版本。'
+              : '这里只展示你获得授权编辑的文章，其他内容不可见。'}
+          </p>
+        </div>
+        {canManage ? (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="studio-secondary-button"
+              onClick={() => {
+                setMessage('')
+                setImportOpen(true)
+              }}
+            >
+              <Upload size={14} />
+              导入 Markdown
+            </button>
+            <StudioSelect
+              value={newCategoryId}
+              onChange={setNewCategoryId}
+              options={categories.map((category) => ({
+                value: category.id,
+                label: category.title,
+              }))}
+              ariaLabel="新建章节所属分类"
+            />
+            <button
+              type="button"
+              className="studio-primary-button"
+              onClick={() => void create()}
+              disabled={!newCategoryId || pending}
+            >
+              <FilePlus2 size={15} />
               新建章节
             </button>
-          </form>
-          <form className="studio-form import-form" onSubmit={importFile}>
-            <label>
-              导入分类
-              <select name="categoryId" required>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.title}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Markdown 文件
-              <input name="file" type="file" accept=".md,.markdown" required />
-            </label>
-            <button type="submit" disabled={!categories.length}>
-              导入为草稿
-            </button>
-          </form>
-        </>
-      ) : null}
-      {message ? <p role="alert">{message}</p> : null}
+          </div>
+        ) : null}
+      </header>
 
-      <div className="studio-article-list">
-        {articles.map((article) => (
-          <article key={article.id}>
-            <div>
-              <p>
-                {article.categoryTitle} · {article.publicationState}
-              </p>
-              <h2>
-                <Link href={`/studio/notes/${article.id}`}>
-                  {article.title}
-                </Link>
-              </h2>
-              <span>修订 {article.revision}</span>
-            </div>
-            {canManage ? (
-              <div className="category-actions">
+      {message && !importOpen ? <p role="alert">{message}</p> : null}
+
+      <div className="studio-stats">
+        <div>
+          <span>全部章节</span>
+          <strong>{articles.length}</strong>
+        </div>
+        <div>
+          <span>公开</span>
+          <strong>{publishedCount}</strong>
+        </div>
+        <div>
+          <span>草稿</span>
+          <strong>{draftCount}</strong>
+        </div>
+        <div data-visual-dynamic>
+          <span>最近整理</span>
+          <strong className="studio-stat-relative">
+            {latest ? formatRelativeTime(latest.updatedAt) : '—'}
+          </strong>
+        </div>
+      </div>
+
+      <div className="studio-toolbar">
+        <div className="segmented-control">
+          {(
+            [
+              ['all', '全部'],
+              ['draft', '草稿'],
+              ['published', '已发布'],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              className={filter === value ? 'is-active' : ''}
+              aria-pressed={filter === value}
+              onClick={() => setFilter(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <StudioSelect
+            value={categoryFilter}
+            onChange={setCategoryFilter}
+            options={[
+              { value: 'all', label: '全部分类' },
+              ...categories.map((category) => ({
+                value: category.id,
+                label: category.title,
+              })),
+            ]}
+            ariaLabel="按分类筛选"
+          />
+          <label className="studio-search">
+            <Search size={14} />
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="搜索章节"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div className="studio-note-table">
+        <div className="studio-table-head" aria-hidden="true">
+          <span>章节</span>
+          <span>分类</span>
+          <span>状态</span>
+          <span>最后保存</span>
+        </div>
+        {visible.map((article) => (
+          <div
+            key={article.id}
+            className="studio-table-row"
+          >
+            <Link
+              href={`/studio/notes/${article.id}`}
+              className="studio-row-main"
+            >
+              <span className="min-w-0">
+                <span className="flex items-center gap-2">
+                  <FileText
+                    size={14}
+                    className="shrink-0 text-[var(--muted-faint)]"
+                  />
+                  <span className="truncate text-[13px] font-medium text-[var(--ink)]">
+                    {article.title}
+                  </span>
+                </span>
+                <span className="mt-1 block truncate pl-6 text-[10px] text-[var(--muted)]">
+                  {article.plainText || '还没有正文内容'}
+                </span>
+              </span>
+            </Link>
+            <span className="truncate text-[11px] text-[var(--muted)]">
+              {article.categoryTitle}
+            </span>
+            <span>
+              <span
+                className={`studio-status ${
+                  article.publicationState === 'published'
+                    ? 'is-public'
+                    : ''
+                }`}
+              >
+                {article.pendingUpdate
+                  ? '待更新'
+                  : article.publicationState === 'published'
+                    ? '已发布'
+                    : article.publicationState === 'unpublished'
+                      ? '已撤回'
+                      : '草稿'}
+              </span>
+            </span>
+            <span
+              className="text-[10px] text-[var(--muted-faint)]"
+              data-visual-dynamic
+            >
+              {formatRelativeTime(article.updatedAt)}
+            </span>
+            <span className="studio-row-actions">
+              {canManage ? (
                 <button
                   type="button"
                   aria-label={`上移 ${article.title}`}
-                  onClick={() => move(article.id, -1)}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    void move(article.id, -1)
+                  }}
                 >
-                  上移
+                  <ArrowUp size={13} />
                 </button>
+              ) : null}
+              {canManage ? (
                 <button
                   type="button"
                   aria-label={`下移 ${article.title}`}
-                  onClick={() => move(article.id, 1)}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    void move(article.id, 1)
+                  }}
                 >
-                  下移
+                  <ArrowDown size={13} />
                 </button>
-                <button
-                  type="button"
-                  aria-label={`移入回收站 ${article.title}`}
-                  onClick={() => void trash(article.id)}
-                >
-                  移入回收站
-                </button>
-              </div>
-            ) : (
-              <div className="category-actions">
-                <button
-                  type="button"
-                  aria-label={`移入回收站 ${article.title}`}
-                  onClick={() => void trash(article.id)}
-                >
-                  移入回收站
-                </button>
-              </div>
-            )}
-          </article>
+              ) : null}
+              <button
+                type="button"
+                aria-label={`移入回收站 ${article.title}`}
+                onClick={(event) => {
+                  event.preventDefault()
+                  void trash(article.id)
+                }}
+              >
+                <Trash2 size={13} />
+              </button>
+            </span>
+          </div>
         ))}
+        {!visible.length ? (
+          <div className="studio-empty-state">
+            <p>没有匹配的章节</p>
+            <span>换一个筛选条件，或者重置后查看全部内容。</span>
+            <button type="button" onClick={clearFilters}>
+              清除筛选
+            </button>
+          </div>
+        ) : null}
       </div>
+
+      <Dialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        title="导入 Markdown"
+        description="导入会创建新的章节草稿，不会覆盖现有内容。"
+      >
+        <form className="studio-import-dialog" onSubmit={importMarkdown}>
+          <label>
+            <span>导入分类</span>
+            <StudioSelect
+              value={importCategoryId}
+              onChange={setImportCategoryId}
+              options={categories.map((category) => ({
+                value: category.id,
+                label: category.title,
+              }))}
+              ariaLabel="导入分类"
+            />
+          </label>
+          <label>
+            <span>Markdown 文件</span>
+            <input
+              name="file"
+              type="file"
+              accept=".md,.markdown"
+              required
+            />
+          </label>
+          {message ? <p role="alert">{message}</p> : null}
+          <div>
+            <button
+              type="button"
+              className="studio-secondary-button"
+              onClick={() => setImportOpen(false)}
+            >
+              取消
+            </button>
+            <button
+              type="submit"
+              className="studio-primary-button"
+              disabled={pending || !importCategoryId}
+            >
+              <Upload size={14} />
+              {pending ? '正在导入…' : '导入为草稿'}
+            </button>
+          </div>
+        </form>
+      </Dialog>
     </div>
   )
 }

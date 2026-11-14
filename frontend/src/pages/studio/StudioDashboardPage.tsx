@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FilePlus2, FileText, Search } from 'lucide-react'
+import { FilePlus2, FileText, Search, Upload } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { StudioSelect } from '../../components/studio/StudioSelect'
 import { usePageTitle } from '../../lib/usePageTitle'
@@ -88,6 +88,10 @@ export function StudioDashboardPage() {
         </div>
         {isOwner && (
           <div className="flex items-center gap-2">
+            <button type="button" className="studio-secondary-button">
+              <Upload size={14} />
+              导入 Markdown
+            </button>
             <StudioSelect
               value={newCategoryId}
               onChange={setNewCategoryId}
@@ -137,7 +141,7 @@ export function StudioDashboardPage() {
             }
           </strong>
         </div>
-        <div>
+        <div data-visual-dynamic>
           <span>最近整理</span>
           <strong className="!font-sans !text-sm">
             {accessibleNotes.length
@@ -247,7 +251,10 @@ export function StudioDashboardPage() {
                         : '草稿'}
                 </span>
               </span>
-              <span className="text-[10px] text-[var(--muted-faint)]">
+              <span
+                className="text-[10px] text-[var(--muted-faint)]"
+                data-visual-dynamic
+              >
                 {formatRelativeTime(note.updatedAt)}
               </span>
             </Link>
