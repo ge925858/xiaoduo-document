@@ -95,13 +95,14 @@ test('mobile reading, search, themes and studio controls remain usable', async (
     ),
   ).toBe(true)
   await page.goto('/studio/notes/article-1')
-  await page.getByRole('button', { name: '保存草稿' }).focus()
-  await expect(page.getByRole('button', { name: '保存草稿' })).toBeFocused()
+  await page.getByRole('button', { name: '版本' }).focus()
+  await expect(page.getByRole('button', { name: '版本' })).toBeFocused()
   const unnamedControls = await page.evaluate(() =>
     [...document.querySelectorAll('button, a[href], input, select, textarea')]
       .filter((element) => {
         const control = element as HTMLInputElement
         if (control.type === 'hidden') return false
+        if (!control.getClientRects().length) return false
         const label =
           control.getAttribute('aria-label') ??
           control.getAttribute('title') ??

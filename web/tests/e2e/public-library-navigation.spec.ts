@@ -75,7 +75,7 @@ test('application entry is shown only to signed-out readers', async ({
     .click()
   await expect(
     page.getByRole('dialog', { name: '申请参与编辑' }),
-  ).toContainText('只会获得《写作不是归档》的编辑权限')
+  ).toContainText('申请将关联《写作不是归档》')
   await page.keyboard.press('Escape')
 
   await page.goto('/studio/login')

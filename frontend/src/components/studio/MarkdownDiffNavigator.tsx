@@ -57,7 +57,7 @@ export function MarkdownDiffNavigator({
         onClick={() => setExpanded((current) => !current)}
         aria-expanded={expanded}
       >
-        <span>
+        <span className="min-w-0 flex-1" data-visual-dynamic>
           共 {changes.length} 处变化
           <small>
             <span className="is-added">新增 {counts.added}</span>

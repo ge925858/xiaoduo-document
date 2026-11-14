@@ -292,6 +292,8 @@ function StudioMobileNav({
   icon: React.ReactNode
   children: React.ReactNode
 }) {
+  const pathname = useLocation().pathname
+  const fixtureRoute = to.replace(/^\/studio/, '/studio/visual-fixtures')
   const label = typeof children === 'string' ? children : to
   return (
     <NavLink
@@ -300,7 +302,9 @@ function StudioMobileNav({
       aria-label={label}
       title={label}
       className={({ isActive }) =>
-        `studio-mobile-nav-link ${isActive ? 'is-active' : ''}`
+        `studio-mobile-nav-link ${
+          isActive || pathname === fixtureRoute ? 'is-active' : ''
+        }`
       }
     >
       {icon}
@@ -320,12 +324,16 @@ function StudioNav({
   icon: React.ReactNode
   children: React.ReactNode
 }) {
+  const pathname = useLocation().pathname
+  const fixtureRoute = to.replace(/^\/studio/, '/studio/visual-fixtures')
   return (
     <NavLink
       to={to}
       end={end}
       className={({ isActive }) =>
-        `studio-nav-link ${isActive ? 'is-active' : ''}`
+        `studio-nav-link ${
+          isActive || pathname === fixtureRoute ? 'is-active' : ''
+        }`
       }
     >
       {icon}

@@ -38,6 +38,10 @@ export function PublicLibraryShell({
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
   const contentRef = useRef<HTMLElement>(null)
   const searchButtonRef = useRef<HTMLButtonElement>(null)
+  const sidebarOpenRef = useRef(false)
+  const sidebarButtonRef = useRef<HTMLButtonElement>(null)
+  const sidebarCloseRef = useRef<HTMLButtonElement>(null)
+  const restoreSidebarFocusRef = useRef(false)
 
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0 })
@@ -54,11 +58,38 @@ export function PublicLibraryShell({
         setSearchOpen(true)
         return
       }
-      if (event.key === 'Escape') setSidebarOpen(false)
+      if (event.key === 'Escape') {
+        restoreSidebarFocusRef.current = true
+        setSidebarOpen(false)
+      }
     }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    window.addEventListener('keydown', onKeyDown, true)
+    return () => window.removeEventListener('keydown', onKeyDown, true)
   }, [])
+
+  useEffect(() => {
+    if (sidebarOpen) {
+      sidebarOpenRef.current = true
+      sidebarCloseRef.current?.focus()
+      return
+    }
+    if (!sidebarOpenRef.current) return
+    sidebarOpenRef.current = false
+    if (restoreSidebarFocusRef.current) {
+      sidebarButtonRef.current?.focus()
+      restoreSidebarFocusRef.current = false
+    }
+  }, [sidebarOpen])
+
+  function openSidebar() {
+    restoreSidebarFocusRef.current = true
+    setSidebarOpen(true)
+  }
+
+  function closeSidebar(restoreFocus = true) {
+    restoreSidebarFocusRef.current = restoreFocus
+    setSidebarOpen(false)
+  }
 
   function toggleCategory(categoryId: string) {
     setCollapsed((current) => {
@@ -77,10 +108,13 @@ export function PublicLibraryShell({
 
       <header className="library-header">
         <button
+          ref={sidebarButtonRef}
           type="button"
           className="library-icon-button library-mobile-menu"
-          onClick={() => setSidebarOpen(true)}
+          onClick={openSidebar}
           aria-label="打开目录"
+          aria-controls="library-sidebar"
+          aria-expanded={sidebarOpen}
         >
           <Menu size={18} />
         </button>
@@ -110,13 +144,15 @@ export function PublicLibraryShell({
       </header>
 
       <aside
+        id="library-sidebar"
         className={cn('library-sidebar', sidebarOpen && 'is-open')}
         aria-label="笔记目录"
       >
         <button
+          ref={sidebarCloseRef}
           type="button"
           className="library-icon-button library-sidebar-close library-sidebar-close-floating"
-          onClick={() => setSidebarOpen(false)}
+          onClick={() => closeSidebar()}
           aria-label="关闭目录"
         >
           <X size={17} />
@@ -157,7 +193,7 @@ export function PublicLibraryShell({
                   </button>
                   <Link
                     href={categoryPath}
-                    onClick={() => setSidebarOpen(false)}
+                    onClick={() => closeSidebar(false)}
                     className={cn(
                       'library-category-link',
                       pathname === categoryPath && 'is-active',
@@ -178,7 +214,7 @@ export function PublicLibraryShell({
                         <Link
                           key={chapter.articleId}
                           href={chapterPath}
-                          onClick={() => setSidebarOpen(false)}
+                          onClick={() => closeSidebar(false)}
                           className={cn(
                             'library-chapter-link',
                             pathname === chapterPath && 'is-active',
@@ -199,7 +235,7 @@ export function PublicLibraryShell({
         </nav>
 
         <div className="library-sidebar-footer">
-          <Link href="/" onClick={() => setSidebarOpen(false)}>
+          <Link href="/" onClick={() => closeSidebar(false)}>
             <ArrowLeft size={13} />
             返回预览页
           </Link>
@@ -210,7 +246,7 @@ export function PublicLibraryShell({
         <button
           type="button"
           className="library-sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
+          onClick={() => closeSidebar()}
           aria-label="关闭目录遮罩"
         />
       ) : null}

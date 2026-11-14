@@ -108,7 +108,7 @@ export function VersionHistory({
       <section className="studio-current-draft-card">
         <span className="studio-history-kind">当前草稿</span>
         <strong>{draft.title || '无标题章节'}</strong>
-        <p>
+        <p data-visual-dynamic>
           最后保存于 {formatClock(draft.savedAt)} · {draft.wordCount} 字
         </p>
       </section>

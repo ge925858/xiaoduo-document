@@ -221,7 +221,9 @@ export async function getArticleViewCount(articleId: string) {
 }
 
 export async function getAnalyticsReport(
-  now = new Date(),
+  now = process.env.VISUAL_FIXED_NOW
+    ? new Date(process.env.VISUAL_FIXED_NOW)
+    : new Date(),
 ): Promise<AnalyticsReport> {
   const metrics = await db
     .select({

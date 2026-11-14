@@ -113,10 +113,8 @@ try {
             (category) => category.id === note.categoryId,
           )?.slug,
           note.published.slug,
-          note.versions.find((version) => version.kind === 'published')
-            ?.markdown ?? note.published.markdown,
-          note.versions.find((version) => version.kind === 'published')
-            ?.plainText ?? note.published.plainText,
+          note.published.markdown,
+          note.published.plainText,
           fixture.prototypeState.author.name,
           dateTime(note.published.publishedAt),
         ],

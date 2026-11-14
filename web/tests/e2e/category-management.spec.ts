@@ -1,5 +1,10 @@
 import './database-isolation'
 import { expect, test } from '@playwright/test'
+import { seedTestDatabase } from '../seed-test-db'
+
+test.beforeEach(async () => {
+  await seedTestDatabase()
+})
 
 test('owner manages categories and manual order', async ({ page }) => {
   await page.goto('/studio/login')

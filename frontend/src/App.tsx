@@ -18,12 +18,18 @@ import { ComponentGalleryPage } from './pages/public/ComponentGalleryPage'
 import { PasswordResetVisualPage } from './pages/public/PasswordResetVisualPage'
 import { PublicShellFixturePage } from './pages/public/PublicShellFixturePage'
 import { SearchResultsPage } from './pages/public/SearchResultsPage'
+import {
+  SearchErrorFixturePage,
+  SearchLoadingFixturePage,
+} from './pages/public/SearchStateFixturePage'
 import { StudioDashboardPage } from './pages/studio/StudioDashboardPage'
+import { AnalyticsVisualPage } from './pages/studio/AnalyticsVisualPage'
 import { CategoryManagementPage } from './pages/studio/CategoryManagementPage'
 import { CollaborationManagementPage } from './pages/studio/CollaborationManagementPage'
 import { AnalyticsPage } from './pages/studio/AnalyticsPage'
 import { StudioLoginPage } from './pages/studio/StudioLoginPage'
 import { StudioSettingsPage } from './pages/studio/StudioSettingsPage'
+import { StudioSettingsVisualPage } from './pages/studio/StudioSettingsVisualPage'
 import { StudioShellFixturePage } from './pages/studio/StudioShellFixturePage'
 import { TrashPage } from './pages/studio/TrashPage'
 import { useSiteStore } from './store/siteStore'
@@ -96,6 +102,14 @@ export default function App() {
             path="/visual-fixtures/public-shell"
             element={<PublicShellFixturePage />}
           />
+          <Route
+            path="/visual-fixtures/search-loading"
+            element={<SearchLoadingFixturePage />}
+          />
+          <Route
+            path="/visual-fixtures/search-error"
+            element={<SearchErrorFixturePage />}
+          />
           <Route path="/library" element={<LibraryIndexPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route
@@ -137,6 +151,14 @@ export default function App() {
               />
               <Route path="/studio/analytics" element={<AnalyticsPage />} />
               <Route path="/studio/settings" element={<StudioSettingsPage />} />
+              <Route
+                path="/studio/visual-fixtures/analytics"
+                element={<AnalyticsVisualPage />}
+              />
+              <Route
+                path="/studio/visual-fixtures/settings"
+                element={<StudioSettingsVisualPage />}
+              />
             </Route>
           </Route>
         </Route>

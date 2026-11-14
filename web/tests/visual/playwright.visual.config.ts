@@ -46,6 +46,7 @@ export default defineConfig({
         TRUST_PROXY: 'true',
         ANALYTICS_HASH_SECRET: 'playwright-analytics-secret',
         ENABLE_VISUAL_FIXTURES: '1',
+        VISUAL_FIXED_NOW: '2026-11-13T12:00:00.000Z',
       },
     },
     {

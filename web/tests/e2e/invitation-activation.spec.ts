@@ -15,11 +15,20 @@ test('invitee activates an account, logs in, and revokes the session', async ({
   await expect(page).toHaveURL(/\/studio$/)
 
   await page.goto('/studio/collaboration')
+  await page.getByRole('tab', { name: '邀请记录' }).click()
   await page.getByLabel('邮箱').fill('invitee@example.com')
-  await page.getByLabel('昵称').fill('受邀协作者')
-  await page.getByLabel('授权文章').selectOption('article-1')
+  await page.getByLabel('昵称预设').fill('受邀协作者')
+  const articleCheckbox = page
+    .getByRole('checkbox', { name: /授权文章/ })
+    .first()
+  const articleTitle = (
+    (await articleCheckbox.getAttribute('aria-label')) ?? ''
+  ).replace('授权文章 ', '')
+  await articleCheckbox.check()
   await page.getByRole('button', { name: '生成邀请链接' }).click()
-  const inviteLink = await page.getByLabel('邀请链接').inputValue()
+  const inviteLink = await page
+    .getByRole('textbox', { name: '邀请链接', exact: true })
+    .inputValue()
 
   await page.getByRole('button', { name: '退出写作台' }).click()
   await page.goto(inviteLink)
@@ -30,7 +39,7 @@ test('invitee activates an account, logs in, and revokes the session', async ({
     page.getByRole('link', { name: '返回知笺' }),
   ).toBeVisible()
   await expect(page.getByText('invitee@example.com')).toBeVisible()
-  await expect(page.getByText('写作不是归档')).toBeVisible()
+  await expect(page.getByText(articleTitle, { exact: true })).toBeVisible()
   await expect(page.getByText(/邀请将在 .* 过期/)).toBeVisible()
   await page.getByLabel('昵称').fill('协作者乙')
   await page.getByLabel('设置密码').fill('collaborator-password')

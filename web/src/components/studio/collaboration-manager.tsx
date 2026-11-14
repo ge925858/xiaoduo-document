@@ -16,6 +16,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Dialog } from '@/components/ui/dialog'
+import {
+  formatDateTime,
+  formatRelativeTime,
+} from '@/lib/format-time'
 import { cn } from '@/lib/utils'
 
 type Section = 'applications' | 'invitations' | 'collaborators'
@@ -62,14 +66,10 @@ interface ArticleGrant {
   articleTitle: string
 }
 
-function formatDate(value: string | Date): string {
-  return new Intl.DateTimeFormat('zh-CN', {
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'Asia/Shanghai',
-  }).format(value instanceof Date ? value : new Date(value))
+function formatApplicationTime(value: string | Date): string {
+  return formatRelativeTime(
+    value instanceof Date ? value.toISOString() : value,
+  )
 }
 
 function inviteUrl(token: string): string {
@@ -374,7 +374,7 @@ export function CollaborationManager({
                           ? '已通过'
                           : '已拒绝'}
                     </span>
-                    <time>{formatDate(application.createdAt)}</time>
+                    <time>{formatApplicationTime(application.createdAt)}</time>
                   </div>
                   <p className="mt-1 text-[10px] text-[var(--muted)]">
                     {application.email} · 申请编辑「{application.articleTitle}」
@@ -482,7 +482,12 @@ export function CollaborationManager({
                     </div>
                     <p>
                       {invite.articleIds.length} 篇文章 ·{' '}
-                      {formatDate(invite.expiresAt)} 过期
+                      {formatDateTime(
+                        invite.expiresAt instanceof Date
+                          ? invite.expiresAt.toISOString()
+                          : invite.expiresAt,
+                      )}{' '}
+                      过期
                     </p>
                   </div>
                   {invite.status === 'pending' ? (
@@ -668,6 +673,7 @@ function ArticlePicker({
         <label key={article.id}>
           <input
             type="checkbox"
+            aria-label={`授权文章 ${article.title}`}
             checked={selected.includes(article.id)}
             onChange={() =>
               onChange(

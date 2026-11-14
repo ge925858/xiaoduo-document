@@ -35,7 +35,9 @@ export function MarkdownDiffView({
     () => buildMarkdownDiff(oldMarkdown, newMarkdown),
     [oldMarkdown, newMarkdown],
   )
-  const [activeChangeId, setActiveChangeId] = useState<string | null>(null)
+  const [activeChangeId, setActiveChangeId] = useState<string | null>(
+    diff.changes[0]?.id ?? null,
+  )
   const activeChange =
     diff.changes.find((change) => change.id === activeChangeId) ?? null
 

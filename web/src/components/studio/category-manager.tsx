@@ -226,7 +226,7 @@ function CategoryEditor({
       <div className="flex items-center justify-between border-t border-[var(--line)] pt-4">
         <button
           type="button"
-          className="category-delete-button"
+          className="inline-flex items-center gap-1.5 text-[10px] text-[var(--rust)] disabled:opacity-40"
           aria-label={`删除 ${category.title}`}
           disabled={disabled || chapterCount > 0}
           title={

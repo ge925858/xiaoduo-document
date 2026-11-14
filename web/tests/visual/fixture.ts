@@ -70,8 +70,10 @@ const notes = [
         title: '把想法留在纸上',
         categoryId: 'theme-attention',
         slug: 'keep-thinking-on-paper',
-        markdown: '有些想法诞生时并不完整。先写下来，给它们一点生长的时间。',
-        plainText: '有些想法诞生时并不完整',
+        markdown:
+          '有些想法诞生时并不完整。先写下来，给它们一点生长的时间。\n\n## 记录先于理解\n\n写下来的第一句话并不准确，它的作用是为继续修改留下位置。\n\n> 先写清楚，再想明白。\n\n## 让笔记拥有时间\n\n把笔记看成一份持续修订的记录，而不是一次发布完成的作品。\n\n- [x] 为重要想法保留问题\n- [ ] 每隔一段时间重读\n- [ ] 允许内容暂时保持未完成',
+        plainText:
+          '有些想法诞生时并不完整 先写下来 记录先于理解 写下来的第一句话并不准确 先写清楚 再想明白',
         createdAt: publishedAt,
         author: { id: 'owner', name: '林默', role: 'owner' },
       },

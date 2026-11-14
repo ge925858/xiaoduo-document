@@ -1273,14 +1273,14 @@ export function StudioNotePage() {
           <section className="studio-current-draft-card">
             <span className="studio-history-kind">当前草稿</span>
             <strong>{title || '无标题章节'}</strong>
-            <p>
+            <p data-visual-dynamic>
               最后保存于 {formatClock(savedAt)} · {wordCount} 字
             </p>
           </section>
 
-          <div className="studio-version-list">
+          <ol className="studio-version-list" aria-label="共享版本日志">
             {note.versions.map((version) => (
-              <article
+              <li
                 key={version.id}
                 className={cn(
                   'studio-version-row',
@@ -1358,14 +1358,14 @@ export function StudioNotePage() {
                     </button>
                   )}
                 </div>
-              </article>
+              </li>
             ))}
             {!note.versions.length && (
               <p className="py-10 text-center text-xs text-[var(--muted)]">
                 还没有历史版本。可以手动保存一个版本，或在发布时自动生成。
               </p>
             )}
-          </div>
+          </ol>
         </div>
       </Dialog>
 

@@ -22,6 +22,8 @@ export interface VisualCase {
     | 'open-version-history'
     | 'open-version-diff'
   searchQuery?: string
+  expectedText?: string
+  maskSelectors?: string[]
   viewports?: ReadonlyArray<'desktop' | 'tablet' | 'mobile'>
 }
 
@@ -72,6 +74,20 @@ export const visualCases: VisualCase[] = [
     prototypePath: '/search?q=写作',
     productionPath: '/search?q=写作',
     productionLogin: null,
+  },
+  {
+    id: 'public-search-loading',
+    prototypePath: '/visual-fixtures/search-loading',
+    productionPath: '/visual-fixtures/search-loading',
+    productionLogin: null,
+    expectedText: '正在搜索公开章节',
+  },
+  {
+    id: 'public-search-error',
+    prototypePath: '/visual-fixtures/search-error',
+    productionPath: '/visual-fixtures/search-error',
+    productionLogin: null,
+    expectedText: '搜索暂时不可用',
   },
   {
     id: 'public-preview',
@@ -143,7 +159,7 @@ export const visualCases: VisualCase[] = [
   },
   {
     id: 'studio-analytics-owner',
-    prototypePath: '/studio/analytics',
+    prototypePath: '/studio/visual-fixtures/analytics',
     productionPath: '/studio/analytics',
     productionLogin: 'owner',
   },
@@ -155,7 +171,7 @@ export const visualCases: VisualCase[] = [
   },
   {
     id: 'studio-settings-owner',
-    prototypePath: '/studio/settings',
+    prototypePath: '/studio/visual-fixtures/settings',
     productionPath: '/studio/settings',
     productionLogin: 'owner',
   },
@@ -191,6 +207,7 @@ export const visualCases: VisualCase[] = [
     productionPath: '/studio/notes/note-keep-thinking',
     productionLogin: 'owner',
     interaction: 'open-version-diff',
+    maskSelectors: ['.studio-editor-topbar'],
   },
   {
     id: 'collaboration-invite',

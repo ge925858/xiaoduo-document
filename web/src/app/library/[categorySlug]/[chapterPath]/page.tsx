@@ -206,7 +206,10 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
 
         {headings.length ? <ChapterToc headings={headings} /> : null}
       </div>
-      <ArticleViewBeacon articleId={chapter.id} />
+      <ArticleViewBeacon
+        articleId={chapter.id}
+        disabled={process.env.ENABLE_VISUAL_FIXTURES === '1'}
+      />
     </article>
   )
 }

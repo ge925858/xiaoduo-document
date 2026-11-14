@@ -38,7 +38,9 @@ test('RSS, sitemap and share metadata follow published content', async ({
   await page
     .getByRole('textbox', { name: '章节正文' })
     .fill('## 新内容\n\n发布后外部表示立即更新。')
-  await page.getByRole('button', { name: '保存草稿' }).click()
+  await page
+    .getByRole('textbox', { name: '章节正文' })
+    .press('ControlOrMeta+KeyS')
   await expect(page.getByRole('status').first()).toContainText('草稿已保存')
   const [publishResponse] = await Promise.all([
     page.waitForResponse(
@@ -49,7 +51,7 @@ test('RSS, sitemap and share metadata follow published content', async ({
     page.getByRole('button', { name: /发布章节|更新发布/ }).click(),
   ])
   expect(publishResponse.status()).toBe(200)
-  await expect(page.getByRole('button', { name: '更新发布' })).toBeVisible()
+  await expect(page.getByRole('button', { name: '已是最新' })).toBeVisible()
 
   response = await page.request.get('/rss.xml')
   expect(await response.text()).toContain('RSS 新标题')

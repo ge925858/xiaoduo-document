@@ -92,10 +92,21 @@ async function prepareProductionPage(
 async function settle(page: Page) {
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)
+  await page.mouse.move(0, 0)
   await page.addStyleTag({
     content:
       '*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}',
   })
+}
+
+async function applyTheme(page: Page, themeMode: 'light' | 'dark') {
+  await page.evaluate((theme) => {
+    document.documentElement.dataset.theme = theme
+    document.documentElement.style.colorScheme = theme
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur()
+    }
+  }, themeMode)
 }
 
 async function applyDesignTokenSample(page: Page) {
@@ -225,8 +236,10 @@ async function applyVisualInteraction(
   }
 }
 
-function masks(page: Page) {
-  return visualFixture.maskSelectors.map((selector) => page.locator(selector))
+function masks(page: Page, extraSelectors: string[] = []) {
+  return [...visualFixture.maskSelectors, ...extraSelectors].map((selector) =>
+    page.locator(selector),
+  )
 }
 
 test('shared components support dialog focus, tooltip, and keyboard select', async ({
@@ -268,6 +281,23 @@ test('public search opens by shortcut and returns focus', async ({ page }) => {
   await page.keyboard.press('Escape')
   await expect(dialog).toBeHidden()
   await expect(page.getByRole('button', { name: '搜索' })).toBeFocused()
+})
+
+test('mobile library navigation moves focus into the drawer and back', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 812 })
+  await page.goto(`${visualOrigins.production}/visual-fixtures/public-shell`)
+
+  const opener = page.getByRole('button', { name: '打开目录' })
+  await opener.focus()
+  await page.keyboard.press('Enter')
+  await expect(
+    page.getByRole('button', { name: '关闭目录', exact: true }),
+  ).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(opener).toHaveAttribute('aria-expanded', 'false')
+  await expect(opener).toBeFocused()
 })
 
 test('empty public preview keeps zero counts and a clear library entry', async ({
@@ -355,13 +385,21 @@ for (const visualCase of visualCases) {
             visualCase.searchQuery,
           )
         }
+        if (visualCase.expectedText) {
+          await expect(
+            prototypePage.getByText(visualCase.expectedText, {
+              exact: true,
+            }),
+          ).toBeVisible()
+        }
         await settle(prototypePage)
+        await applyTheme(prototypePage, themeMode)
         const prototypePng = await prototypePage.screenshot({
           path: prototypePath,
           fullPage: true,
           animations: 'disabled',
           caret: 'hide',
-          mask: masks(prototypePage),
+          mask: masks(prototypePage, visualCase.maskSelectors),
           maskColor: '#d8d8d8',
         })
 
@@ -382,13 +420,21 @@ for (const visualCase of visualCases) {
             visualCase.searchQuery,
           )
         }
+        if (visualCase.expectedText) {
+          await expect(
+            productionPage.getByText(visualCase.expectedText, {
+              exact: true,
+            }),
+          ).toBeVisible()
+        }
         await settle(productionPage)
+        await applyTheme(productionPage, themeMode)
         const productionPng = await productionPage.screenshot({
           path: productionPath,
           fullPage: true,
           animations: 'disabled',
           caret: 'hide',
-          mask: masks(productionPage),
+          mask: masks(productionPage, visualCase.maskSelectors),
           maskColor: '#d8d8d8',
         })
         await context.close()
