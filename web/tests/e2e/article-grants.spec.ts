@@ -57,10 +57,17 @@ test('owner grants one article and collaborator cannot access the rest', async (
   }
 
   await page.goto('/studio/collaboration')
-  await page.getByLabel('授权协作者').selectOption('collaborator-14')
-  await page.getByLabel('授权章节').selectOption('article-1')
-  await page.getByRole('button', { name: '增加文章授权' }).click()
-  await expect(page.getByText('文章授权已保存')).toBeVisible()
+  await page.getByRole('tab', { name: '协作者' }).click()
+  const collaboratorRow = page
+    .locator('.collaborator-row')
+    .filter({ hasText: '协作者甲' })
+  await collaboratorRow.getByRole('button', { name: '管理授权' }).click()
+  const grantDialog = page.getByRole('dialog', { name: '管理文章授权' })
+  await grantDialog
+    .getByRole('checkbox', { name: /写作不是归档/ })
+    .check()
+  await grantDialog.getByRole('button', { name: '保存授权' }).click()
+  await expect(page.getByText('文章授权已更新')).toBeVisible()
 
   const collaboratorContext = await browser.newContext()
   const collaboratorPage = await collaboratorContext.newPage()
@@ -75,7 +82,7 @@ test('owner grants one article and collaborator cannot access the rest', async (
   ])
   expect(loginResponse.status()).toBe(200)
   await expect(
-    collaboratorPage.getByRole('heading', { name: '协作文章' }),
+    collaboratorPage.getByRole('heading', { name: '写作台' }),
   ).toBeVisible()
   await expect(
     collaboratorPage.getByRole('link', { name: '写作不是归档' }),
@@ -216,15 +223,15 @@ test('owner grants one article and collaborator cannot access the rest', async (
   await collaboratorPage.goto('/studio/collaboration')
   await expect(collaboratorPage).toHaveURL(/\/studio$/)
   await expect(
-    collaboratorPage.getByRole('heading', { name: '协作文章' }),
+    collaboratorPage.getByRole('heading', { name: '写作台' }),
   ).toBeVisible()
 
-  await page
-    .getByRole('button', {
-      name: '撤销 协作者甲 对 写作不是归档 的授权',
-    })
-    .click()
-  await expect(page.getByText('文章授权已撤销')).toBeVisible()
+  await collaboratorRow.getByRole('button', { name: '管理授权' }).click()
+  await grantDialog
+    .getByRole('checkbox', { name: /写作不是归档/ })
+    .uncheck()
+  await grantDialog.getByRole('button', { name: '保存授权' }).click()
+  await expect(page.getByText('文章授权已更新')).toBeVisible()
   await collaboratorPage.goto('/studio')
   await expect(
     collaboratorPage.getByRole('link', { name: '写作不是归档' }),

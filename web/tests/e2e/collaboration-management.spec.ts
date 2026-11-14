@@ -61,6 +61,13 @@ test('owner suspends, restores, and resets a collaborator account', async ({
   await ownerPage.getByRole('button', { name: '进入写作台' }).click()
   await expect(ownerPage).toHaveURL(/\/studio$/)
   await ownerPage.goto('/studio/collaboration')
+  await expect(
+    ownerPage.getByRole('tab', { name: '申请审核' }),
+  ).toBeVisible()
+  await expect(
+    ownerPage.getByRole('tab', { name: '邀请记录' }),
+  ).toBeVisible()
+  await ownerPage.getByRole('tab', { name: '协作者' }).click()
   await ownerPage
     .getByRole('button', { name: '暂停账号 协作者十九' })
     .click()
@@ -87,7 +94,9 @@ test('owner suspends, restores, and resets a collaborator account', async ({
   await ownerPage
     .getByRole('button', { name: '生成重置链接 协作者十九' })
     .click()
-  const resetLink = await ownerPage.getByLabel('密码重置链接').inputValue()
+  const resetLink = await ownerPage
+    .getByRole('textbox', { name: '密码重置链接', exact: true })
+    .inputValue()
 
   const resetContext = await browser.newContext()
   const resetPage = await resetContext.newPage()

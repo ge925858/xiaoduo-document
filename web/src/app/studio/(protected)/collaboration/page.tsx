@@ -23,16 +23,12 @@ export default async function CollaborationPage() {
     listArticleGrants(),
   ])
   return (
-    <section>
-      <p className="eyebrow">Collaboration</p>
-      <h1>协作管理</h1>
-      <CollaborationManager
-        applications={await listApplications()}
-        invites={await listInvites()}
-        articles={articles}
-        collaborators={collaborators}
-        grants={grants}
-      />
-    </section>
+    <CollaborationManager
+      applications={await listApplications()}
+      invites={await listInvites()}
+      articles={articles}
+      collaborators={collaborators}
+      grants={grants}
+    />
   )
 }

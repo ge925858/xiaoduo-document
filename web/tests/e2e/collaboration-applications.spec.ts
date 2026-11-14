@@ -70,6 +70,8 @@ test('reader applies and owner approves an article-scoped invite', async ({
   await expect(
     page.getByRole('article').filter({ hasText: '协作者甲' }),
   ).toBeVisible()
-  await page.getByRole('button', { name: '批准' }).click()
-  await expect(page.getByLabel('邀请链接')).toHaveValue(/collaborate\/accept\//)
+  await page.getByRole('button', { name: '通过' }).click()
+  await expect(
+    page.getByRole('textbox', { name: '邀请链接', exact: true }),
+  ).toHaveValue(/collaborate\/accept\//)
 })
