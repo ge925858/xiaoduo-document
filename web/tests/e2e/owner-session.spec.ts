@@ -15,6 +15,9 @@ test('owner can sign in, update site profile, and revoke the session', async ({
   await expect(page.getByRole('heading', { name: '写作台' })).toBeVisible()
 
   await page.goto('/studio/settings')
+  await expect(
+    page.getByRole('heading', { level: 1, name: '个人资料', exact: true }),
+  ).toBeVisible()
   await page.getByLabel('作者昵称').fill('新的站主昵称')
   await page.getByLabel('所在城市').fill('杭州')
   await page.getByRole('button', { name: '保存站点资料' }).click()
