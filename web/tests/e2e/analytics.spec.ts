@@ -71,8 +71,12 @@ test('counts public views and exposes details only to the owner', async ({
   await expect(ownerPage).toHaveURL(/\/studio$/)
   await ownerPage.getByRole('link', { name: '访问统计' }).click()
   await expect(
-    ownerPage.getByRole('heading', { name: '访问统计' }),
+    ownerPage.getByRole('heading', { name: '访问报表', exact: true }),
   ).toBeVisible()
+  await expect(
+    ownerPage.getByRole('button', { name: '最近 30 天' }),
+  ).toBeVisible()
+  await ownerPage.getByRole('button', { name: '最近 7 天' }).click()
   await expect(ownerPage.getByText('120.24.78.68')).toBeVisible()
   await expect(ownerPage.getByText(/广东/)).toBeVisible()
   await expect(ownerPage.getByText('google.com')).toBeVisible()
