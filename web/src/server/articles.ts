@@ -353,6 +353,43 @@ export async function restoreArticleVersion(
   return result[0].affectedRows === 1 ? 'saved' : 'conflict'
 }
 
+export async function deleteArticleVersion(
+  articleId: string,
+  versionId: string,
+  actor: Pick<VersionActor, 'id' | 'role'>,
+): Promise<'deleted' | 'missing' | 'forbidden' | 'published'> {
+  const [version] = await db
+    .select({
+      id: articleVersion.id,
+      kind: articleVersion.kind,
+      authorId: articleVersion.authorId,
+    })
+    .from(articleVersion)
+    .where(
+      and(
+        eq(articleVersion.id, versionId),
+        eq(articleVersion.articleId, articleId),
+      ),
+    )
+    .limit(1)
+  if (!version) return 'missing'
+  if (version.kind !== 'manual') return 'published'
+  if (actor.role !== 'owner' && version.authorId !== actor.id) {
+    return 'forbidden'
+  }
+
+  const result = await db
+    .delete(articleVersion)
+    .where(
+      and(
+        eq(articleVersion.id, versionId),
+        eq(articleVersion.articleId, articleId),
+        eq(articleVersion.kind, 'manual'),
+      ),
+    )
+  return result[0].affectedRows === 1 ? 'deleted' : 'missing'
+}
+
 export async function publishArticle(
   articleId: string,
   actor: VersionActor,
