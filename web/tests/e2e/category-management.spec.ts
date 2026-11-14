@@ -9,9 +9,23 @@ test('owner manages categories and manual order', async ({ page }) => {
   await expect(page).toHaveURL(/\/studio$/)
 
   await page.goto('/studio/categories')
-  await page.getByLabel('新分类名称').fill('阅读测试')
-  await page.getByLabel('新分类网址标识').fill('reading-test')
-  await page.getByRole('button', { name: '创建分类' }).click()
+  await expect(
+    page.getByRole('heading', { level: 1, name: '分类', exact: true }),
+  ).toBeVisible()
+  await expect(
+    page.locator('.category-editor').first().getByText('2 篇章节'),
+  ).toBeVisible()
+  await expect(
+    page.locator('.category-editor').nth(1).getByText('0 篇章节'),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: '删除 注意力与写作' }),
+  ).toBeDisabled()
+  await page.getByLabel('分类名称', { exact: true }).fill('阅读测试')
+  await page
+    .getByLabel('分类英文网址标识', { exact: true })
+    .fill('reading-test')
+  await page.getByRole('button', { name: '新建分类' }).click()
   await expect(page.getByLabel('分类名称 阅读测试')).toBeVisible()
 
   await page.getByLabel('分类名称 阅读测试').fill('阅读与测试')
@@ -24,7 +38,7 @@ test('owner manages categories and manual order', async ({ page }) => {
 
   await page.getByRole('button', { name: '下移 注意力与写作' }).click()
   await expect(
-    page.locator('.category-list li').first().locator('input').first(),
+    page.locator('.category-editor').first().locator('input').first(),
   ).toHaveValue('工具与方法')
 
   await page.getByRole('button', { name: '删除 阅读与测试' }).click()

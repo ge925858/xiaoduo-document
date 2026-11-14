@@ -5383,3 +5383,147 @@ button.markdown-diff-change-item.is-active {
 .markdown-diff-block .markdown-body {
   max-width: none;
 }
+
+.category-create-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 25px;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 19px;
+  color: var(--muted);
+}
+
+.category-create-form input {
+  height: 34px;
+  min-width: 0;
+  flex: 1;
+  border: 1px solid var(--line);
+  background: var(--field);
+  padding: 0 10px;
+  color: var(--ink);
+  font-size: 11px;
+}
+
+.category-create-form input:nth-of-type(2) {
+  max-width: 210px;
+}
+
+.category-editor-list {
+  margin-top: 8px;
+}
+
+.category-editor {
+  border-bottom: 0;
+  padding: 24px 0;
+}
+
+.category-editor + .category-editor {
+  margin-top: 18px;
+}
+
+.category-editor > header {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  margin-bottom: 18px;
+}
+
+.category-editor > header > span {
+  padding-top: 4px;
+  color: var(--muted-faint);
+  font: 9px/1.5 "Cascadia Code", monospace;
+}
+
+.category-editor h2 {
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 22px;
+}
+
+.category-editor header p {
+  margin-top: 3px;
+  color: var(--muted-faint);
+  font-size: 9px;
+}
+
+.category-editor-fields {
+  display: grid;
+  gap: 13px;
+  padding-left: 26px;
+}
+
+.category-editor-fields label > span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.category-editor-fields input,
+.category-editor-fields textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--field);
+  padding: 8px 10px;
+  color: var(--ink);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.category-editor > .flex {
+  margin-top: 17px;
+  margin-left: 26px;
+}
+
+.category-delete-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--rust);
+  font-size: 10px;
+}
+
+.category-delete-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.category-form-error {
+  margin-top: 12px;
+  border-radius: 5px;
+  background: var(--rust-soft);
+  padding: 9px 11px;
+  color: var(--rust);
+  font-size: 10px;
+}
+
+@media (max-width: 767px) {
+  .category-create-form {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .category-create-form input {
+    flex: 1;
+    max-width: none;
+    padding-inline: 7px;
+    font-size: 9px;
+  }
+
+  .category-create-form input:nth-of-type(2) {
+    max-width: none;
+  }
+
+  .category-create-form button {
+    padding-inline: 9px;
+  }
+
+  .category-editor-fields {
+    padding-left: 0;
+  }
+
+  .category-editor > .flex {
+    margin-left: 0;
+  }
+}
