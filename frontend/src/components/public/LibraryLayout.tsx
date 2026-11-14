@@ -84,6 +84,7 @@ export function LibraryLayout() {
             type="button"
             className="library-search-button"
             onClick={() => setSearchOpen(true)}
+            aria-label="搜索"
           >
             <Search size={15} />
             <span>搜索</span>

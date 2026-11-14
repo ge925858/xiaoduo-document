@@ -17,7 +17,8 @@ export interface VisualCase {
   productionPath: string
   productionLogin: VisualRole
   overlay?: 'design-tokens'
-  interaction?: 'open-library-sidebar'
+  interaction?: 'open-library-sidebar' | 'open-public-search'
+  searchQuery?: string
   viewports?: ReadonlyArray<'desktop' | 'tablet' | 'mobile'>
 }
 
@@ -53,6 +54,20 @@ export const visualCases: VisualCase[] = [
     id: 'public-not-found',
     prototypePath: '/visual-fixtures/missing-page',
     productionPath: '/visual-fixtures/missing-page',
+    productionLogin: null,
+  },
+  {
+    id: 'public-search-dialog',
+    prototypePath: '/visual-fixtures/public-shell',
+    productionPath: '/visual-fixtures/public-shell',
+    productionLogin: null,
+    interaction: 'open-public-search',
+    searchQuery: '写作',
+  },
+  {
+    id: 'public-search-page',
+    prototypePath: '/search?q=写作',
+    productionPath: '/search?q=写作',
     productionLogin: null,
   },
   {

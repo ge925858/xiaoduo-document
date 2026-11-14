@@ -170,10 +170,22 @@ async function applyVisualInteraction(
   interaction: NonNullable<
     (typeof visualCases)[number]['interaction']
   >,
+  searchQuery?: string,
 ) {
-  if (interaction !== 'open-library-sidebar') return
-  const openButton = page.getByRole('button', { name: '打开目录' })
-  if (await openButton.isVisible()) await openButton.click()
+  if (interaction === 'open-library-sidebar') {
+    const openButton = page.getByRole('button', { name: '打开目录' })
+    if (await openButton.isVisible()) await openButton.click()
+    return
+  }
+  if (interaction === 'open-public-search') {
+    await page.getByRole('button', { name: '搜索' }).first().click()
+    await expect(
+      page.getByRole('dialog', { name: '搜索知笺' }),
+    ).toBeVisible()
+    await page
+      .getByPlaceholder('搜索分类或章节')
+      .fill(searchQuery ?? '写作')
+  }
 }
 
 function masks(page: Page) {
@@ -208,6 +220,17 @@ test('shared components support dialog focus, tooltip, and keyboard select', asy
   await page.keyboard.press('ArrowDown')
   await page.keyboard.press('Enter')
   await expect(select).toHaveText(/已发布/)
+})
+
+test('public search opens by shortcut and returns focus', async ({ page }) => {
+  await page.goto(`${visualOrigins.production}/visual-fixtures/public-shell`)
+  await page.keyboard.press('ControlOrMeta+KeyK')
+  const dialog = page.getByRole('dialog', { name: '搜索知笺' })
+  await expect(dialog).toBeVisible()
+  await expect(dialog.getByLabel('搜索公开章节')).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+  await expect(page.getByRole('button', { name: '搜索' })).toBeFocused()
 })
 
 test('empty public preview keeps zero counts and a clear library entry', async ({
@@ -275,11 +298,12 @@ for (const visualCase of visualCases) {
         const diffPath = path.join(outputDirectory, 'diff.png')
         const reportPath = path.join(outputDirectory, 'report.json')
 
-        const prototypeContext = await browser.newContext({
+        const context = await browser.newContext({
           viewport: { width: viewport.width, height: viewport.height },
           colorScheme: themeMode,
+          extraHTTPHeaders: { 'x-real-ip': '120.24.78.68' },
         })
-        const prototypePage = await prototypeContext.newPage()
+        const prototypePage = await context.newPage()
         await preparePage(prototypePage, visualCase.productionLogin, themeMode)
         await prototypePage.goto(
           `${visualOrigins.prototype}${visualCase.prototypePath}`,
@@ -291,6 +315,7 @@ for (const visualCase of visualCases) {
           await applyVisualInteraction(
             prototypePage,
             visualCase.interaction,
+            visualCase.searchQuery,
           )
         }
         await settle(prototypePage)
@@ -302,14 +327,8 @@ for (const visualCase of visualCases) {
           mask: masks(prototypePage),
           maskColor: '#d8d8d8',
         })
-        await prototypeContext.close()
 
-        const productionContext = await browser.newContext({
-          viewport: { width: viewport.width, height: viewport.height },
-          colorScheme: themeMode,
-          extraHTTPHeaders: { 'x-real-ip': '120.24.78.68' },
-        })
-        const productionPage = await productionContext.newPage()
+        const productionPage = await context.newPage()
         await prepareProductionPage(
           productionPage,
           visualCase.productionLogin,
@@ -323,6 +342,7 @@ for (const visualCase of visualCases) {
           await applyVisualInteraction(
             productionPage,
             visualCase.interaction,
+            visualCase.searchQuery,
           )
         }
         await settle(productionPage)
@@ -334,7 +354,7 @@ for (const visualCase of visualCases) {
           mask: masks(productionPage),
           maskColor: '#d8d8d8',
         })
-        await productionContext.close()
+        await context.close()
 
         try {
           const comparison = await compareVisualScreenshots(

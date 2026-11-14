@@ -12,15 +12,10 @@ import {
 } from 'lucide-react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { BrandMark } from '@/components/brand-mark'
+import { PublicSearchDialog } from '@/components/public-search-dialog'
 import { ThemeToggle } from '@/components/theme-toggle'
+import type { PublicCategory } from '@/lib/public-library'
 import { cn } from '@/lib/utils'
-
-interface LibraryCategory {
-  id: string
-  title: string
-  slug: string
-  chapters: Array<{ articleId: string; title: string; path: string }>
-}
 
 function decodedPathname(pathname: string) {
   try {
@@ -34,13 +29,15 @@ export function PublicLibraryShell({
   categories,
   children,
 }: {
-  categories: LibraryCategory[]
+  categories: PublicCategory[]
   children: ReactNode
 }) {
   const pathname = decodedPathname(usePathname())
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
   const contentRef = useRef<HTMLElement>(null)
+  const searchButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0 })
@@ -49,6 +46,14 @@ export function PublicLibraryShell({
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (
+        (event.metaKey || event.ctrlKey) &&
+        event.key.toLowerCase() === 'k'
+      ) {
+        event.preventDefault()
+        setSearchOpen(true)
+        return
+      }
       if (event.key === 'Escape') setSidebarOpen(false)
     }
     window.addEventListener('keydown', onKeyDown)
@@ -90,20 +95,16 @@ export function PublicLibraryShell({
         <span className="library-header-divider" />
         <span className="library-header-title">笔记库</span>
         <div className="ml-auto flex items-center gap-1">
-          <form
-            action="/search"
-            role="search"
+          <button
+            ref={searchButtonRef}
+            type="button"
             className="library-search-button"
+            aria-label="搜索"
+            onClick={() => setSearchOpen(true)}
           >
             <Search aria-hidden="true" size={15} />
             <span>搜索</span>
-            <input
-              type="search"
-              name="q"
-              aria-label="搜索公开章节"
-              className="library-search-input"
-            />
-          </form>
+          </button>
           <ThemeToggle className="library-icon-button" iconSize={16} />
         </div>
       </header>
@@ -224,6 +225,12 @@ export function PublicLibraryShell({
           {children}
         </div>
       </main>
+      <PublicSearchDialog
+        open={searchOpen}
+        onOpenChange={setSearchOpen}
+        categories={categories}
+        returnFocusTo={searchButtonRef}
+      />
     </div>
   )
 }

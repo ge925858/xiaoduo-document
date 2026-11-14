@@ -87,6 +87,7 @@ export function SearchDialog({
                     key={category.id}
                     type="button"
                     className="search-result-row"
+                    data-visual-dynamic
                     onClick={() => go(`/library/${category.slug}`)}
                   >
                     <span className="search-result-icon">

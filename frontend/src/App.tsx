@@ -16,6 +16,7 @@ import { NotFoundPage } from './pages/public/NotFoundPage'
 import { CollaborationInvitePage } from './pages/public/CollaborationInvitePage'
 import { ComponentGalleryPage } from './pages/public/ComponentGalleryPage'
 import { PublicShellFixturePage } from './pages/public/PublicShellFixturePage'
+import { SearchResultsPage } from './pages/public/SearchResultsPage'
 import { StudioDashboardPage } from './pages/studio/StudioDashboardPage'
 import { CategoryManagementPage } from './pages/studio/CategoryManagementPage'
 import { CollaborationManagementPage } from './pages/studio/CollaborationManagementPage'
@@ -95,6 +96,7 @@ export default function App() {
             element={<PublicShellFixturePage />}
           />
           <Route path="/library" element={<LibraryIndexPage />} />
+          <Route path="/search" element={<SearchResultsPage />} />
           <Route
             path="/library/:categorySlug"
             element={<CategoryPage />}
