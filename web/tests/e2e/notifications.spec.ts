@@ -64,6 +64,7 @@ test('owner reviews applications through notifications only', async ({
     .getByRole('listitem')
     .filter({ hasText: '申请通知测试' })
   await expect(notification).toBeVisible()
+  await expect(notification.locator('p').first()).toHaveText('协作申请')
   await page
     .getByRole('button', { name: '标记已读 新的协作申请' })
     .first()
