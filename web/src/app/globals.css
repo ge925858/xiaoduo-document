@@ -46,6 +46,387 @@
   --surface-muted: var(--panel);
 }
 
+/* Version history and Markdown comparison */
+
+.markdown-diff-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+}
+
+.markdown-diff-header h2 {
+  margin-top: 4px;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.markdown-diff-header button {
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  padding: 0 10px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.version-diff-preview {
+  padding: 7px 0;
+}
+
+.markdown-diff-navigator {
+  position: relative;
+  z-index: 16;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  padding: 7px 12px;
+  backdrop-filter: blur(14px);
+}
+
+.markdown-diff-navigator.is-empty {
+  justify-content: center;
+  color: var(--muted-faint);
+  font-size: 9px;
+}
+
+.markdown-diff-summary {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 4px;
+  padding: 5px 7px;
+  color: var(--ink-soft);
+  font-size: 10px;
+  text-align: left;
+}
+
+.markdown-diff-summary:hover {
+  background: var(--hover);
+}
+
+.markdown-diff-summary small {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 9px;
+  font-size: 8px;
+}
+
+.markdown-diff-summary small span {
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+
+.markdown-diff-summary small .is-added {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.markdown-diff-summary small .is-removed {
+  background: var(--rust-soft);
+  color: var(--rust);
+}
+
+.markdown-diff-summary small .is-modified {
+  background: color-mix(in srgb, var(--gold) 14%, var(--paper));
+  color: var(--gold);
+}
+
+.markdown-diff-arrows {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 0;
+}
+
+.markdown-diff-arrows button {
+  display: flex;
+  width: 27px;
+  height: 27px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: var(--muted);
+}
+
+.markdown-diff-arrows button:hover {
+  background: var(--hover);
+  color: var(--ink);
+}
+
+.markdown-diff-arrows span {
+  min-width: 32px;
+  color: var(--muted-faint);
+  font: 8px/1 "Cascadia Code", monospace;
+  text-align: center;
+}
+
+.markdown-diff-change-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 12px;
+  left: 12px;
+  z-index: 30;
+  display: block;
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  padding: 5px;
+  box-shadow: 0 16px 48px var(--shadow);
+}
+
+.markdown-diff-change-item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 9px;
+  border-radius: 4px;
+  padding: 8px;
+  color: var(--muted);
+  text-align: left;
+}
+
+.markdown-diff-change-item::before {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: transparent;
+  content: "";
+}
+
+.markdown-diff-change-item.added::before {
+  background: var(--accent);
+}
+
+.markdown-diff-change-item.removed::before {
+  background: var(--rust);
+}
+
+.markdown-diff-change-item.modified::before {
+  background: var(--gold);
+}
+
+.markdown-diff-change-item:hover,
+.markdown-diff-change-item.is-active {
+  background: var(--hover);
+}
+
+.markdown-diff-change-index {
+  display: flex;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--field);
+  color: var(--muted-faint);
+  font: 8px/1 "Cascadia Code", monospace;
+}
+
+.markdown-diff-change-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.markdown-diff-change-title small {
+  color: var(--muted-faint);
+  font-size: 8px;
+  font-weight: 400;
+}
+
+.markdown-inline-diff,
+.markdown-diff-change-excerpt {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.markdown-inline-diff .is-added {
+  border-radius: 2px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.markdown-inline-diff .is-removed {
+  border-radius: 2px;
+  background: var(--rust-soft);
+  color: var(--rust);
+  text-decoration: line-through;
+}
+
+.markdown-diff-rendered {
+  min-height: 100%;
+}
+
+.markdown-diff-block {
+  display: block;
+  margin: 0 -8px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  padding: 3px 8px;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.markdown-diff-block > span,
+.markdown-diff-block > pre {
+  display: none;
+}
+
+.markdown-diff-block.is-changed-old {
+  background: color-mix(in srgb, var(--rust-soft) 46%, transparent);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--rust) 55%, transparent);
+}
+
+.markdown-diff-block.is-changed-new {
+  background: color-mix(in srgb, var(--accent-soft) 64%, transparent);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--accent) 58%, transparent);
+}
+
+.markdown-diff-block.is-active {
+  background: color-mix(in srgb, var(--accent-soft) 74%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+  outline: none;
+}
+
+.markdown-diff-block.is-changed-old.is-active {
+  background: color-mix(in srgb, var(--rust-soft) 78%, transparent);
+  box-shadow: inset 3px 0 0 var(--rust);
+}
+
+.markdown-diff-block.is-changed-new.is-active {
+  background: color-mix(in srgb, var(--accent-soft) 88%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.markdown-diff-block .markdown-body {
+  max-width: none;
+  font-size: 15.5px;
+  line-height: 1.9;
+}
+
+.version-diff-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+  padding: 0 14px 14px;
+}
+
+.version-diff-columns > section {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--paper-deep);
+}
+
+.version-diff-columns > section > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  color: var(--ink-soft);
+  font-size: 9px;
+}
+
+.version-diff-columns > section > header.is-old {
+  background: color-mix(in srgb, var(--rust-soft) 44%, var(--paper));
+}
+
+.version-diff-columns > section > header.is-new {
+  background: color-mix(in srgb, var(--accent-soft) 58%, var(--paper));
+}
+
+.version-diff-columns > section > header.is-old > span {
+  color: var(--rust);
+  font-weight: 650;
+}
+
+.version-diff-columns > section > header.is-new > span {
+  color: var(--accent);
+  font-weight: 650;
+}
+
+.version-diff-columns > section > header small {
+  overflow: hidden;
+  color: var(--muted-faint);
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.version-diff-content {
+  max-height: 62vh;
+  overflow-y: auto;
+  background: var(--paper);
+  padding: 18px;
+}
+
+.version-diff-content .markdown-body {
+  max-width: none;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.version-diff-empty {
+  color: var(--muted-faint);
+  font-size: 10px;
+}
+
+@media (max-width: 767px) {
+  .markdown-diff-header {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .markdown-diff-navigator {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .markdown-diff-summary small {
+    margin-top: 4px;
+    margin-left: 0;
+  }
+
+  .markdown-diff-arrows {
+    justify-content: flex-end;
+  }
+
+  .version-diff-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
 :root[data-theme="dark"] {
   color-scheme: dark;
   color: #edf3ee;
@@ -4635,11 +5016,169 @@ select:focus {
   width: min(92vw, 620px);
 }
 
-.studio-history-dialog .version-history {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  padding: 18px 20px;
+.studio-history-dialog .studio-version-history {
+  max-height: 64vh;
+  overflow-y: auto;
+  padding: 12px 12px 16px;
+}
+
+.studio-current-draft-card {
+  border-radius: 6px;
+  background: var(--accent-soft);
+  padding: 15px 16px;
+}
+
+.studio-current-draft-card strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.studio-current-draft-card p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.studio-history-kind {
+  display: inline-flex;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--gold) 14%, var(--paper));
+  padding: 2px 5px;
+  color: var(--gold);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.studio-history-kind.is-published {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.studio-version-list {
+  display: block;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.studio-version-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 2px solid transparent;
+  border-radius: 5px;
+  padding: 14px 8px 12px 11px;
+}
+
+.studio-version-row:hover {
+  background: var(--paper-deep);
+}
+
+.studio-version-row.is-published {
+  border-left-color: var(--accent);
+}
+
+.studio-version-row.is-manual {
+  border-left-color: var(--gold);
+}
+
+.studio-version-row time {
+  color: var(--muted-faint);
+  font: 8px/1.5 "Cascadia Code", monospace;
+}
+
+.studio-version-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.studio-version-author strong {
+  display: inline-block;
+  min-width: 24px;
+  transform: translateX(2px);
+  color: var(--ink-soft);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.studio-version-author small {
+  border-radius: 3px;
+  background: var(--field);
+  padding: 1px 4px;
+  color: var(--muted-faint);
+  font-size: 7px;
+}
+
+.studio-version-author small.is-owner {
+  background: color-mix(in srgb, var(--gold) 13%, var(--paper));
+  color: var(--gold);
+}
+
+.studio-version-author small.is-collaborator {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.studio-version-row > div > strong {
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.studio-version-empty {
+  padding: 36px 12px;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
+}
+
+.studio-version-error {
+  margin-top: 12px;
+  border-radius: 4px;
+  background: var(--rust-soft);
+  padding: 8px 10px;
+  color: var(--rust);
+  font-size: 9px;
+}
+
+.studio-version-save-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.studio-version-save-dialog label > span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 550;
+}
+
+.studio-version-save-dialog input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--line);
+  background: var(--field);
+  padding: 0 11px;
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.studio-version-save-dialog > div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 @media (max-width: 1600px) {
@@ -4786,4 +5325,61 @@ select:focus {
     flex-direction: column;
     gap: 5px;
   }
+}
+
+.markdown-diff-arrows {
+  margin-left: 0;
+}
+
+.markdown-diff-change-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 12px;
+  left: 12px;
+  z-index: 30;
+  display: block;
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 5px;
+}
+
+button.markdown-diff-change-item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  grid-template-columns: none;
+  align-items: flex-start;
+  gap: 9px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  padding: 8px;
+  color: var(--muted);
+  text-align: left;
+}
+
+button.markdown-diff-change-item:hover,
+button.markdown-diff-change-item.is-active {
+  background: var(--hover);
+}
+
+.markdown-diff-block {
+  display: block;
+  border: 0;
+  background: transparent;
+  padding: 3px 8px;
+}
+
+.markdown-diff-block > span,
+.markdown-diff-block > pre {
+  display: none;
+}
+
+.markdown-diff-block.is-active {
+  outline: none;
+}
+
+.markdown-diff-block .markdown-body {
+  max-width: none;
 }

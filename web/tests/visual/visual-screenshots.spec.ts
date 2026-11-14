@@ -195,6 +195,34 @@ async function applyVisualInteraction(
       page.getByRole('dialog', { name: '申请参与编辑' }),
     ).toBeVisible()
   }
+  if (interaction === 'open-version-history') {
+    if ((page.viewportSize()?.width ?? 1280) <= 767) {
+      await page.getByRole('button', { name: '历史', exact: true }).click()
+    } else {
+      await page.getByRole('button', { name: '版本历史' }).click()
+    }
+    await expect(
+      page.getByRole('dialog', { name: '版本历史' }),
+    ).toBeVisible()
+  }
+  if (interaction === 'open-version-diff') {
+    if ((page.viewportSize()?.width ?? 1280) <= 767) {
+      await page.getByRole('button', { name: '历史', exact: true }).click()
+    } else {
+      await page.getByRole('button', { name: '版本历史' }).click()
+    }
+    const history = page.getByRole('dialog', { name: '版本历史' })
+    await expect(history).toBeVisible()
+    await history
+      .getByRole('button', {
+        name: /对比上一版本|查看与上一版本的变化/,
+      })
+      .first()
+      .click()
+    await expect(
+      page.getByRole('dialog', { name: '版本变化' }),
+    ).toBeVisible()
+  }
 }
 
 function masks(page: Page) {

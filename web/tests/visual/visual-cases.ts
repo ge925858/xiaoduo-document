@@ -19,6 +19,8 @@ export interface VisualCase {
   overlay?: 'design-tokens'
   interaction?: 'open-library-sidebar' | 'open-public-search'
     | 'open-collaboration-application'
+    | 'open-version-history'
+    | 'open-version-diff'
   searchQuery?: string
   viewports?: ReadonlyArray<'desktop' | 'tablet' | 'mobile'>
 }
@@ -168,6 +170,27 @@ export const visualCases: VisualCase[] = [
     prototypePath: '/studio/notes/note-keep-thinking',
     productionPath: '/studio/notes/note-keep-thinking',
     productionLogin: 'collaborator',
+  },
+  {
+    id: 'studio-version-history-owner',
+    prototypePath: '/studio/notes/note-keep-thinking',
+    productionPath: '/studio/notes/note-keep-thinking',
+    productionLogin: 'owner',
+    interaction: 'open-version-history',
+  },
+  {
+    id: 'studio-version-history-collaborator',
+    prototypePath: '/studio/notes/note-keep-thinking',
+    productionPath: '/studio/notes/note-keep-thinking',
+    productionLogin: 'collaborator',
+    interaction: 'open-version-history',
+  },
+  {
+    id: 'studio-version-diff-owner',
+    prototypePath: '/studio/notes/note-keep-thinking',
+    productionPath: '/studio/notes/note-keep-thinking',
+    productionLogin: 'owner',
+    interaction: 'open-version-diff',
   },
   {
     id: 'collaboration-invite',

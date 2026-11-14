@@ -103,6 +103,8 @@ interface Comparison {
   oldMarkdown: string
   newMarkdown: string
   mode: 'version' | 'draft'
+  oldMeta?: string
+  newMeta?: string
 }
 
 type SaveState = 'idle' | 'dirty' | 'saving' | 'saved' | 'conflict' | 'error'
@@ -125,16 +127,31 @@ function formatClock(iso: string): string {
   }).format(new Date(iso))
 }
 
+function formatVersionDate(iso: string): string {
+  const normalized = /(?:Z|[+-]\d{2}:\d{2})$/.test(iso)
+    ? iso
+    : `${iso.replace(' ', 'T')}Z`
+  return new Intl.DateTimeFormat('zh-CN', {
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Asia/Shanghai',
+  }).format(new Date(normalized))
+}
+
 export function ChapterEditor({
   article,
   categories,
   versions,
   role,
+  actorId,
 }: {
   article: ArticleItem
   categories: CategoryItem[]
   versions: VersionItem[]
   role: 'owner' | 'collaborator'
+  actorId: string
 }) {
   const router = useRouter()
   const isOwner = role === 'owner'
@@ -151,6 +168,9 @@ export function ChapterEditor({
   const [imageBusy, setImageBusy] = useState(false)
   const [imageMessage, setImageMessage] = useState('')
   const [historyOpen, setHistoryOpen] = useState(false)
+  const [versionDialogOpen, setVersionDialogOpen] = useState(false)
+  const [versionLabel, setVersionLabel] = useState('')
+  const [versionPending, setVersionPending] = useState(false)
   const [linkOpen, setLinkOpen] = useState(false)
   const [linkValue, setLinkValue] = useState('')
   const [withdrawOpen, setWithdrawOpen] = useState(false)
@@ -462,11 +482,15 @@ export function ChapterEditor({
 
   function compareVersions(version: VersionItem, previous: VersionItem) {
     setHistoryOpen(false)
+    const authorRole = (item: VersionItem) =>
+      item.authorRole === 'owner' ? '站主' : '协作者'
     setComparison({
-      title: `${version.label || version.title} 对比上一版本`,
+      title: `${version.authorName} · ${authorRole(version)} · ${formatVersionDate(version.createdAt)} · ${version.label || version.title}`,
       oldMarkdown: previous.markdown,
       newMarkdown: version.markdown,
       mode: 'version',
+      oldMeta: `${previous.authorName} · ${authorRole(previous)} · ${formatVersionDate(previous.createdAt)}`,
+      newMeta: `${version.authorName} · ${authorRole(version)} · ${formatVersionDate(version.createdAt)}`,
     })
     setFocusMessage('')
   }
@@ -608,6 +632,29 @@ export function ChapterEditor({
     setPublicationState('unpublished')
     setWithdrawOpen(false)
     toast.success('章节已撤回，公开访问已关闭')
+    router.refresh()
+  }
+
+  async function saveVersion(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setVersionPending(true)
+    const response = await fetch(
+      `/api/studio/articles/${article.id}/versions`,
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ label: versionLabel.trim() }),
+      },
+    )
+    setVersionPending(false)
+    if (!response.ok) {
+      toast.error('保存版本失败，请重试')
+      return
+    }
+    setVersionLabel('')
+    setVersionDialogOpen(false)
+    setHistoryOpen(true)
+    toast.success('已保存当前版本')
     router.refresh()
   }
 
@@ -794,7 +841,7 @@ export function ChapterEditor({
               <button
                 type="button"
                 className="studio-icon-button"
-                onClick={() => setHistoryOpen(true)}
+                onClick={() => setVersionDialogOpen(true)}
                 aria-label="保存版本"
               >
                 <Save size={16} />
@@ -1042,19 +1089,6 @@ export function ChapterEditor({
           </aside>
         </div>
 
-        {comparison ? (
-          <MarkdownDiffView
-            title={comparison.title}
-            oldMarkdown={comparison.oldMarkdown}
-            newMarkdown={comparison.newMarkdown}
-            mode={comparison.mode}
-            onNavigate={comparison.mode === 'draft' ? focusDraft : undefined}
-            onClose={() => {
-              setComparison(null)
-              setFocusMessage('')
-            }}
-          />
-        ) : null}
       </div>
 
       <div className="studio-mobile-editor-dock">
@@ -1062,7 +1096,7 @@ export function ChapterEditor({
           <History size={16} />
           <span>历史</span>
         </button>
-        <button type="button" onClick={() => setHistoryOpen(true)}>
+        <button type="button" onClick={() => setVersionDialogOpen(true)}>
           <Save size={16} />
           <span>版本</span>
         </button>
@@ -1208,15 +1242,85 @@ export function ChapterEditor({
       </Dialog>
 
       <Dialog
+        open={Boolean(comparison)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setComparison(null)
+            setFocusMessage('')
+          }
+        }}
+        title="版本变化"
+        description={comparison?.title}
+        className="version-diff-dialog !w-[min(94vw,1040px)]"
+      >
+        <h2 className="sr-only">版本差异</h2>
+        {comparison ? (
+          <MarkdownDiffView
+            title={comparison.title}
+            oldMarkdown={comparison.oldMarkdown}
+            newMarkdown={comparison.newMarkdown}
+            mode={comparison.mode}
+            oldMeta={comparison.oldMeta}
+            newMeta={comparison.newMeta}
+            onNavigate={comparison.mode === 'draft' ? focusDraft : undefined}
+            onClose={() => {
+              setComparison(null)
+              setFocusMessage('')
+            }}
+            showHeader={false}
+          />
+        ) : null}
+      </Dialog>
+
+      <Dialog
+        open={versionDialogOpen}
+        onOpenChange={setVersionDialogOpen}
+        title="保存一个手动版本"
+        description="版本会保留当前标题、分类和正文。自动保存不会生成版本。"
+      >
+        <form className="studio-version-save-dialog" onSubmit={saveVersion}>
+          <label>
+            <span>版本说明</span>
+            <input
+              autoFocus
+              value={versionLabel}
+              onChange={(event) => setVersionLabel(event.target.value)}
+              placeholder="例如：补充第二节案例"
+            />
+          </label>
+          <div>
+            <button
+              type="button"
+              className="studio-secondary-button"
+              onClick={() => setVersionDialogOpen(false)}
+            >
+              取消
+            </button>
+            <button
+              type="submit"
+              className="studio-primary-button"
+              disabled={versionPending}
+            >
+              <Save size={14} />
+              {versionPending ? '正在保存…' : '保存版本'}
+            </button>
+          </div>
+        </form>
+      </Dialog>
+
+      <Dialog
         open={historyOpen}
         onOpenChange={setHistoryOpen}
         title="版本历史"
-        description="共享版本日志由站主和获授权协作者共同查看。"
+        description="当前草稿单独显示；这里只保留手动版本和每次发布生成的版本。"
         className="studio-history-dialog"
       >
         <VersionHistory
           articleId={article.id}
           versions={versions}
+          draft={{ title, wordCount, savedAt }}
+          actorId={actorId}
+          actorRole={role}
           onCompare={compareVersions}
         />
       </Dialog>

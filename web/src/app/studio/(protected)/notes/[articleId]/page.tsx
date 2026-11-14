@@ -36,6 +36,7 @@ export default async function ArticleEditorPage({
       categories={await listAccessibleCategories(actor)}
       versions={await listArticleVersions(articleId)}
       role={actor.role}
+      actorId={actor.id}
     />
   )
 }
