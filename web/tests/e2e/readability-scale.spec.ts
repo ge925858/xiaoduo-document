@@ -1,5 +1,11 @@
 import './database-isolation'
 import { expect, type Locator, test } from '@playwright/test'
+import { createTestConnection } from '../test-db'
+import { seedTestDatabase } from '../seed-test-db'
+
+test.beforeEach(async () => {
+  await seedTestDatabase()
+})
 
 async function cssPixels(locator: Locator, property: string) {
   return locator.evaluate(
@@ -19,15 +25,51 @@ async function iconWidth(locator: Locator) {
 test('public reading surfaces use the larger type and icon scale', async ({
   page,
 }) => {
+  const connection = await createTestConnection()
+  try {
+    await connection.query(
+      `INSERT INTO article_version (
+        id, article_id, kind, title, category_id, path, markdown, plain_text,
+        author_id, author_name, author_role, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(3))`,
+      [
+        'version-byline-contributor',
+        'article-1',
+        'published',
+        '写作不是归档',
+        'category-1',
+        '写作不是归档',
+        '## 从记录开始\n\n这是来自 MySQL 的公开章节。\n',
+        '写作不是归档 这是来自 MySQL 的公开章节。',
+        'collaborator-byline',
+        '周行',
+        'collaborator',
+      ],
+    )
+  } finally {
+    await connection.end()
+  }
+
   await page.goto('/library/attention-and-writing/写作不是归档')
 
   const prose = page.getByText('这是来自 MySQL 的公开章节。')
+  const authors = page.getByRole('group', { name: '作者' })
   const chapterLink = page
     .getByRole('navigation', { name: '笔记目录' })
     .getByRole('link', { name: '写作不是归档' })
   const searchButton = page.getByRole('button', { name: '搜索' })
 
   expect(await cssPixels(prose, 'font-size')).toBeGreaterThanOrEqual(19)
+  await expect(
+    authors.locator('strong').filter({ hasText: '小多' }),
+  ).toHaveCount(1)
+  await expect(
+    authors.locator('strong').filter({ hasText: '周行' }),
+  ).toHaveCount(1)
+  await expect(
+    page.getByText('协作者', { exact: true }),
+  ).toHaveCount(0)
+  await expect(authors.getByText('41 字')).toHaveCount(0)
   expect(await cssPixels(chapterLink, 'font-size')).toBeGreaterThanOrEqual(14)
   expect(await iconWidth(searchButton)).toBeGreaterThanOrEqual(18)
 })

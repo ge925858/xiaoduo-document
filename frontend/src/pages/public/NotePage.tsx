@@ -76,6 +76,18 @@ export function NotePage() {
       ]
     : []
   const redirectTo = resolveRedirect(redirects, location.pathname)
+  const authors = [
+    {
+      id: 'owner',
+      name: author.name,
+      avatarUrl: author.avatarUrl,
+    },
+    ...contributors.map((contributor) => ({
+      id: contributor.id,
+      name: contributor.name,
+      avatarUrl: undefined,
+    })),
+  ]
 
   usePageTitle(published ? `${published.title} · 知笺` : '未找到 · 知笺')
 
@@ -167,12 +179,22 @@ export function NotePage() {
           <header className="chapter-header">
             <h1>{published.title}</h1>
             <div className="chapter-byline">
-              <AuthorAvatar
-                name={author.name}
-                avatarUrl={author.avatarUrl}
-                size="md"
-              />
-              <strong>{author.name}</strong>
+              <span
+                className="chapter-author-group"
+                role="group"
+                aria-label="作者"
+              >
+                {authors.map((author) => (
+                  <span key={author.id} className="chapter-author">
+                    <AuthorAvatar
+                      name={author.name}
+                      avatarUrl={author.avatarUrl}
+                      size="md"
+                    />
+                    <strong>{author.name}</strong>
+                  </span>
+                ))}
+              </span>
               <span className="chapter-byline-dot" aria-hidden="true" />
               <span>{countWords(published.plainText)} 字</span>
               <span className="chapter-byline-dot" aria-hidden="true" />
@@ -189,19 +211,6 @@ export function NotePage() {
                   {formatDateTime(published.publishedAt)}
                 </time>
               </span>
-              {contributors.length ? (
-                <span className="chapter-contributors">
-                  {contributors.map((contributor) => (
-                    <span key={contributor.id}>
-                      <AuthorAvatar
-                        name={contributor.name}
-                        size="sm"
-                      />
-                      {contributor.name}
-                    </span>
-                  ))}
-                </span>
-              ) : null}
             </div>
           </header>
 

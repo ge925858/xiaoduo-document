@@ -97,7 +97,7 @@ test('collaborator saves a shared version and publishes as a contributor', async
   await expect(page.getByText('这段内容由协作者发布。')).toBeVisible()
   await expect(page.getByText('协作者乙')).toBeVisible()
   await expect(
-    page.locator('.chapter-contributors').getByText('协作者乙'),
+    page.locator('.chapter-author-group').getByText('协作者乙'),
   ).toHaveCount(1)
 
   await page.goto('/library/attention-and-writing/写作不是归档')

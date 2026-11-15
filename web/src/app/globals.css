@@ -2285,17 +2285,17 @@ select:focus {
   background: var(--line-strong);
 }
 
-.chapter-contributors {
+.chapter-author-group {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px 16px;
 }
 
-.chapter-contributors > span {
+.chapter-author {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
 .chapter-main-grid {

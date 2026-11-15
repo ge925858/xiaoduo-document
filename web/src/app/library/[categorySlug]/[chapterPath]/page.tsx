@@ -95,6 +95,19 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   )
   const profile = await getPublicSiteProfile()
   const session = await getServerSession()
+  const authorName = profile?.authorName ?? chapter.authorName
+  const authors = [
+    {
+      id: 'owner',
+      name: authorName,
+      avatarUrl: profile?.avatarUrl,
+    },
+    ...chapter.contributors.map((contributor) => ({
+      id: contributor.id,
+      name: contributor.name,
+      avatarUrl: undefined,
+    })),
+  ]
 
   return (
     <article className="chapter-page">
@@ -118,12 +131,22 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           <header className="chapter-header">
             <h1>{chapter.title}</h1>
             <div className="chapter-byline">
-              <AuthorAvatar
-                name={profile?.authorName ?? chapter.authorName}
-                avatarUrl={profile?.avatarUrl}
-                size="md"
-              />
-              <strong>{profile?.authorName ?? chapter.authorName}</strong>
+              <span
+                className="chapter-author-group"
+                role="group"
+                aria-label="作者"
+              >
+                {authors.map((author) => (
+                  <span key={author.id} className="chapter-author">
+                    <AuthorAvatar
+                      name={author.name}
+                      avatarUrl={author.avatarUrl}
+                      size="md"
+                    />
+                    <strong>{author.name}</strong>
+                  </span>
+                ))}
+              </span>
               <span className="chapter-byline-dot" aria-hidden="true" />
               <span>{countWords(chapter.plainText)} 字</span>
               <span className="chapter-byline-dot" aria-hidden="true" />
@@ -140,16 +163,6 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
                   {formatDateTime(chapter.publishedAt)}
                 </time>
               </span>
-              {chapter.contributors.length ? (
-                <span className="chapter-contributors">
-                  {chapter.contributors.map((contributor) => (
-                    <span key={contributor.id}>
-                      <AuthorAvatar name={contributor.name} size="sm" />
-                      {contributor.name}
-                    </span>
-                  ))}
-                </span>
-              ) : null}
             </div>
           </header>
 
