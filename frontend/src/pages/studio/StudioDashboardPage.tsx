@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { FilePlus2, FileText, Search, Upload } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { StudioSelect } from '../../components/studio/StudioSelect'
+import { Dialog } from '../../components/ui/Dialog'
 import { usePageTitle } from '../../lib/usePageTitle'
 import { formatRelativeTime } from '../../lib/text'
 import {
@@ -48,6 +49,7 @@ export function StudioDashboardPage() {
   const [newCategoryId, setNewCategoryId] = useState(
     orderedCategories[0]?.id ?? '',
   )
+  const [createOpen, setCreateOpen] = useState(false)
 
   const normalizedQuery = query.trim().toLowerCase()
   const visible = accessibleNotes
@@ -71,7 +73,10 @@ export function StudioDashboardPage() {
   const create = () => {
     if (!newCategoryId) return
     const id = createNote(newCategoryId)
-    if (id) navigate(`/studio/notes/${id}`)
+    if (id) {
+      setCreateOpen(false)
+      navigate(`/studio/notes/${id}`)
+    }
   }
 
   return (
@@ -92,19 +97,10 @@ export function StudioDashboardPage() {
               <Upload size={18} />
               导入 Markdown
             </button>
-            <StudioSelect
-              value={newCategoryId}
-              onChange={setNewCategoryId}
-              options={orderedCategories.map((category) => ({
-                value: category.id,
-                label: category.title,
-              }))}
-              ariaLabel="新建章节所属分类"
-            />
             <button
               type="button"
               className="studio-primary-button"
-              onClick={create}
+              onClick={() => setCreateOpen(true)}
               disabled={!newCategoryId}
             >
               <FilePlus2 size={19} />
@@ -113,6 +109,52 @@ export function StudioDashboardPage() {
           </div>
         )}
       </header>
+
+      <Dialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        title="新建章节"
+        description="确认后会创建一篇无标题章节草稿，并立即进入编辑器。"
+      >
+        <form
+          className="p-5"
+          onSubmit={(event) => {
+            event.preventDefault()
+            create()
+          }}
+        >
+          <label className="text-xs font-medium text-[var(--ink-soft)]">
+            所属分类
+            <StudioSelect
+              value={newCategoryId}
+              onChange={setNewCategoryId}
+              options={orderedCategories.map((category) => ({
+                value: category.id,
+                label: category.title,
+              }))}
+              ariaLabel="新建章节所属分类"
+              className="mt-2 w-full"
+            />
+          </label>
+          <div className="mt-5 flex justify-end gap-2">
+            <button
+              type="button"
+              className="studio-secondary-button"
+              onClick={() => setCreateOpen(false)}
+            >
+              取消
+            </button>
+            <button
+              type="submit"
+              className="studio-primary-button"
+              disabled={!newCategoryId}
+            >
+              <FilePlus2 size={18} />
+              创建草稿
+            </button>
+          </div>
+        </form>
+      </Dialog>
 
       <div className="studio-stats">
         <div>

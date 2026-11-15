@@ -124,6 +124,54 @@ test('owner confirms before moving a chapter to trash', async ({ page }) => {
   ).toHaveCount(0)
 })
 
+test('owner confirms category before creating a chapter draft', async ({
+  page,
+}) => {
+  await page.goto('/studio/login')
+  await page.getByLabel('邮箱').fill('owner@example.com')
+  await page.getByLabel('密码').fill('owner-test-password')
+  await page.getByRole('button', { name: '进入写作台' }).click()
+  await expect(page).toHaveURL(/\/studio$/)
+
+  let createRequests = 0
+  page.on('request', (request) => {
+    if (
+      request.method() === 'POST' &&
+      request.url().endsWith('/api/studio/articles')
+    ) {
+      createRequests += 1
+    }
+  })
+
+  await page
+    .getByRole('button', { name: '新建章节', exact: true })
+    .click()
+  const createDialog = page.getByRole('dialog', { name: '新建章节' })
+  await expect(createDialog).toBeVisible()
+  expect(createRequests).toBe(0)
+  await createDialog.getByRole('button', { name: '取消' }).click()
+  await expect(createDialog).toBeHidden()
+  expect(createRequests).toBe(0)
+
+  await page
+    .getByRole('button', { name: '新建章节', exact: true })
+    .click()
+  const [created] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === 'POST' &&
+        response.url().endsWith('/api/studio/articles'),
+    ),
+    createDialog.getByRole('button', { name: '创建草稿' }).click(),
+  ])
+  expect(created.status()).toBe(201)
+  const payload = (await created.json()) as { article: { id: string } }
+  await expect(page).toHaveURL(
+    new RegExp(`/studio/notes/${payload.article.id}$`),
+  )
+  await expect(page.getByLabel('章节标题')).toHaveValue('无标题章节')
+})
+
 test('collaborator sees only authorized chapters and no owner actions', async ({
   page,
 }) => {

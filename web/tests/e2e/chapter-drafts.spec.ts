@@ -1,5 +1,10 @@
 import './database-isolation'
 import { expect, test } from '@playwright/test'
+import { seedTestDatabase } from '../seed-test-db'
+
+test.beforeEach(async () => {
+  await seedTestDatabase()
+})
 
 test('owner creates and autosaves a shared chapter draft', async ({ page }) => {
   await page.goto('/studio/login')
@@ -10,6 +15,10 @@ test('owner creates and autosaves a shared chapter draft', async ({ page }) => {
 
   await page
     .getByRole('button', { name: '新建章节', exact: true })
+    .click()
+  await page
+    .getByRole('dialog', { name: '新建章节' })
+    .getByRole('button', { name: '创建草稿' })
     .click()
   await expect(page).toHaveURL(/\/studio\/notes\//)
 

@@ -52,6 +52,7 @@ export function ArticleDashboard({
   const [newCategoryId, setNewCategoryId] = useState(
     categories[0]?.id ?? '',
   )
+  const [createOpen, setCreateOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
   const [importCategoryId, setImportCategoryId] = useState(
     categories[0]?.id ?? '',
@@ -109,7 +110,8 @@ export function ArticleDashboard({
     setCategoryFilter('all')
   }
 
-  async function create() {
+  async function create(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
     if (!newCategoryId) return
     setMessage('')
     setPending(true)
@@ -134,6 +136,7 @@ export function ArticleDashboard({
         )
         return
       }
+      setCreateOpen(false)
       router.push(`/studio/notes/${payload.article.id}`)
     } catch {
       setMessage('创建章节失败，请重试。')
@@ -218,19 +221,13 @@ export function ArticleDashboard({
               <Upload size={18} />
               导入 Markdown
             </button>
-            <StudioSelect
-              value={newCategoryId}
-              onChange={setNewCategoryId}
-              options={categories.map((category) => ({
-                value: category.id,
-                label: category.title,
-              }))}
-              ariaLabel="新建章节所属分类"
-            />
             <button
               type="button"
               className="studio-primary-button"
-              onClick={() => void create()}
+              onClick={() => {
+                setMessage('')
+                setCreateOpen(true)
+              }}
               disabled={!newCategoryId || pending}
             >
               <FilePlus2 size={19} />
@@ -240,7 +237,9 @@ export function ArticleDashboard({
         ) : null}
       </header>
 
-      {message && !importOpen ? <p role="alert">{message}</p> : null}
+      {message && !importOpen && !createOpen ? (
+        <p role="alert">{message}</p>
+      ) : null}
 
       <div className="studio-stats">
         <div>
@@ -430,6 +429,51 @@ export function ArticleDashboard({
           if (trashTarget) void trash(trashTarget)
         }}
       />
+
+      <Dialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        title="新建章节"
+        description="确认后会创建一篇无标题章节草稿，并立即进入编辑器。"
+      >
+        <form className="p-5" onSubmit={create}>
+          <label className="text-xs font-medium text-[var(--ink-soft)]">
+            所属分类
+            <StudioSelect
+              value={newCategoryId}
+              onChange={setNewCategoryId}
+              options={categories.map((category) => ({
+                value: category.id,
+                label: category.title,
+              }))}
+              ariaLabel="新建章节所属分类"
+              className="mt-2 w-full"
+            />
+          </label>
+          {message ? (
+            <p className="mt-3 text-xs text-[var(--rust)]" role="alert">
+              {message}
+            </p>
+          ) : null}
+          <div className="mt-5 flex justify-end gap-2">
+            <button
+              type="button"
+              className="studio-secondary-button"
+              onClick={() => setCreateOpen(false)}
+            >
+              取消
+            </button>
+            <button
+              type="submit"
+              className="studio-primary-button"
+              disabled={pending || !newCategoryId}
+            >
+              <FilePlus2 size={18} />
+              {pending ? '正在创建…' : '创建草稿'}
+            </button>
+          </div>
+        </form>
+      </Dialog>
 
       <Dialog
         open={importOpen}
