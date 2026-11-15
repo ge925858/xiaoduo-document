@@ -1891,7 +1891,8 @@ select:focus {
   }
 
   .landing-copy h1 {
-    font-size: 40px;
+    font-size: 34px;
+    word-break: normal;
   }
 
   .landing-actions {
@@ -3484,6 +3485,7 @@ select:focus {
 
   .studio-toolbar > div:last-child {
     width: 100%;
+    flex-wrap: wrap;
   }
 
   .studio-search {
