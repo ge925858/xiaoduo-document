@@ -1,8 +1,10 @@
 'use client'
 
-import { ImagePlus, Save, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { ImagePlus, LoaderCircle, Save, Trash2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { AuthorAvatar } from '@/components/author-avatar'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { compressImageForUpload } from '@/lib/image-compression'
 
 interface ProfileValues {
   authorName: string
@@ -18,19 +20,55 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
   const [values, setValues] = useState(initial)
   const [message, setMessage] = useState('')
   const [pending, setPending] = useState(false)
+  const [avatarPending, setAvatarPending] = useState(false)
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState('')
+  const [removeAvatarOpen, setRemoveAvatarOpen] = useState(false)
+  const avatarInputRef = useRef<HTMLInputElement>(null)
+  const avatarPreviewRef = useRef('')
 
-  function field(name: keyof ProfileValues) {
-    return {
-      value: values[name],
-      onChange: (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-      ) => {
-        setValues((current) => ({
-          ...current,
-          [name]: event.target.value,
-        }))
-      },
+  useEffect(
+    () => () => {
+      if (avatarPreviewRef.current) {
+        URL.revokeObjectURL(avatarPreviewRef.current)
+      }
+    },
+    [],
+  )
+
+  function replaceAvatarPreview(url: string) {
+    if (avatarPreviewRef.current) {
+      URL.revokeObjectURL(avatarPreviewRef.current)
     }
+    avatarPreviewRef.current = url
+    setAvatarPreviewUrl(url)
+  }
+
+  async function selectAvatar(
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+    setAvatarPending(true)
+    setMessage('')
+    try {
+      const image = await compressImageForUpload(file)
+      replaceAvatarPreview(URL.createObjectURL(image.blob))
+      setMessage('头像已在本地预览，对象存储接入后即可保存。')
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : '头像处理失败。',
+      )
+    } finally {
+      setAvatarPending(false)
+    }
+  }
+
+  function removeAvatar() {
+    replaceAvatarPreview('')
+    setValues((current) => ({ ...current, avatarUrl: '' }))
+    setRemoveAvatarOpen(false)
+    setMessage('头像已移除，保存资料后生效。')
   }
 
   async function save(event: React.FormEvent<HTMLFormElement>) {
@@ -43,8 +81,20 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
       body: JSON.stringify(values),
     })
     setPending(false)
-    setMessage(response.ok ? '站点资料已保存' : '保存失败，请重试。')
+    setMessage(
+      response.ok
+        ? avatarPreviewUrl
+          ? '昵称已保存。本地头像将在对象存储接入后上传。'
+          : '资料已保存'
+        : '保存失败，请重试。',
+    )
   }
+
+  const messageIsSuccess =
+    message.startsWith('昵称已保存') ||
+    message === '资料已保存' ||
+    message.includes('本地预览') ||
+    message.includes('已移除')
 
   return (
     <div className="studio-page max-w-[860px]">
@@ -60,40 +110,31 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
         <section className="studio-profile-avatar-section">
           <AuthorAvatar
             name={values.authorName || '作者'}
-            avatarUrl={values.avatarUrl}
+            avatarUrl={avatarPreviewUrl || values.avatarUrl}
             size="lg"
           />
           <div className="min-w-0 flex-1">
             <strong>头像</strong>
-            <p>使用可公开访问的图片地址，保存后会展示在公开章节中。</p>
-            <label className="studio-profile-avatar-url">
-              <span>头像地址</span>
-              <input
-                {...field('avatarUrl')}
-                placeholder="https://example.com/avatar.jpg"
-              />
-            </label>
+            <p>从本地选择方形图片。对象存储接入前仅显示临时预览。</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <a
-                href={values.avatarUrl || undefined}
-                target="_blank"
-                rel="noreferrer"
-                className="studio-secondary-button pointer-events-none opacity-50 data-[enabled=true]:pointer-events-auto data-[enabled=true]:opacity-100"
-                data-enabled={Boolean(values.avatarUrl)}
+              <button
+                type="button"
+                className="studio-secondary-button"
+                onClick={() => avatarInputRef.current?.click()}
+                disabled={avatarPending}
               >
-                <ImagePlus size={18} />
-                预览头像
-              </a>
-              {values.avatarUrl ? (
+                {avatarPending ? (
+                  <LoaderCircle size={18} className="animate-spin" />
+                ) : (
+                  <ImagePlus size={18} />
+                )}
+                选择本地头像
+              </button>
+              {avatarPreviewUrl || values.avatarUrl ? (
                 <button
                   type="button"
                   className="studio-secondary-button hover:!text-[var(--rust)]"
-                  onClick={() =>
-                    setValues((current) => ({
-                      ...current,
-                      avatarUrl: '',
-                    }))
-                  }
+                  onClick={() => setRemoveAvatarOpen(true)}
                 >
                   <Trash2 size={18} />
                   移除头像
@@ -104,39 +145,27 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
         </section>
 
         <div className="studio-profile-fields">
-          <label className="studio-profile-field">
+          <label className="studio-profile-field sm:col-span-2">
             <span>作者昵称</span>
-            <input {...field('authorName')} required maxLength={32} />
-          </label>
-          <label className="studio-profile-field">
-            <span>身份说明</span>
-            <input {...field('roleTitle')} required />
-          </label>
-          <label className="studio-profile-field">
-            <span>所在城市</span>
-            <input {...field('location')} />
-          </label>
-          <label className="studio-profile-field">
-            <span>联系邮箱</span>
-            <input type="email" {...field('email')} required />
-          </label>
-          <label className="studio-profile-field sm:col-span-2">
-            <span>简介</span>
-            <textarea rows={4} {...field('intro')} />
-          </label>
-          <label className="studio-profile-field sm:col-span-2">
-            <span>最近在做什么</span>
-            <textarea rows={3} {...field('nowText')} />
+            <input
+              value={values.authorName}
+              onChange={(event) =>
+                setValues((current) => ({
+                  ...current,
+                  authorName: event.target.value,
+                }))
+              }
+              required
+              maxLength={32}
+            />
           </label>
         </div>
 
         {message ? (
           <p
-            role={message === '站点资料已保存' ? 'status' : 'alert'}
+            role={messageIsSuccess ? 'status' : 'alert'}
             className={
-              message === '站点资料已保存'
-                ? 'profile-success'
-                : 'profile-error'
+              messageIsSuccess ? 'profile-success' : 'profile-error'
             }
           >
             {message}
@@ -146,10 +175,28 @@ export function ProfileForm({ initial }: { initial: ProfileValues }) {
         <div className="studio-profile-actions">
           <button type="submit" className="studio-primary-button" disabled={pending}>
             <Save size={19} />
-            {pending ? '正在保存…' : '保存站点资料'}
+            {pending ? '正在保存…' : '保存资料'}
           </button>
         </div>
       </form>
+
+      <input
+        ref={avatarInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        className="hidden"
+        aria-label="选择本地头像"
+        onChange={selectAvatar}
+      />
+
+      <ConfirmDialog
+        open={removeAvatarOpen}
+        onOpenChange={setRemoveAvatarOpen}
+        title="移除这个头像？"
+        description="移除后会恢复为文字头像，保存资料后正式生效。"
+        confirmLabel="移除头像"
+        onConfirm={removeAvatar}
+      />
 
       <section className="export-panel">
         <div>

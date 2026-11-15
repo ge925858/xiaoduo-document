@@ -7,6 +7,7 @@ import {
 import { ImagePlus, LoaderCircle, Save, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { AuthorAvatar } from '../../components/AuthorAvatar'
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog'
 import { compressAvatarFile } from '../../lib/images'
 import { usePageTitle } from '../../lib/usePageTitle'
 import { useSiteStore } from '../../store/siteStore'
@@ -18,6 +19,7 @@ export function StudioSettingsPage() {
   const [name, setName] = useState(author.name)
   const [avatarUrl, setAvatarUrl] = useState(author.avatarUrl ?? '')
   const [avatarBusy, setAvatarBusy] = useState(false)
+  const [removeAvatarOpen, setRemoveAvatarOpen] = useState(false)
   const avatarInputRef = useRef<HTMLInputElement>(null)
 
   const submit = (event: FormEvent) => {
@@ -66,7 +68,7 @@ export function StudioSettingsPage() {
           />
           <div className="min-w-0 flex-1">
             <strong>头像</strong>
-            <p>建议使用清晰的方形图片，上传后会自动压缩。</p>
+            <p>从本地选择方形图片。对象存储接入前仅显示临时预览。</p>
             <div className="mt-3 flex flex-wrap gap-2">
               <button
                 type="button"
@@ -79,13 +81,13 @@ export function StudioSettingsPage() {
                 ) : (
                   <ImagePlus size={18} />
                 )}
-                选择图片
+                选择本地头像
               </button>
               {avatarUrl && (
                 <button
                   type="button"
                   className="studio-secondary-button hover:!text-[var(--rust)]"
-                  onClick={() => setAvatarUrl('')}
+                  onClick={() => setRemoveAvatarOpen(true)}
                 >
                   <Trash2 size={18} />
                   移除头像
@@ -95,7 +97,7 @@ export function StudioSettingsPage() {
           </div>
         </section>
 
-        <label className="studio-profile-field">
+        <label className="studio-profile-field sm:col-span-2">
           <span>昵称</span>
           <input
             value={name}
@@ -120,6 +122,18 @@ export function StudioSettingsPage() {
         accept="image/jpeg,image/png,image/webp,image/gif"
         className="hidden"
         onChange={uploadAvatar}
+      />
+
+      <ConfirmDialog
+        open={removeAvatarOpen}
+        onOpenChange={setRemoveAvatarOpen}
+        title="移除这个头像？"
+        description="移除后会恢复为文字头像，保存资料后正式生效。"
+        confirmLabel="移除头像"
+        onConfirm={() => {
+          setAvatarUrl('')
+          setRemoveAvatarOpen(false)
+        }}
       />
     </div>
   )

@@ -19,13 +19,12 @@ test('owner can sign in, update site profile, and revoke the session', async ({
     page.getByRole('heading', { level: 1, name: '个人资料', exact: true }),
   ).toBeVisible()
   await page.getByLabel('作者昵称').fill('新的站主昵称')
-  await page.getByLabel('所在城市').fill('杭州')
-  await page.getByRole('button', { name: '保存站点资料' }).click()
-  await expect(page.getByText('站点资料已保存')).toBeVisible()
+  await page.getByRole('button', { name: '保存资料' }).click()
+  await expect(page.getByText('资料已保存')).toBeVisible()
 
   await page.reload()
   await expect(page.getByLabel('作者昵称')).toHaveValue('新的站主昵称')
-  await expect(page.getByLabel('所在城市')).toHaveValue('杭州')
+  await expect(page.getByLabel('所在城市')).toHaveCount(0)
 
   await page.getByRole('button', { name: '退出写作台' }).click()
   await page.goto('/studio')

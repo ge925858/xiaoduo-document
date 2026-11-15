@@ -27,58 +27,30 @@ export function StudioSettingsVisualPage() {
           />
           <div className="min-w-0 flex-1">
             <strong>头像</strong>
-            <p>使用可公开访问的图片地址，保存后会展示在公开章节中。</p>
-            <label className="studio-profile-avatar-url">
-              <span>头像地址</span>
-              <input
-                defaultValue={author.avatarUrl ?? ''}
-                placeholder="https://example.com/avatar.jpg"
-              />
-            </label>
+            <p>从本地选择方形图片。对象存储接入前仅显示临时预览。</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <a
-                aria-disabled="true"
-                className="studio-secondary-button pointer-events-none opacity-50 data-[enabled=true]:pointer-events-auto data-[enabled=true]:opacity-100"
-                data-enabled="false"
+              <button
+                type="button"
+                className="studio-secondary-button"
               >
                 <ImagePlus size={18} />
-                预览头像
-              </a>
+                选择本地头像
+              </button>
             </div>
           </div>
         </section>
 
         <div className="studio-profile-fields">
-          <label className="studio-profile-field">
+          <label className="studio-profile-field sm:col-span-2">
             <span>作者昵称</span>
             <input defaultValue={author.name} />
-          </label>
-          <label className="studio-profile-field">
-            <span>身份说明</span>
-            <input defaultValue={author.role} />
-          </label>
-          <label className="studio-profile-field">
-            <span>所在城市</span>
-            <input defaultValue={author.location} />
-          </label>
-          <label className="studio-profile-field">
-            <span>联系邮箱</span>
-            <input type="email" defaultValue={author.email} />
-          </label>
-          <label className="studio-profile-field sm:col-span-2">
-            <span>简介</span>
-            <textarea rows={4} defaultValue={author.intro} />
-          </label>
-          <label className="studio-profile-field sm:col-span-2">
-            <span>最近在做什么</span>
-            <textarea rows={3} defaultValue={author.now} />
           </label>
         </div>
 
         <div className="studio-profile-actions">
           <button type="submit" className="studio-primary-button">
             <Save size={19} />
-            保存站点资料
+            保存资料
           </button>
         </div>
       </form>
