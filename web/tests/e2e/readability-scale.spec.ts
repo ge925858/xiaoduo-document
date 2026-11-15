@@ -66,6 +66,18 @@ test('public reading surfaces use the larger type and icon scale', async ({
   await expect(
     authors.locator('strong').filter({ hasText: '周行' }),
   ).toHaveCount(1)
+  const authorItems = authors.locator('.chapter-author')
+  await expect(authorItems).toHaveCount(2)
+  expect(
+    await authorItems
+      .nth(0)
+      .evaluate((element) => getComputedStyle(element).borderLeftWidth),
+  ).toBe('0px')
+  expect(
+    await authorItems
+      .nth(1)
+      .evaluate((element) => getComputedStyle(element).borderLeftWidth),
+  ).toBe('1px')
   await expect(
     page.getByText('协作者', { exact: true }),
   ).toHaveCount(0)

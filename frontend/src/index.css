@@ -4337,6 +4337,11 @@ select:focus {
   gap: 8px;
 }
 
+.chapter-author + .chapter-author {
+  border-left: 1px solid var(--line-strong);
+  padding-left: 16px;
+}
+
 .chapter-main-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 235px;
