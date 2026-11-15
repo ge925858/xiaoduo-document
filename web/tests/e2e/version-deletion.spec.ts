@@ -1,6 +1,11 @@
 import './database-isolation'
 import { expect, test } from '@playwright/test'
 import { appOrigin } from './app-origin'
+import { seedTestDatabase } from '../seed-test-db'
+
+test.beforeEach(async () => {
+  await seedTestDatabase()
+})
 
 test('owner deletes a manual version but not a published version', async ({
   page,
@@ -61,5 +66,16 @@ test('owner deletes a manual version from the shared history dialog', async ({
   await history
     .getByRole('button', { name: '删除 界面删除版本' })
     .click()
+  const deleteDialog = page.getByRole('alertdialog', {
+    name: '删除这个手动版本？',
+  })
+  await expect(deleteDialog).toBeVisible()
+  await deleteDialog.getByRole('button', { name: '取消' }).click()
+  await expect(history.getByText('界面删除版本')).toBeVisible()
+
+  await history
+    .getByRole('button', { name: '删除 界面删除版本' })
+    .click()
+  await deleteDialog.getByRole('button', { name: '删除版本' }).click()
   await expect(history.getByText('界面删除版本')).toHaveCount(0)
 })

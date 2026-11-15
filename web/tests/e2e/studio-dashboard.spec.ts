@@ -90,6 +90,40 @@ test('owner filters and searches accessible chapters', async ({ page }) => {
   ).toBeVisible()
 })
 
+test('owner confirms before moving a chapter to trash', async ({ page }) => {
+  await page.goto('/studio/login')
+  await page.getByLabel('邮箱').fill('owner@example.com')
+  await page.getByLabel('密码').fill('owner-test-password')
+  await page.getByRole('button', { name: '进入写作台' }).click()
+  await expect(page).toHaveURL(/\/studio$/)
+
+  const chapterRow = page
+    .locator('.studio-table-row')
+    .filter({ hasText: '长期维护' })
+  await chapterRow.hover()
+  await page
+    .getByRole('button', { name: '移入回收站 长期维护' })
+    .click()
+
+  const confirm = page.getByRole('alertdialog', {
+    name: '将章节移入回收站？',
+  })
+  await expect(confirm).toBeVisible()
+  await confirm.getByRole('button', { name: '取消' }).click()
+  await expect(
+    page.getByRole('link', { name: /长期维护/ }),
+  ).toBeVisible()
+
+  await chapterRow.hover()
+  await page
+    .getByRole('button', { name: '移入回收站 长期维护' })
+    .click()
+  await confirm.getByRole('button', { name: '移入回收站' }).click()
+  await expect(
+    page.getByRole('link', { name: /长期维护/ }),
+  ).toHaveCount(0)
+})
+
 test('collaborator sees only authorized chapters and no owner actions', async ({
   page,
 }) => {

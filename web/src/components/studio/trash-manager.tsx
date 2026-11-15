@@ -1,9 +1,9 @@
 'use client'
 
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import { RotateCcw, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 interface TrashItem {
   id: string
@@ -155,42 +155,19 @@ export function TrashManager({
         ) : null}
       </div>
 
-      <AlertDialog.Root
+      <ConfirmDialog
         open={Boolean(deleteTarget)}
         onOpenChange={(open) => {
           if (!open) setDeleteTarget(null)
         }}
-      >
-        <AlertDialog.Portal>
-          <AlertDialog.Overlay className="dialog-overlay fixed inset-0 z-[90] bg-[#0d120f]/55 backdrop-blur-[2px]" />
-          <AlertDialog.Content className="dialog-content fixed left-1/2 top-1/2 z-[91] w-[min(92vw,430px)] -translate-x-1/2 -translate-y-1/2 rounded-[7px] border border-[var(--line-strong)] bg-[var(--paper)] p-5 shadow-2xl">
-            <AlertDialog.Title className="font-display text-xl text-[var(--ink)]">
-              永久删除这个章节？
-            </AlertDialog.Title>
-            <AlertDialog.Description className="mt-2 text-xs leading-6 text-[var(--muted)]">
-              章节正文、全部历史版本和原网址都会被删除，这个操作无法撤销。
-            </AlertDialog.Description>
-            <div className="mt-6 flex justify-end gap-2">
-              <AlertDialog.Cancel asChild>
-                <button type="button" className="studio-secondary-button">
-                  取消
-                </button>
-              </AlertDialog.Cancel>
-              <AlertDialog.Action asChild>
-                <button
-                  type="button"
-                  className="trash-danger-button"
-                  onClick={() => {
-                    if (deleteTarget) void permanentlyDelete(deleteTarget)
-                  }}
-                >
-                  永久删除
-                </button>
-              </AlertDialog.Action>
-            </div>
-          </AlertDialog.Content>
-        </AlertDialog.Portal>
-      </AlertDialog.Root>
+        title="永久删除这个章节？"
+        description="章节正文、全部历史版本和原网址都会被删除，这个操作无法撤销。"
+        confirmLabel="永久删除"
+        pending={pending}
+        onConfirm={() => {
+          if (deleteTarget) void permanentlyDelete(deleteTarget)
+        }}
+      />
     </div>
   )
 }

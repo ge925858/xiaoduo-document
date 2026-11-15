@@ -162,3 +162,110 @@ test('owner suspends, restores, and resets a collaborator account', async ({
   await ownerContext.close()
   await collaboratorContext.close()
 })
+
+test('owner confirms before revoking an article grant', async ({ page }) => {
+  await page.goto('/studio/login')
+  await page.getByLabel('邮箱').fill('owner@example.com')
+  await page.getByLabel('密码').fill('owner-test-password')
+  await page.getByRole('button', { name: '进入写作台' }).click()
+  await expect(page).toHaveURL(/\/studio$/)
+
+  await page.goto('/studio/collaboration')
+  await page.getByRole('tab', { name: '协作者' }).click()
+  await page.getByRole('button', { name: '管理授权' }).click()
+
+  const editor = page.getByRole('dialog', { name: '管理文章授权' })
+  const grant = editor.getByRole('checkbox', {
+    name: '授权文章 写作不是归档',
+  })
+  await expect(grant).toBeChecked()
+  await grant.uncheck()
+  await editor.getByRole('button', { name: '保存授权' }).click()
+
+  const confirm = page.getByRole('alertdialog', {
+    name: '撤销文章授权？',
+  })
+  await expect(confirm).toBeVisible()
+  await confirm.getByRole('button', { name: '取消' }).click()
+  await expect(grant).toBeChecked()
+
+  await grant.uncheck()
+  await editor.getByRole('button', { name: '保存授权' }).click()
+  const [revoked] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === 'DELETE' &&
+        response.url().endsWith('/api/studio/collaboration/grants'),
+    ),
+    confirm.getByRole('button', { name: '撤销授权' }).click(),
+  ])
+  expect(revoked.status()).toBe(200)
+  await expect(page.getByText('文章授权已更新')).toBeVisible()
+
+  await page.reload()
+  await page.getByRole('tab', { name: '协作者' }).click()
+  await page.getByRole('button', { name: '管理授权' }).click()
+  await expect(
+    page
+      .getByRole('dialog', { name: '管理文章授权' })
+      .getByRole('checkbox', { name: '授权文章 写作不是归档' }),
+  ).not.toBeChecked()
+})
+
+test('owner confirms before revoking a pending invitation', async ({
+  page,
+}) => {
+  await page.goto('/studio/login')
+  await page.getByLabel('邮箱').fill('owner@example.com')
+  await page.getByLabel('密码').fill('owner-test-password')
+  await page.getByRole('button', { name: '进入写作台' }).click()
+  await expect(page).toHaveURL(/\/studio$/)
+
+  const created = await page.request.post(
+    '/api/studio/collaboration/invites',
+    {
+      headers: { origin: appOrigin },
+      data: {
+        email: 'revoke-invite@example.com',
+        displayName: '待撤销邀请',
+        articleIds: ['article-1'],
+      },
+    },
+  )
+  expect(created.status()).toBe(201)
+
+  await page.goto('/studio/collaboration')
+  await page.getByRole('tab', { name: '邀请记录' }).click()
+  const inviteRow = page
+    .locator('.collaboration-invite-row')
+    .filter({ hasText: 'revoke-invite@example.com' })
+  const revokeButton = inviteRow.getByRole('button', {
+    name: '撤销邀请',
+  })
+  await revokeButton.focus()
+  await page.keyboard.press('Enter')
+
+  const confirm = page.getByRole('alertdialog', {
+    name: '撤销这个邀请？',
+  })
+  await expect(confirm).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(confirm).toBeHidden()
+  await expect(revokeButton).toBeFocused()
+
+  await revokeButton.click()
+  await confirm.getByRole('button', { name: '取消' }).click()
+  await expect(inviteRow.getByText('待激活')).toBeVisible()
+
+  await revokeButton.click()
+  const [revoked] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === 'POST' &&
+        response.url().endsWith('/revoke'),
+    ),
+    confirm.getByRole('button', { name: '撤销邀请' }).click(),
+  ])
+  expect(revoked.status()).toBe(200)
+  await expect(inviteRow.getByText('已撤销')).toBeVisible()
+})

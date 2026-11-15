@@ -4,6 +4,7 @@ import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import { Eye, RotateCcw, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { countWords } from '@/lib/markdown-headings'
 import { cn } from '@/lib/utils'
 
@@ -68,6 +69,9 @@ export function VersionHistory({
   const [restoreTarget, setRestoreTarget] = useState<VersionItem | null>(
     null,
   )
+  const [deleteTarget, setDeleteTarget] = useState<VersionItem | null>(
+    null,
+  )
   const [pending, setPending] = useState(false)
   const [message, setMessage] = useState('')
 
@@ -96,6 +100,7 @@ export function VersionHistory({
       { method: 'DELETE' },
     )
     setPending(false)
+    setDeleteTarget(null)
     if (!response.ok) {
       setMessage('删除版本失败。')
       return
@@ -186,7 +191,7 @@ export function VersionHistory({
                     type="button"
                     className="studio-icon-button hover:!text-[var(--rust)]"
                     disabled={pending}
-                    onClick={() => void deleteVersion(version)}
+                    onClick={() => setDeleteTarget(version)}
                     title="删除手动版本"
                     aria-label={`删除 ${version.label || version.title}`}
                   >
@@ -209,6 +214,24 @@ export function VersionHistory({
           {message}
         </p>
       ) : null}
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null)
+        }}
+        title="删除这个手动版本？"
+        description={
+          deleteTarget
+            ? `版本“${deleteTarget.label || deleteTarget.title}”及其快照将被永久删除，这个操作无法撤销。`
+            : ''
+        }
+        confirmLabel="删除版本"
+        pending={pending}
+        onConfirm={() => {
+          if (deleteTarget) void deleteVersion(deleteTarget)
+        }}
+      />
 
       <AlertDialog.Root
         open={Boolean(restoreTarget)}

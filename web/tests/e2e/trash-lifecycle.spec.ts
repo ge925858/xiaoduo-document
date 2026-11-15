@@ -9,6 +9,10 @@ test('owner restores and permanently deletes trash items', async ({ page }) => {
   await expect(page).toHaveURL(/\/studio$/)
 
   await page.getByRole('button', { name: /移入回收站/ }).first().click()
+  await page
+    .getByRole('alertdialog', { name: '将章节移入回收站？' })
+    .getByRole('button', { name: '移入回收站' })
+    .click()
   await page.getByRole('link', { name: '回收站' }).click()
   await expect(page.getByRole('heading', { name: '回收站' })).toBeVisible()
   await expect(
@@ -23,9 +27,20 @@ test('owner restores and permanently deletes trash items', async ({ page }) => {
 
   await page.goto('/studio')
   await page.getByRole('button', { name: /移入回收站/ }).first().click()
+  await page
+    .getByRole('alertdialog', { name: '将章节移入回收站？' })
+    .getByRole('button', { name: '移入回收站' })
+    .click()
   await page.goto('/studio/trash')
   const deleteRow = page.locator('.studio-trash-row').first()
   const deletedTitle = await deleteRow.locator('h2').innerText()
+  await deleteRow
+    .getByRole('button', { name: '永久删除章节' })
+    .click()
+  await page.getByRole('button', { name: '取消' }).click()
+  await expect(
+    page.getByRole('heading', { name: deletedTitle }),
+  ).toBeVisible()
   await deleteRow
     .getByRole('button', { name: '永久删除章节' })
     .click()

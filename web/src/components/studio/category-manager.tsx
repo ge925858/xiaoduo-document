@@ -3,6 +3,7 @@
 import { ArrowDown, ArrowUp, FolderPlus, Save, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 interface CategoryItem {
   id: string
@@ -23,6 +24,9 @@ export function CategoryManager({
   const [newSlug, setNewSlug] = useState('')
   const [message, setMessage] = useState('')
   const [pending, setPending] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<CategoryItem | null>(
+    null,
+  )
   const ordered = [...initialCategories].sort(
     (left, right) => left.position - right.position,
   )
@@ -75,6 +79,7 @@ export function CategoryManager({
     await request(`/api/studio/categories/${category.id}`, {
       method: 'DELETE',
     })
+    setDeleteTarget(null)
   }
 
   async function move(category: CategoryItem, direction: -1 | 1) {
@@ -140,10 +145,28 @@ export function CategoryManager({
             onMoveUp={() => void move(category, -1)}
             onMoveDown={() => void move(category, 1)}
             onSave={(values) => void save(category, values)}
-            onDelete={() => void remove(category)}
+            onDelete={() => setDeleteTarget(category)}
           />
         ))}
       </div>
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null)
+        }}
+        title="删除这个分类？"
+        description={
+          deleteTarget
+            ? `分类“${deleteTarget.title}”将被永久删除，这个操作无法撤销。`
+            : ''
+        }
+        confirmLabel="删除分类"
+        pending={pending}
+        onConfirm={() => {
+          if (deleteTarget) void remove(deleteTarget)
+        }}
+      />
     </div>
   )
 }

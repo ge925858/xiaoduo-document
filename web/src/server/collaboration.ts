@@ -261,6 +261,31 @@ export async function createDirectInvite(input: {
   return createInvite({ ...input, source: 'direct' })
 }
 
+export async function revokePendingInvite(id: string) {
+  const [invite] = await db
+    .select()
+    .from(collaborationInvite)
+    .where(eq(collaborationInvite.id, id))
+    .limit(1)
+
+  if (!invite) return 'not-found' as const
+  if (invite.status !== 'pending') return 'not-pending' as const
+
+  const [result] = await db
+    .update(collaborationInvite)
+    .set({ status: 'revoked' })
+    .where(
+      and(
+        eq(collaborationInvite.id, id),
+        eq(collaborationInvite.status, 'pending'),
+      ),
+    )
+  if (!result.affectedRows) return 'not-pending' as const
+
+  await notifyInvitation(invite, 'revoked')
+  return 'revoked' as const
+}
+
 export async function approveApplication(
   applicationId: string,
 ): Promise<InviteRecord | null> {

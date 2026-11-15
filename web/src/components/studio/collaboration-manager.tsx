@@ -15,6 +15,7 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Dialog } from '@/components/ui/dialog'
 import {
   formatDateTime,
@@ -99,6 +100,14 @@ export function CollaborationManager({
   const [editingCollaborator, setEditingCollaborator] =
     useState<Collaborator | null>(null)
   const [editArticleIds, setEditArticleIds] = useState<string[]>([])
+  const [inviteRevokeTarget, setInviteRevokeTarget] =
+    useState<Invite | null>(null)
+  const [grantRemovalTarget, setGrantRemovalTarget] = useState<{
+    collaborator: Collaborator
+    proposedArticleIds: string[]
+    existingArticleIds: string[]
+    removedArticleIds: string[]
+  } | null>(null)
   const [message, setMessage] = useState('')
   const pendingApplications = applications.filter(
     (application) => application.status === 'pending',
@@ -165,11 +174,12 @@ export function CollaborationManager({
     router.refresh()
   }
 
-  async function revokeInvite(id: string) {
+  async function revokeInvite(invite: Invite) {
     const response = await fetch(
-      `/api/studio/collaboration/invites/${id}/revoke`,
+      `/api/studio/collaboration/invites/${invite.id}/revoke`,
       { method: 'POST' },
     )
+    setInviteRevokeTarget(null)
     setMessage(response.ok ? '邀请已撤销' : '撤销邀请失败')
     router.refresh()
   }
@@ -224,19 +234,23 @@ export function CollaborationManager({
     )
   }
 
-  async function saveGrants() {
-    if (!editingCollaborator) return
-    const existing = grants
-      .filter((grant) => grant.userId === editingCollaborator.id)
-      .map((grant) => grant.articleId)
-    const added = editArticleIds.filter((id) => !existing.includes(id))
-    const removed = existing.filter((id) => !editArticleIds.includes(id))
+  async function applyGrants(
+    collaborator: Collaborator,
+    articleIds: string[],
+    existingArticleIds: string[],
+  ) {
+    const added = articleIds.filter(
+      (id) => !existingArticleIds.includes(id),
+    )
+    const removed = existingArticleIds.filter(
+      (id) => !articleIds.includes(id),
+    )
     for (const articleId of added) {
       await fetch('/api/studio/collaboration/grants', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          userId: editingCollaborator.id,
+          userId: collaborator.id,
           articleId,
         }),
       })
@@ -246,14 +260,39 @@ export function CollaborationManager({
         method: 'DELETE',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          userId: editingCollaborator.id,
+          userId: collaborator.id,
           articleId,
         }),
       })
     }
+    setGrantRemovalTarget(null)
     setEditingCollaborator(null)
     setMessage('文章授权已更新')
     router.refresh()
+  }
+
+  async function saveGrants() {
+    if (!editingCollaborator) return
+    const existingArticleIds = grants
+      .filter((grant) => grant.userId === editingCollaborator.id)
+      .map((grant) => grant.articleId)
+    const removedArticleIds = existingArticleIds.filter(
+      (id) => !editArticleIds.includes(id),
+    )
+    if (removedArticleIds.length) {
+      setGrantRemovalTarget({
+        collaborator: editingCollaborator,
+        proposedArticleIds: editArticleIds,
+        existingArticleIds,
+        removedArticleIds,
+      })
+      return
+    }
+    await applyGrants(
+      editingCollaborator,
+      editArticleIds,
+      existingArticleIds,
+    )
   }
 
   return (
@@ -506,7 +545,7 @@ export function CollaborationManager({
                       <button
                         type="button"
                         className="studio-icon-button hover:!text-[var(--rust)]"
-                        onClick={() => void revokeInvite(invite.id)}
+                        onClick={() => setInviteRevokeTarget(invite)}
                         aria-label="撤销邀请"
                       >
                         <Ban size={18} />
@@ -651,6 +690,55 @@ export function CollaborationManager({
           </div>
         </div>
       </Dialog>
+
+      <ConfirmDialog
+        open={Boolean(grantRemovalTarget)}
+        onOpenChange={(open) => {
+          if (!open && grantRemovalTarget) {
+            setEditArticleIds(grantRemovalTarget.existingArticleIds)
+            setGrantRemovalTarget(null)
+          }
+        }}
+        title="撤销文章授权？"
+        description={
+          grantRemovalTarget
+            ? `${grantRemovalTarget.collaborator.name} 将失去这些章节的编辑权限：${grantRemovalTarget.removedArticleIds
+                .map(
+                  (articleId) =>
+                    articles.find((article) => article.id === articleId)
+                      ?.title ?? articleId,
+                )
+                .join('、')}。`
+            : ''
+        }
+        confirmLabel="撤销授权"
+        onConfirm={() => {
+          if (grantRemovalTarget) {
+            void applyGrants(
+              grantRemovalTarget.collaborator,
+              grantRemovalTarget.proposedArticleIds,
+              grantRemovalTarget.existingArticleIds,
+            )
+          }
+        }}
+      />
+
+      <ConfirmDialog
+        open={Boolean(inviteRevokeTarget)}
+        onOpenChange={(open) => {
+          if (!open) setInviteRevokeTarget(null)
+        }}
+        title="撤销这个邀请？"
+        description={
+          inviteRevokeTarget
+            ? `发给 ${inviteRevokeTarget.email} 的一次性邀请链接会立即失效。`
+            : ''
+        }
+        confirmLabel="撤销邀请"
+        onConfirm={() => {
+          if (inviteRevokeTarget) void revokeInvite(inviteRevokeTarget)
+        }}
+      />
     </div>
   )
 }

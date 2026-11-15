@@ -231,6 +231,10 @@ test('owner grants one article and collaborator cannot access the rest', async (
     .getByRole('checkbox', { name: /写作不是归档/ })
     .uncheck()
   await grantDialog.getByRole('button', { name: '保存授权' }).click()
+  await page
+    .getByRole('alertdialog', { name: '撤销文章授权？' })
+    .getByRole('button', { name: '撤销授权' })
+    .click()
   await expect(page.getByText('文章授权已更新')).toBeVisible()
   await collaboratorPage.goto('/studio')
   await expect(

@@ -47,5 +47,14 @@ test('owner manages categories and manual order', async ({ page }) => {
   ).toHaveValue('工具与方法')
 
   await page.getByRole('button', { name: '删除 阅读与测试' }).click()
+  const deleteDialog = page.getByRole('alertdialog', {
+    name: '删除这个分类？',
+  })
+  await expect(deleteDialog).toBeVisible()
+  await deleteDialog.getByRole('button', { name: '取消' }).click()
+  await expect(page.getByLabel('分类名称 阅读与测试')).toBeVisible()
+
+  await page.getByRole('button', { name: '删除 阅读与测试' }).click()
+  await deleteDialog.getByRole('button', { name: '删除分类' }).click()
   await expect(page.getByLabel('分类名称 阅读与测试')).toHaveCount(0)
 })

@@ -12,6 +12,7 @@ import {
   Upload,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Dialog } from '@/components/ui/dialog'
 import { StudioSelect } from '@/components/ui/studio-select'
 import { formatRelativeTime } from '@/lib/format-time'
@@ -57,6 +58,9 @@ export function ArticleDashboard({
   )
   const [message, setMessage] = useState('')
   const [pending, setPending] = useState(false)
+  const [trashTarget, setTrashTarget] = useState<ArticleItem | null>(
+    null,
+  )
 
   useEffect(() => {
     const theme = window.localStorage.getItem('zhijian-theme')
@@ -179,8 +183,13 @@ export function ArticleDashboard({
     router.refresh()
   }
 
-  async function trash(id: string) {
-    await fetch(`/api/studio/articles/${id}/trash`, { method: 'POST' })
+  async function trash(article: ArticleItem) {
+    setPending(true)
+    await fetch(`/api/studio/articles/${article.id}/trash`, {
+      method: 'POST',
+    })
+    setPending(false)
+    setTrashTarget(null)
     router.refresh()
   }
 
@@ -385,7 +394,7 @@ export function ArticleDashboard({
                 aria-label={`移入回收站 ${article.title}`}
                 onClick={(event) => {
                   event.preventDefault()
-                  void trash(article.id)
+                  setTrashTarget(article)
                 }}
               >
                 <Trash2 size={17} />
@@ -403,6 +412,24 @@ export function ArticleDashboard({
           </div>
         ) : null}
       </div>
+
+      <ConfirmDialog
+        open={Boolean(trashTarget)}
+        onOpenChange={(open) => {
+          if (!open) setTrashTarget(null)
+        }}
+        title="将章节移入回收站？"
+        description={
+          trashTarget
+            ? `章节“${trashTarget.title}”会从内容列表移除，并在回收站保留 30 天。`
+            : ''
+        }
+        confirmLabel="移入回收站"
+        pending={pending}
+        onConfirm={() => {
+          if (trashTarget) void trash(trashTarget)
+        }}
+      />
 
       <Dialog
         open={importOpen}
