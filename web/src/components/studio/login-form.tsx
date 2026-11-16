@@ -9,9 +9,10 @@ import {
   Mail,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState, type FormEvent } from 'react'
-
-type LoginMode = 'owner' | 'collaborator'
+import {
+  useState,
+  type FormEvent,
+} from 'react'
 
 const credentials = {
   owner: {
@@ -26,21 +27,11 @@ const credentials = {
 
 export function LoginForm() {
   const router = useRouter()
-  const [mode, setMode] = useState<LoginMode>('owner')
   const [email, setEmail] = useState<string>(credentials.owner.email)
   const [password, setPassword] = useState<string>(credentials.owner.password)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false)
-
-  function switchMode(nextMode: LoginMode) {
-    setMode(nextMode)
-    setEmail(credentials[nextMode].email)
-    setPassword(credentials[nextMode].password)
-    setShowPassword(false)
-    setError('')
-  }
-
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setPending(true)
@@ -100,24 +91,9 @@ export function LoginForm() {
             <h1>进入写作台</h1>
           </header>
 
-          <div className="studio-login-role-tabs" role="tablist" aria-label="登录身份">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'owner'}
-              className={mode === 'owner' ? 'is-active' : ''}
-              onClick={() => switchMode('owner')}
-            >
-              站主登录
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'collaborator'}
-              className={mode === 'collaborator' ? 'is-active' : ''}
-              onClick={() => switchMode('collaborator')}
-            >
-              协作者登录
+          <div className="studio-login-role-tabs" aria-label="登录入口">
+            <button type="button" className="is-active">
+              要登进来喽~
             </button>
           </div>
 
@@ -142,7 +118,7 @@ export function LoginForm() {
             <label className="studio-login-field" htmlFor="studio-login-password">
               <span className="studio-login-password-heading">
                 <span>
-                  {mode === 'owner' ? '站主密码' : '协作者密码 / 授权秘钥'}
+                  密码
                 </span>
                 <button
                   type="button"

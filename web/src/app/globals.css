@@ -6298,19 +6298,47 @@ button.markdown-diff-change-item.is-active {
 
 /* Stitch login prototype */
 .studio-login-prototype {
+  position: relative;
   display: flex;
   min-height: 100dvh;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: #f5f7f4;
-  background-image:
-    radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.72), transparent 80%),
-    radial-gradient(rgba(0, 77, 65, 0.025) 1px, transparent 0);
-  background-size: 100% 100%, 28px 28px;
+  isolation: isolate;
+  background-color: #edf1e9;
   color: #191d19;
   color-scheme: light;
   padding: 32px 16px;
+}
+
+.studio-login-prototype::before {
+  position: absolute;
+  z-index: -1;
+  inset: -3%;
+  content: "";
+  background-image:
+    linear-gradient(90deg, rgba(244, 246, 239, 0.2), rgba(244, 246, 239, 0.08)),
+    url('/studio-login-background.svg');
+  background-position: center;
+  background-size: cover;
+  animation: studio-login-background-drift 5s ease-in-out infinite alternate;
+  transform: scale(1.035);
+  will-change: transform, background-position;
+}
+
+@keyframes studio-login-background-drift {
+  0% {
+    background-position: 49.5% 50.5%;
+    transform: scale(1.035) translate3d(-0.35%, -0.2%, 0);
+  }
+  50% {
+    background-position: 50.5% 49.5%;
+    transform: scale(1.045) translate3d(0.3%, 0.25%, 0);
+  }
+  100% {
+    background-position: 50% 50.5%;
+    transform: scale(1.035) translate3d(-0.15%, 0.2%, 0);
+  }
 }
 
 .studio-login-collage {
@@ -6581,6 +6609,7 @@ button.markdown-diff-change-item.is-active {
 }
 
 .studio-login-card-header {
+  text-align: center;
   margin-bottom: 28px;
 }
 
@@ -6597,7 +6626,7 @@ button.markdown-diff-change-item.is-active {
   margin-top: 10px;
   color: #191d19;
   font-family: "Noto Serif SC", "Songti SC", "STSong", serif;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 400;
   letter-spacing: -0.02em;
   line-height: 38px;
@@ -6607,10 +6636,10 @@ button.markdown-diff-change-item.is-active {
   display: flex;
   width: 100%;
   align-items: center;
-  border: 1px solid rgba(228, 222, 201, 0.7);
+  border: 0;
   border-radius: 8px;
-  background: #f4efe5;
-  padding: 4px;
+  background: transparent;
+  padding: 0;
 }
 
 .studio-login-role-tabs button {
@@ -6634,7 +6663,7 @@ button.markdown-diff-change-item.is-active {
 }
 
 .studio-login-role-tabs button.is-active {
-  background: #e5f0eb;
+  background: #c6e3d4;
   box-shadow: 0 1px 2px rgba(25, 29, 25, 0.05);
   color: #1d6658;
   font-weight: 700;
@@ -6831,11 +6860,341 @@ button.markdown-diff-change-item.is-active {
   }
 
   .studio-login-card-header h1 {
-    font-size: 26px;
+    font-size: 28px;
     line-height: 36px;
   }
 
   .studio-login-tape.card-tape {
     width: 104px;
+  }
+}
+
+.studio-login-prototype::before {
+  position: absolute;
+  z-index: -1;
+  inset: -3%;
+  content: "";
+  background-image:
+    linear-gradient(90deg, rgba(244, 246, 239, 0.2), rgba(244, 246, 239, 0.08)),
+    url('/studio-login-background.svg');
+  background-position: center;
+  background-size: cover;
+  animation: studio-login-background-drift 5s ease-in-out infinite alternate;
+  transform: scale(1.035);
+  will-change: transform, background-position;
+}
+
+@keyframes studio-login-background-drift {
+  0% {
+    background-position: 49.5% 50.5%;
+    transform: scale(1.035) translate3d(-0.35%, -0.2%, 0);
+  }
+  50% {
+    background-position: 50.5% 49.5%;
+    transform: scale(1.045) translate3d(0.3%, 0.25%, 0);
+  }
+  100% {
+    background-position: 50% 50.5%;
+    transform: scale(1.035) translate3d(-0.15%, 0.2%, 0);
+  }
+}
+
+.studio-login-collage {
+  z-index: 2;
+}
+
+.studio-login-quote-item {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 10px;
+  color: #56605b;
+  opacity: 0.22;
+  text-align: center;
+  transform:
+    translate(var(--quote-x), var(--quote-y))
+    rotate(var(--quote-rotate));
+  transition:
+    opacity 420ms ease,
+    transform 420ms ease,
+    filter 420ms ease;
+  animation: studio-quote-arrive 700ms ease both;
+  animation-delay: calc(var(--quote-order) * 18ms);
+  mix-blend-mode: multiply;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.studio-login-quote-item:nth-child(3n) {
+  color: #1d6658;
+  opacity: 0.17;
+}
+
+.studio-login-quote-item:nth-child(5n) {
+  color: #9f7a3f;
+  opacity: 0.14;
+}
+
+.studio-login-quote-item:nth-child(7n) {
+  color: #89877f;
+  opacity: 0.2;
+}
+
+.studio-login-quote-item blockquote {
+  display: -webkit-box;
+  overflow: hidden;
+  font-family: "Noto Serif SC", "Songti SC", "STSong", serif;
+  font-size: var(--quote-size);
+  line-height: 1.55;
+  text-wrap: balance;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.studio-login-quote-item figcaption {
+  max-width: 100%;
+  overflow: hidden;
+  margin-top: 4px;
+  font-family: Inter, "Noto Sans SC", sans-serif;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  opacity: 0.62;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-login-quote-item:hover {
+  opacity: 0.07;
+  filter: blur(0.15px);
+  transform:
+    translate(var(--quote-x), var(--quote-y))
+    scale(1.13)
+    rotate(var(--quote-rotate));
+}
+
+@keyframes studio-quote-arrive {
+  from {
+    opacity: 0;
+    filter: blur(1.5px);
+  }
+}
+
+@media (max-width: 767px) {
+  .studio-login-quote-field {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(9, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .studio-login-quote-item {
+    padding: 4px;
+  }
+
+  .studio-login-quote-item blockquote {
+    font-size: max(8px, calc(var(--quote-size) * 0.64));
+    -webkit-line-clamp: 2;
+  }
+
+  .studio-login-quote-item figcaption {
+    font-size: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-login-prototype::before {
+    animation: none;
+  }
+  .studio-login-quote-item {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Refined quote collage */
+.studio-login-quote-field {
+  display: block;
+  height: 100%;
+  columns: 6;
+  column-gap: clamp(14px, 1.8vw, 26px);
+  column-fill: auto;
+  padding: 24px 20px;
+}
+
+.studio-login-quote-item {
+  display: block;
+  width: 100%;
+  min-height: 130px;
+  margin: 0 0 34px;
+  overflow: hidden;
+  padding: 8px 6px;
+  break-inside: avoid;
+  color: #47534e;
+  opacity: 0.34;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.studio-login-quote-item:nth-child(4n + 1) {
+  padding-left: 12%;
+  text-align: left;
+}
+
+.studio-login-quote-item:nth-child(4n + 2) {
+  text-align: center;
+}
+
+.studio-login-quote-item:nth-child(4n + 3) {
+  padding-right: 12%;
+  text-align: right;
+}
+
+.studio-login-quote-item:nth-child(4n) {
+  padding-inline: 4%;
+  text-align: center;
+}
+
+.studio-login-quote-item:nth-child(3n) {
+  color: #1d6658;
+  opacity: 0.33;
+}
+
+.studio-login-quote-item:nth-child(5n) {
+  color: #80643b;
+  opacity: 0.31;
+}
+
+.studio-login-quote-item:nth-child(7n) {
+  color: #5f625c;
+  opacity: 0.36;
+}
+
+.studio-login-quote-item blockquote {
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.studio-login-quote-item:not([data-lang="zh"]):not([data-lang="ja"]) blockquote {
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+.studio-login-quote-item figcaption {
+  margin-top: 7px;
+  opacity: 0.74;
+}
+
+.studio-login-quote-item figcaption::before {
+  content: "— ";
+}
+
+.studio-login-quote-item:hover {
+  opacity: 0.14;
+}
+
+@media (max-width: 1023px) {
+  .studio-login-quote-field {
+    columns: 5;
+    column-gap: 12px;
+    padding: 18px 12px;
+  }
+
+  .studio-login-quote-item {
+    min-height: 112px;
+    margin-bottom: 26px;
+  }
+}
+
+@media (max-width: 767px) {
+  .studio-login-quote-field {
+    columns: 3;
+    column-gap: 7px;
+    padding: 4px;
+  }
+
+  .studio-login-quote-item {
+    min-height: 82px;
+    margin-bottom: 15px;
+    padding: 4px;
+    opacity: 0.36;
+  }
+
+  .studio-login-quote-item:nth-child(n) {
+    padding-inline: 3px;
+    text-align: center;
+  }
+
+  .studio-login-quote-item blockquote {
+    font-weight: 450;
+  }
+
+  .studio-login-quote-item figcaption {
+    margin-top: 4px;
+  }
+}
+
+
+/* Stronger quote contrast */
+.studio-login-quote-item {
+  color: #34403b;
+  opacity: 0.45;
+}
+
+.studio-login-quote-item:nth-child(3n) {
+  color: #17594d;
+  opacity: 0.42;
+}
+
+.studio-login-quote-item:nth-child(5n) {
+  color: #6f572f;
+  opacity: 0.38;
+}
+
+.studio-login-quote-item:nth-child(7n) {
+  color: #4b4f49;
+  opacity: 0.46;
+}
+
+.studio-login-quote-item:hover {
+  opacity: 0.16;
+}
+
+@media (max-width: 767px) {
+  .studio-login-quote-item {
+    opacity: 0.36;
+  }
+}
+
+/* Irregular quote rhythm and individual replacement */
+.studio-login-quote-item {
+  width: var(--quote-width, 100%);
+  margin-left: var(--quote-margin-left, 0);
+  cursor: pointer;
+}
+
+.studio-login-quote-item.is-leaving {
+  opacity: 0 !important;
+  filter: blur(3px);
+  transform:
+    translate(var(--quote-x), var(--quote-y))
+    scale(0.82)
+    rotate(calc(var(--quote-rotate) + 3deg));
+  pointer-events: none;
+  transition:
+    opacity 560ms ease,
+    transform 560ms ease,
+    filter 560ms ease;
+}
+
+@media (max-width: 767px) {
+  .studio-login-quote-item {
+    width: 100%;
+    margin-left: 0;
   }
 }
